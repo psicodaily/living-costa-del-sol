@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GTA Marbella — Marbella real (jugable)</title>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #bfe0ff; }
+    #game-canvas { display: block; width: 100%; height: 100%; }
+    #hud { position: fixed; top: 10px; left: 10px; z-index: 6; font: 13px system-ui, sans-serif; color: #11334d;
+      background: rgba(255,255,255,0.82); padding: 8px 12px; border-radius: 8px; }
+    #credit { position: fixed; bottom: 8px; left: 8px; z-index: 6; font: 12px system-ui, sans-serif; color: #11334d;
+      background: rgba(255,255,255,0.7); padding: 4px 8px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div id="hud">🚶 WASD moverte · ⇧ correr · 🚗 E entrar/salir del coche · 🖱️ clic para mirar</div>
+  <canvas id="game-canvas"></canvas>
+  <div id="credit">Datos del mapa © OpenStreetMap contributors (ODbL)</div>
+  <script type="module" src="/src/real/game.js"></script>
+</body>
+</html>
