@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marbella 3D — visor</title>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #cfe8ff; }
+    #canvas { display: block; width: 100%; height: 100%; }
+    #credit {
+      position: fixed; bottom: 8px; left: 8px; z-index: 5;
+      font: 12px system-ui, sans-serif; color: #11334d;
+      background: rgba(255,255,255,0.7); padding: 4px 8px; border-radius: 6px;
+    }
+    #hint {
+      position: fixed; top: 10px; left: 10px; z-index: 5;
+      font: 13px system-ui, sans-serif; color: #11334d;
+      background: rgba(255,255,255,0.8); padding: 6px 10px; border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="hint">🖱️ Arrastra para girar · rueda para acercar · clic derecho para desplazar</div>
+  <canvas id="canvas"></canvas>
+  <div id="credit">Datos del mapa © OpenStreetMap contributors (ODbL)</div>
+  <script type="module" src="/src/real/main.js"></script>
+</body>
+</html>
