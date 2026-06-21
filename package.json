@@ -1,6 +1,6 @@
 {
   "name": "gta-marbella",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "Videojuego de mundo abierto estilo GTA ambientado en Marbella (PC).",
   "type": "module",
   "scripts": {
@@ -11,7 +11,7 @@
     "play": "vite",
     "panel": "node tools/dashboard/server.mjs",
     "prebake": "node tools/prebake-marbella.mjs",
-    "test": "node --test tools/"
+    "test": "node --test \"tools/lib/*.test.mjs\""
   },
   "dependencies": {
     "three": "^0.169.0"
