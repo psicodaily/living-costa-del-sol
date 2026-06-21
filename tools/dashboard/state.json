@@ -1,0 +1,70 @@
+{
+  "version": "v1.6 — \"Choques de verdad\" (en desarrollo)",
+  "note": "Tablero mantenido por Claude. Se anota aquí todo lo que corre en segundo plano y el avance de versiones.",
+  "tasks": [
+    {
+      "id": "osm-research",
+      "title": "Investigación: Marbella real desde OpenStreetMap",
+      "status": "en-curso",
+      "kind": "workflow",
+      "detail": "Construyendo el generador de datos (Plan 1) tarea por tarea, con pruebas. Plan en docs/superpowers/plans/2026-06-21-marbella-datos-prebake.md. Al terminar habrá un visor 2D con el plano real de Marbella. Apunta a la v1.9 'Marbella reconocible'.",
+      "startedAt": "2026-06-21T14:50:00",
+      "updatedAt": "2026-06-21T15:45:00",
+      "estimate": "Construyendo ahora las 8 tareas del Plan 1 (datos). El paso 6 descarga Marbella de verdad y el 7 te deja verla en un visor 2D.",
+      "steps": [
+        { "label": "Investigar (5 expertos en paralelo)", "done": true },
+        { "label": "Verificar las afirmaciones técnicas", "done": true },
+        { "label": "Sintetizar el informe técnico", "done": true },
+        { "label": "Escribir el documento de diseño", "done": true },
+        { "label": "Aprobar el diseño", "done": true },
+        { "label": "Escribir el plan de implementación", "done": true },
+        { "label": "Construir el generador de datos (Plan 1)", "done": false },
+        { "label": "Ver Marbella real dentro del juego (Plan 2)", "done": false }
+      ]
+    },
+    {
+      "id": "vps-migration",
+      "title": "Mover el proyecto al VPS de Contabo",
+      "status": "en-curso",
+      "kind": "infra",
+      "detail": "Llevar el desarrollo y los trabajos de IA al VPS (Ubuntu, IP 13.140.171.122) para aligerar tu PC. El juego se seguirá viendo en tu navegador (se dibuja en tu PC). Copia en el escritorio sincronizada con Git.",
+      "startedAt": "2026-06-21T15:30:00",
+      "updatedAt": "2026-06-21T15:35:00",
+      "estimate": "Esperando a que autorices la llave SSH en el servidor (un comando que ejecutas tú con tu contraseña). En cuanto veas 'LLAVE_INSTALADA', sigo yo solo con la instalación.",
+      "steps": [
+        { "label": "Comprobar acceso al VPS (SSH abierto)", "done": true },
+        { "label": "Crear y autorizar la llave SSH", "done": false },
+        { "label": "Preparar el VPS (Node, Git, herramientas)", "done": false },
+        { "label": "Subir el proyecto al VPS", "done": false },
+        { "label": "Configurar VS Code Remote-SSH", "done": false },
+        { "label": "Arrancar Vite/panel y dejar la sincronización", "done": false }
+      ]
+    },
+    {
+      "id": "panel-control",
+      "title": "Panel de control en localhost",
+      "status": "terminado",
+      "kind": "tool",
+      "detail": "Esta web (localhost:4756). Tema claro, secciones de hechas/pendientes, hoja de ruta de versiones y detalle de progreso de las tareas en curso. Se arranca con 'npm run panel'.",
+      "startedAt": "2026-06-21T14:45:00",
+      "updatedAt": "2026-06-21T15:08:00"
+    }
+  ],
+  "roadmap": [
+    { "version": "v1.0", "title": "Se mueve", "status": "done", "summary": "Ciudad en cuadrícula, personaje controlable, cámara y NPCs." },
+    { "version": "v1.1", "title": "Cámara con ratón", "status": "done", "summary": "Control con el ratón (Pointer Lock), zoom y sistema de versiones." },
+    { "version": "v1.2", "title": "Ciudad más bonita", "status": "done", "summary": "Render natural, cielo con degradado, aceras, ventanas en edificios." },
+    { "version": "v1.3", "title": "¡A conducir!", "status": "done", "summary": "Primer coche conducible con inercia, velocímetro y calles de verdad." },
+    { "version": "v1.4", "title": "Estado y mini-mapa", "status": "done", "summary": "HUD de dinero y salud, mini-mapa radar y rotonda central." },
+    { "version": "v1.5", "title": "Marbella junto al mar", "status": "done", "summary": "Playa y mar, primeros recados con recompensa y menú de pausa." },
+    { "version": "v1.6", "title": "Choques de verdad", "status": "current", "summary": "Ya no atraviesas edificios; el coche se abolla y daña al chocar, con sacudida de cámara." },
+    { "version": "v1.7", "title": "Más coches y motos", "status": "next", "summary": "Varios vehículos (deportivo, furgoneta, todoterreno) y scooters/motos." },
+    { "version": "v1.8", "title": "Día y noche + ambiente de cine", "status": "next", "summary": "Ciclo día/noche, farolas y faros, efectos visuales cinematográficos." },
+    { "version": "v1.9", "title": "Marbella reconocible", "status": "next", "summary": "Paseo marítimo, Puerto Banús con yates y barrios distintos. (Aquí encaja 'Marbella real' desde OSM.)" },
+    { "version": "v1.10", "title": "Gente viva", "status": "next", "summary": "Peatones por las aceras que reaccionan a ti y no se amontonan." },
+    { "version": "v1.11", "title": "Tráfico", "status": "next", "summary": "Coches de la IA circulando, con semáforos y frenadas." },
+    { "version": "v1.12", "title": "Policía y nivel de búsqueda", "status": "next", "summary": "Policías que patrullan y te detectan; estrellas de búsqueda." },
+    { "version": "v1.13", "title": "Alma: sonido, misiones y guardado", "status": "next", "summary": "Radio y sonido ambiente, misiones con diálogos, tiendas y guardar partida." },
+    { "version": "v2.0", "title": "Salto mayor", "status": "next", "summary": "Reconstrucción de base: física real, mundo mayor o terreno con relieve. Los 3 pilares conviviendo." }
+  ]
+}

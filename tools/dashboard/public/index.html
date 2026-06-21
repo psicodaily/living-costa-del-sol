@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Centro de control — GTA Marbella</title>
+    <style>
+      :root {
+        /* Tema claro · Marbella (arena cálida + mar + sol) */
+        --bg: #f4f1ea;
+        --bg-soft: #efe9df;
+        --surface: #ffffff;
+        --surface-2: #faf7f1;
+        --line: #e6dfd2;
+        --line-strong: #d7cebd;
+        --text: #232a32;
+        --muted: #6a7480;
+        --faint: #9aa2ad;
+        --accent: #0e9c82;     /* mar */
+        --accent-ink: #0a5d4e;
+        --accent-2: #d3870a;   /* sol */
+        --accent-2-ink: #8a5600;
+        --blue: #2f7fd1;
+        --red: #d6483f;
+        --radius: 14px;
+        --shadow-sm: 0 1px 2px rgba(40, 50, 60, 0.05);
+        --shadow: 0 8px 24px rgba(60, 70, 80, 0.07), 0 1px 3px rgba(60, 70, 80, 0.05);
+        --mono: "SF Mono", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+        --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: var(--sans);
+        color: var(--text);
+        background:
+          radial-gradient(900px 480px at 88% -8%, rgba(14, 156, 130, 0.10), transparent 60%),
+          radial-gradient(720px 420px at -5% 0%, rgba(211, 135, 10, 0.09), transparent 58%),
+          var(--bg);
+        background-attachment: fixed;
+      }
+
+      .wrap { max-width: 1060px; margin: 0 auto; padding: 34px 24px 90px; }
+
+      header.top {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 16px; flex-wrap: wrap; margin-bottom: 30px;
+      }
+      .brand { display: flex; align-items: center; gap: 14px; }
+      .brand .mark {
+        width: 44px; height: 44px; border-radius: 12px;
+        background: linear-gradient(135deg, var(--accent), #0c7a64);
+        display: grid; place-items: center; font-size: 22px;
+        box-shadow: 0 8px 22px rgba(14, 156, 130, 0.28);
+      }
+      h1 { font-size: 21px; margin: 0; letter-spacing: -0.02em; font-weight: 680; }
+      .brand .sub { color: var(--muted); font-size: 12.5px; margin-top: 3px; }
+
+      .clock {
+        font-family: var(--mono); font-size: 12px; color: var(--muted);
+        display: flex; align-items: center; gap: 8px;
+        background: var(--surface); border: 1px solid var(--line);
+        padding: 7px 12px; border-radius: 999px; box-shadow: var(--shadow-sm);
+      }
+      .pulse {
+        width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(14, 156, 130, 0.5); }
+        70% { box-shadow: 0 0 0 7px rgba(14, 156, 130, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(14, 156, 130, 0); }
+      }
+
+      .section-label {
+        font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.12em;
+        color: var(--faint); font-weight: 700; margin: 30px 4px 12px;
+      }
+
+      /* Juego */
+      .game-card {
+        display: flex; align-items: center; justify-content: space-between; gap: 16px;
+        padding: 18px 20px; border-radius: var(--radius);
+        background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow);
+      }
+      .game-left { display: flex; align-items: center; gap: 14px; }
+      .dot { width: 11px; height: 11px; border-radius: 50%; flex: none; }
+      .dot.on { background: var(--accent); box-shadow: 0 0 0 4px rgba(14, 156, 130, 0.15); }
+      .dot.off { background: var(--faint); }
+      .game-title { font-weight: 650; font-size: 15px; }
+      .game-status { color: var(--muted); font-size: 12.5px; margin-top: 2px; font-family: var(--mono); }
+      .btn {
+        text-decoration: none; color: #ffffff; background: var(--accent);
+        font-weight: 650; font-size: 13px; padding: 10px 17px; border-radius: 10px;
+        transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease; white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(14, 156, 130, 0.25);
+      }
+      .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(14, 156, 130, 0.3); }
+      .btn.disabled { opacity: 0.4; pointer-events: none; box-shadow: none; }
+
+      /* Tarjetas de tareas */
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+
+      .card {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 16px 18px; position: relative; overflow: hidden; box-shadow: var(--shadow);
+      }
+      .card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--faint); }
+      .card.is-en-curso::before { background: var(--accent-2); }
+      .card.is-error::before { background: var(--red); }
+      .card.is-pausado::before { background: var(--blue); }
+
+      .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+      .card-title { font-weight: 650; font-size: 14.5px; line-height: 1.3; }
+      .badge {
+        font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+        padding: 4px 9px; border-radius: 999px; white-space: nowrap;
+        background: var(--surface-2); color: var(--muted); border: 1px solid var(--line);
+      }
+      .badge.en-curso { color: var(--accent-2-ink); background: rgba(211, 135, 10, 0.12); border-color: rgba(211, 135, 10, 0.3); }
+      .badge.error { color: var(--red); background: rgba(214, 72, 63, 0.1); border-color: rgba(214, 72, 63, 0.3); }
+      .badge.pausado { color: var(--blue); background: rgba(47, 127, 209, 0.1); border-color: rgba(47, 127, 209, 0.3); }
+
+      .card-detail { color: var(--muted); font-size: 13px; line-height: 1.5; margin-top: 8px; }
+
+      /* Pasos */
+      .steps-head { display: flex; justify-content: space-between; align-items: baseline; margin-top: 14px; font-size: 12px; }
+      .steps-head .k { font-weight: 700; color: var(--text); }
+      .steps-head .v { font-family: var(--mono); color: var(--accent-ink); }
+      .bar { height: 7px; border-radius: 999px; background: var(--bg-soft); margin-top: 7px; overflow: hidden; border: 1px solid var(--line); }
+      .bar > span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width 500ms ease; }
+      ul.steps { list-style: none; margin: 12px 0 0; padding: 0; }
+      ul.steps li { display: flex; align-items: flex-start; gap: 9px; font-size: 13px; padding: 3px 0; color: var(--muted); }
+      ul.steps li .tick { width: 17px; height: 17px; border-radius: 50%; flex: none; display: grid; place-items: center; font-size: 11px; margin-top: 1px; }
+      ul.steps li.done .tick { background: var(--accent); color: #fff; }
+      ul.steps li.now .tick { background: var(--accent-2); color: #fff; animation: pulse2 2s infinite; }
+      ul.steps li.todo .tick { background: var(--bg-soft); border: 1.5px solid var(--line-strong); color: transparent; }
+      ul.steps li.done { color: var(--text); }
+      ul.steps li.now { color: var(--text); font-weight: 600; }
+      @keyframes pulse2 {
+        0% { box-shadow: 0 0 0 0 rgba(211, 135, 10, 0.45); }
+        70% { box-shadow: 0 0 0 6px rgba(211, 135, 10, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(211, 135, 10, 0); }
+      }
+      .timeinfo { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 12px; color: var(--muted); }
+      .timeinfo b { color: var(--text); font-weight: 650; }
+      .estimate { margin-top: 8px; font-size: 12.5px; color: var(--accent-2-ink); background: rgba(211, 135, 10, 0.08); border: 1px solid rgba(211, 135, 10, 0.22); padding: 8px 11px; border-radius: 9px; line-height: 1.45; }
+
+      /* Bloques colapsables */
+      details.fold { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-top: 2px; }
+      details.fold > summary {
+        cursor: pointer; list-style: none; padding: 13px 18px; font-weight: 600; font-size: 13.5px;
+        display: flex; align-items: center; gap: 10px; color: var(--text); user-select: none;
+      }
+      details.fold > summary::-webkit-details-marker { display: none; }
+      details.fold > summary .chev { color: var(--faint); transition: transform 180ms ease; margin-left: auto; font-size: 12px; }
+      details.fold[open] > summary .chev { transform: rotate(90deg); }
+      details.fold > summary .count { color: var(--muted); font-weight: 500; font-family: var(--mono); font-size: 12px; }
+      .fold-body { padding: 4px 18px 14px; }
+
+      ul.donelist { list-style: none; margin: 0; padding: 0; }
+      ul.donelist li { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 13px; border-top: 1px solid var(--line); }
+      ul.donelist li:first-child { border-top: none; }
+      ul.donelist .tick { width: 18px; height: 18px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-size: 11px; flex: none; }
+      ul.donelist .when { margin-left: auto; color: var(--faint); font-family: var(--mono); font-size: 11.5px; }
+
+      /* Hoja de ruta */
+      .rm-head { display: flex; justify-content: space-between; align-items: baseline; margin: 0 4px 12px; flex-wrap: wrap; gap: 8px; }
+      .rm-head .lead { color: var(--muted); font-size: 12.5px; }
+      .rm-progress { font-family: var(--mono); font-size: 12px; color: var(--accent-ink); font-weight: 600; }
+      .roadmap { position: relative; padding-left: 26px; }
+      .roadmap::before { content: ""; position: absolute; left: 9px; top: 10px; bottom: 10px; width: 2px; background: var(--line-strong); }
+      .rm-item { position: relative; padding: 6px 0; }
+      .rm-item .rm-dot { position: absolute; left: -21px; top: 16px; width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--bg); }
+      .rm-dot.done { background: var(--accent); }
+      .rm-dot.current { background: var(--accent-2); box-shadow: 0 0 0 4px rgba(211, 135, 10, 0.18); animation: pulse2 2.2s infinite; }
+      .rm-dot.next { background: #fff; border-color: var(--line-strong); }
+      .rm-card { background: var(--surface); border: 1px solid var(--line); border-radius: 11px; padding: 11px 14px; box-shadow: var(--shadow-sm); }
+      .rm-item.current .rm-card { border-color: rgba(211, 135, 10, 0.4); background: linear-gradient(180deg, rgba(211, 135, 10, 0.07), var(--surface)); box-shadow: var(--shadow); }
+      .rm-item.next .rm-card { background: var(--surface-2); border-style: dashed; box-shadow: none; }
+      .rm-line { display: flex; align-items: baseline; gap: 10px; }
+      .rm-ver { font-family: var(--mono); font-weight: 700; font-size: 13px; }
+      .rm-item.current .rm-ver { color: var(--accent-2-ink); }
+      .rm-item.next .rm-ver { color: var(--faint); }
+      .rm-title { font-weight: 650; font-size: 14px; }
+      .rm-item.next .rm-title { color: var(--muted); font-weight: 600; }
+      .rm-tag { margin-left: auto; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+      .rm-tag.current { color: var(--accent-2-ink); }
+      .rm-tag.next { color: var(--faint); }
+      .rm-sum { color: var(--muted); font-size: 12.5px; margin-top: 5px; line-height: 1.45; }
+      .rm-item.next .rm-sum { color: var(--faint); }
+      .roadmap.mini { padding-left: 22px; }
+      .roadmap.mini::before { left: 7px; }
+      .roadmap.mini .rm-item .rm-dot { left: -19px; top: 13px; width: 11px; height: 11px; }
+      .roadmap.mini .rm-card { padding: 8px 12px; }
+
+      /* Workflows */
+      .wf-row { display: flex; align-items: center; gap: 14px; padding: 13px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 10px; box-shadow: var(--shadow-sm); }
+      .wf-main { flex: 1; min-width: 0; }
+      .wf-name { font-weight: 650; font-size: 14px; }
+      .wf-id { font-family: var(--mono); font-size: 11px; color: var(--faint); }
+      .wf-count { font-family: var(--mono); font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+      .wf-state { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+      .wf-state.active { color: var(--accent-2-ink); }
+      .wf-state.idle { color: var(--faint); }
+
+      .empty { color: var(--faint); font-size: 13px; text-align: center; padding: 24px; border: 1px dashed var(--line-strong); border-radius: 12px; background: var(--surface-2); }
+      .foot { color: var(--faint); font-size: 11.5px; margin-top: 38px; text-align: center; line-height: 1.6; }
+      code { font-family: var(--mono); color: var(--accent-ink); background: rgba(14, 156, 130, 0.1); padding: 1px 6px; border-radius: 5px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <div class="brand">
+          <div class="mark">🌴</div>
+          <div>
+            <h1>Centro de control</h1>
+            <div class="sub" id="subtitle">GTA Marbella · progreso en segundo plano</div>
+          </div>
+        </div>
+        <div class="clock"><span class="pulse"></span><span id="clock">conectando…</span></div>
+      </header>
+
+      <div class="section-label">El juego</div>
+      <div id="game"></div>
+
+      <div class="section-label">Tareas en curso</div>
+      <div id="tasks-active" class="grid"></div>
+
+      <div id="tasks-done-wrap"></div>
+
+      <div class="section-label">Hoja de ruta · versiones</div>
+      <div id="roadmap"></div>
+
+      <div class="section-label">Rastro automático (workflows en segundo plano)</div>
+      <div id="workflows"></div>
+
+      <div class="foot">
+        Se actualiza solo cada 2&nbsp;segundos. Déjalo abierto.<br />
+        Lo fiable lo anota Claude en <code>tools/dashboard/state.json</code>; el rastro automático se lee del sistema (mejor esfuerzo).
+      </div>
+    </div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      }
+
+      function timeAgo(iso) {
+        if (!iso) return "—";
+        const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+        if (diff < 60) return "hace " + Math.max(0, Math.round(diff)) + "s";
+        if (diff < 3600) return "hace " + Math.round(diff / 60) + " min";
+        return "hace " + Math.round(diff / 3600) + " h";
+      }
+
+      function elapsed(iso) {
+        if (!iso) return "—";
+        let s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+        const h = Math.floor(s / 3600);
+        const m = Math.round((s % 3600) / 60);
+        if (h > 0) return h + " h " + m + " min";
+        return m + " min";
+      }
+
+      function renderGame(game) {
+        const on = game.up;
+        $("game").innerHTML = `
+          <div class="game-card">
+            <div class="game-left">
+              <span class="dot ${on ? "on" : "off"}"></span>
+              <div>
+                <div class="game-title">${on ? "El juego está encendido" : "El juego está apagado"}</div>
+                <div class="game-status">${on ? game.url : "arráncalo con: npm run dev"}</div>
+              </div>
+            </div>
+            <a class="btn ${on ? "" : "disabled"}" href="${game.url}" target="_blank" rel="noopener">Abrir juego ↗</a>
+          </div>`;
+      }
+
+      function stepsBlock(t) {
+        if (!Array.isArray(t.steps) || !t.steps.length) return "";
+        const total = t.steps.length;
+        const done = t.steps.filter((s) => s.done).length;
+        const pct = Math.round((done / total) * 100);
+        const nowIdx = t.steps.findIndex((s) => !s.done);
+        const items = t.steps
+          .map((s, i) => {
+            const cls = s.done ? "done" : i === nowIdx ? "now" : "todo";
+            const icon = s.done ? "✓" : i === nowIdx ? "▸" : "";
+            return `<li class="${cls}"><span class="tick">${icon}</span><span>${escapeHtml(s.label)}</span></li>`;
+          })
+          .join("");
+        return `
+          <div class="steps-head"><span class="k">Pasos</span><span class="v">${done} de ${total} · ${pct}%</span></div>
+          <div class="bar"><span style="width:${pct}%"></span></div>
+          <ul class="steps">${items}</ul>`;
+      }
+
+      function activeTaskCard(t) {
+        const st = t.status || "en-curso";
+        const time = t.startedAt
+          ? `<div class="timeinfo"><span>⏱ Lleva <b>${elapsed(t.startedAt)}</b></span><span>actualizado ${timeAgo(t.updatedAt)}</span></div>`
+          : `<div class="timeinfo"><span>actualizado ${timeAgo(t.updatedAt)}</span></div>`;
+        const est = t.estimate ? `<div class="estimate">⏳ ${escapeHtml(t.estimate)}</div>` : "";
+        return `
+          <div class="card is-${st}">
+            <div class="card-head">
+              <div class="card-title">${escapeHtml(t.title || "Tarea")}</div>
+              <span class="badge ${st}">${st.replace("-", " ")}</span>
+            </div>
+            ${t.detail ? `<div class="card-detail">${escapeHtml(t.detail)}</div>` : ""}
+            ${stepsBlock(t)}
+            ${est}
+            ${time}
+          </div>`;
+      }
+
+      function renderTasks(tasks) {
+        const active = (tasks || []).filter((t) => t.status !== "terminado");
+        const done = (tasks || []).filter((t) => t.status === "terminado");
+
+        $("tasks-active").innerHTML = active.length
+          ? active.map(activeTaskCard).join("")
+          : `<div class="empty" style="grid-column:1/-1">No hay tareas en curso ahora mismo.</div>`;
+
+        if (!done.length) {
+          $("tasks-done-wrap").innerHTML = "";
+          return;
+        }
+        const list = done
+          .map(
+            (t) => `<li><span class="tick">✓</span><span>${escapeHtml(t.title)}</span><span class="when">${timeAgo(t.updatedAt)}</span></li>`
+          )
+          .join("");
+        $("tasks-done-wrap").innerHTML = `
+          <div class="section-label">Tareas completadas</div>
+          <details class="fold" data-k="tasks-done">
+            <summary>✓ Completadas <span class="count">(${done.length})</span><span class="chev">▶</span></summary>
+            <div class="fold-body"><ul class="donelist">${list}</ul></div>
+          </details>`;
+      }
+
+      function rmItem(v, mini) {
+        const label = { done: "✓ hecha", current: "▶ en curso", next: "pendiente" };
+        return `
+          <div class="rm-item ${v.status}">
+            <span class="rm-dot ${v.status}"></span>
+            <div class="rm-card">
+              <div class="rm-line">
+                <span class="rm-ver">${escapeHtml(v.version)}</span>
+                <span class="rm-title">${escapeHtml(v.title)}</span>
+                <span class="rm-tag ${v.status}">${label[v.status] || ""}</span>
+              </div>
+              ${!mini && v.summary ? `<div class="rm-sum">${escapeHtml(v.summary)}</div>` : ""}
+            </div>
+          </div>`;
+      }
+
+      function renderRoadmap(rm) {
+        const wrap = $("roadmap");
+        if (!rm || !rm.length) {
+          wrap.innerHTML = `<div class="empty">Sin hoja de ruta cargada.</div>`;
+          return;
+        }
+        const done = rm.filter((v) => v.status === "done");
+        const upcoming = rm.filter((v) => v.status !== "done");
+        const doneBlock = done.length
+          ? `<details class="fold" data-k="rm-done">
+               <summary>✓ Versiones completadas <span class="count">(${done.length}: ${done[0].version}–${done[done.length - 1].version})</span><span class="chev">▶</span></summary>
+               <div class="fold-body"><div class="roadmap mini">${done.map((v) => rmItem(v, true)).join("")}</div></div>
+             </details>`
+          : "";
+        wrap.innerHTML =
+          `<div class="rm-head"><span class="lead">De v1.0 hasta el salto a v2.0</span><span class="rm-progress">${done.length}/${rm.length} completadas</span></div>` +
+          doneBlock +
+          `<div style="height:10px"></div>` +
+          `<div class="roadmap">${upcoming.map((v) => rmItem(v, false)).join("")}</div>`;
+      }
+
+      function renderWorkflows(wfs) {
+        if (!wfs || !wfs.length) {
+          $("workflows").innerHTML = `<div class="empty">Ningún workflow en segundo plano detectado.</div>`;
+          return;
+        }
+        const active = wfs.filter((w) => w.active);
+        const idle = wfs.filter((w) => !w.active);
+        const row = (w) => {
+          const pct = w.started ? Math.round((w.done / w.started) * 100) : 0;
+          const state = w.active ? `<span class="wf-state active">● en curso</span>` : `<span class="wf-state idle">○ inactivo</span>`;
+          return `
+            <div class="wf-row">
+              <div class="wf-main">
+                <div class="wf-name">${escapeHtml(w.name)} &nbsp; ${state}</div>
+                <div class="wf-id">${w.id} · ${timeAgo(w.updatedAt)}</div>
+                <div class="bar"><span style="width:${pct}%"></span></div>
+              </div>
+              <div class="wf-count">${w.done}/${w.started} agentes</div>
+            </div>`;
+        };
+        const idleBlock = idle.length
+          ? `<details class="fold" data-k="wf-idle">
+               <summary>Workflows anteriores (inactivos) <span class="count">(${idle.length})</span><span class="chev">▶</span></summary>
+               <div class="fold-body">${idle.map(row).join("")}</div>
+             </details>`
+          : "";
+        $("workflows").innerHTML =
+          (active.length ? active.map(row).join("") : `<div class="empty">Ningún workflow activo ahora mismo.</div>`) +
+          (idle.length ? `<div style="height:10px"></div>` + idleBlock : "");
+      }
+
+      // Conserva qué bloques colapsables estaban abiertos entre refrescos.
+      function captureOpen() {
+        const s = new Set();
+        document.querySelectorAll("details[data-k]").forEach((d) => { if (d.open) s.add(d.dataset.k); });
+        return s;
+      }
+      function restoreOpen(s) {
+        document.querySelectorAll("details[data-k]").forEach((d) => { if (s.has(d.dataset.k)) d.open = true; });
+      }
+
+      let lastSig = "";
+      async function tick() {
+        try {
+          const r = await fetch("/api/state", { cache: "no-store" });
+          const d = await r.json();
+          $("clock").textContent = "actualizado " + new Date(d.serverTime).toLocaleTimeString("es-ES");
+          if (d.version) $("subtitle").textContent = "GTA Marbella · " + d.version;
+          const sig = JSON.stringify({ t: d.tasks, r: d.roadmap, w: d.workflows, g: d.game });
+          if (sig === lastSig) return; // sin cambios: no re-dibujamos (evita parpadeo)
+          lastSig = sig;
+          const open = captureOpen();
+          renderGame(d.game);
+          renderTasks(d.tasks);
+          renderRoadmap(d.roadmap);
+          renderWorkflows(d.workflows);
+          restoreOpen(open);
+        } catch (e) {
+          $("clock").textContent = "panel sin conexión…";
+        }
+      }
+
+      tick();
+      setInterval(tick, 2000);
+    </script>
+  </body>
+</html>
