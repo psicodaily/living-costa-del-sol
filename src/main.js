@@ -79,6 +79,9 @@ const fleet = createFleet(scene);
 let vehicle = null; // vehículo que se conduce ahora (null = a pie)
 let mode = "foot"; // "foot" | "drive"
 
+// Choques con realismo: vehículos, árboles y peatones (v1.9).
+const interactions = createInteractions({ fleet, trees: world.trees, npcs });
+
 const speedo = createSpeedo();
 const enterHint = createEnterHint();
 const fpsEl = createFpsCounter();
@@ -174,6 +177,7 @@ function animate() {
   if (mode === "foot") {
     player.update(delta, keys, followCamera.getYaw());
     obstacles.resolve(player.group.position, 0.7); // no atravesar edificios
+    interactions.resolveFoot(player.group.position, 0.7); // ni coches ni árboles
     followCamera.update(delta, player.group.position);
     enterHint.style.opacity = nearestVehicle() ? "1" : "0";
     speedo.style.opacity = "0";
@@ -186,6 +190,10 @@ function animate() {
       vehicle.applyImpact(Math.min(30, Math.abs(vehicle.getSpeed()) * 0.8));
       shakeTime = 0.28;
     }
+    // Choques con coches aparcados, árboles y peatones.
+    interactions.driveCollisions(vehicle, () => {
+      shakeTime = Math.max(shakeTime, 0.22);
+    });
     followCamera.update(delta, vehicle.group.position, vehicle.getHeading() + Math.PI);
     enterHint.style.opacity = "0";
     speedo.style.opacity = "1";
@@ -209,6 +217,9 @@ function animate() {
   errands.update(delta, activePos);
 
   npcs.update(delta);
+  // Vehículos aparcados (deslizan si los han empujado) y caída de árboles.
+  for (const v of fleet.vehicles) if (v !== vehicle) v.passiveUpdate(delta);
+  world.trees.update(delta);
   hud.update(delta);
 
   // Mini-mapa: centrado en el jugador (a pie) o en el coche (conduciendo).
@@ -308,10 +319,11 @@ function createClock() {
   const el = document.createElement("div");
   el.textContent = "🕐 --:--";
   el.style.cssText = [
-    "position:fixed", "top:14px", "left:50%", "transform:translateX(-50%)",
-    "padding:5px 14px", "background:rgba(10,20,35,0.72)", "color:#fff",
-    "font-family:Consolas, monospace", "font-size:16px",
-    "border:1px solid rgba(255,255,255,0.12)", "border-radius:10px",
+    "position:fixed", "top:64px", "right:16px",
+    "padding:6px 14px", "background:rgba(10,20,35,0.78)", "color:#ffd24a",
+    "font-family:Consolas, monospace", "font-size:20px", "font-weight:800",
+    "text-align:right", "letter-spacing:1px",
+    "border:1px solid rgba(255,255,255,0.15)", "border-radius:10px",
     "pointer-events:none", "user-select:none", "z-index:6",
   ].join(";");
   document.body.appendChild(el);
