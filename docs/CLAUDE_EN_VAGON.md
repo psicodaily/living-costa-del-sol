@@ -96,6 +96,102 @@ español de España, sencillo** (el usuario no es programador).
    y luego **lee el PNG** en `<Proyecto>/Saved/Screenshots/` para VER el resultado.
 4. Bucle ideal: *ejecuto Python → leo el log → hago captura → la miro → corrijo*.
 
+### Bucle autónomo de mejora visual (cómo mejorar hasta que quede igual que la realidad)
+
+Este es el flujo para cuando el usuario da una imagen de referencia (Google Maps
+Street View, foto real de Marbella) y quiere que el juego se vea igual:
+
+```
+ENTRADA: imagen de referencia del usuario (p. ej. foto de un edificio de PB)
+
+1. ANALIZO la imagen:
+   - Colores de fachada (blanco, beige, terracota…)
+   - Tipo de material (encalado, ladrillo, cristal, mármol…)
+   - Proporciones (alto, ancho, número de plantas)
+   - Detalles (balcones, persianas, toldos, vegetación)
+
+2. IMPLEMENTO en Unreal:
+   - Escribo el script Python con los materiales/colores detectados
+   - Lo mando al editor vía remote execution (sin que el usuario haga nada)
+
+3. CAPTURO el resultado:
+   - Comando HighResShot desde Python → PNG en Saved/Screenshots/
+   - Leo el PNG directamente (Claude Code ve imágenes)
+
+4. COMPARO captura vs referencia:
+   - ¿El color coincide? ¿La escala es correcta? ¿Falta detalle?
+
+5. CORRIJO lo que no coincide:
+   - Ajusto materiales, escala, iluminación…
+   - Vuelvo al paso 2
+
+6. Repito hasta que la captura sea fiel a la referencia.
+
+SALIDA: aviso al usuario con la captura final lista.
+```
+
+**El usuario no toca nada durante el proceso.** Solo al principio:
+- Abrir Shadow + Unreal
+- Abrir Claude Code en Shadow
+- Dar la imagen de referencia
+
+A partir de ahí Claude trabaja solo hasta terminar.
+
+### Pipeline de fidelidad visual (cómo queda igual que la realidad)
+
+```
+Google Maps Street View (foto de referencia)
+        ↓
+Analizo la foto:
+  colores, materiales, proporciones, detalles
+        ↓
+Busco en Megascans la textura más parecida
+  (biblioteca gratuita de Epic, fotos reales escaneadas)
+        ↓
+Creo el material en Unreal:
+  textura + rugosidad + color + brillo ajustados
+        ↓
+Aplico Lumen:
+  iluminación global automática, luz mediterránea real
+  (latitud Marbella 36.5°N + hora del día)
+        ↓
+Captura in-game → comparo con la foto → corrijo
+        ↓
+Repito hasta que coincida
+```
+
+**Tecnologías de UE5 que se usan en este pipeline:**
+- **Nanite** — detalle máximo en edificios sin coste de rendimiento
+- **Lumen** — luz global en tiempo real, rebotes, sombras suaves
+- **Megascans** — texturas fotorrealistas gratis (paredes encaladas, azulejos, asfalto…)
+- **Sky Atmosphere** — cielo mediterráneo con la neblina y el azul de la Costa del Sol
+- **Sun Position Plugin** — sol en la posición exacta de Marbella según hora y fecha
+- **Water Plugin** — agua con olas y reflejos (ya instalado)
+- **Foliage System** — palmeras y vegetación con viento
+- **World Partition** — carga solo lo cercano al jugador (esencial para mapa grande)
+
+### Tecnologías de UE5 por categoría
+
+**Edificios (aspecto visual)**
+- **Nanite** — permite millones de polígonos sin que el juego vaya lento. Los edificios tienen todo el detalle que quieras sin sacrificar rendimiento.
+- **Materiales de Unreal** — sistema muy potente: rugosidad real en las paredes, reflejo del sol, humedad si llueve. Todo físicamente correcto.
+- **Megascans** (biblioteca gratuita de Epic) — miles de texturas fotorrealistas escaneadas del mundo real: paredes encaladas, azulejos, asfalto, madera, mármol. Primera fuente para texturas de Marbella.
+
+**Luz y cielo**
+- **Lumen** — iluminación global en tiempo real. La luz del sol rebota en los edificios, entra por las ventanas, crea sombras suaves. Es lo que hace que UE5 se vea cinematográfico.
+- **Sky Atmosphere + Volumetric Clouds** — cielo mediterráneo real con la neblina y el azul típico de la Costa del Sol.
+- **Sun Position Plugin** — se introduce la latitud de Marbella (36.5°N) y la hora del día, y el sol queda exactamente donde estaría en la realidad.
+
+**Agua**
+- **Water Plugin** (ya instalado) — agua con olas, reflejos, interacción con barcos o el jugador.
+
+**Vegetación**
+- **Foliage System** — palmeras, pinos, plantas con movimiento de viento. UE5 incluye palmeras en su biblioteca base.
+
+**Rendimiento**
+- **World Partition** — divide el mundo en trozos, solo carga lo que está cerca del jugador. Esencial para un mapa del tamaño de Marbella.
+- **Level of Detail (LOD) automático** — los edificios lejanos se simplifican solos para que vaya fluido sin perder calidad de cerca.
+
 ### Convenciones del proyecto (respétalas)
 - **Español de España, sencillo.** Explica como a alguien no técnico.
 - Aspecto visual de Marbella: **fuente oficial = Google Maps** (satélite + Street

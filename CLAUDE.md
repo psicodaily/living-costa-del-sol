@@ -5,16 +5,36 @@
 - El usuario no es programador experto: explicar las cosas de forma clara y sencilla, sin tecnicismos innecesarios.
 
 ## Sobre el proyecto
-- Videojuego de mundo abierto estilo GTA ambientado en **Marbella, España**.
+- Videojuego de mundo abierto estilo GTA ambientado en **Marbella, España** (zona **Puerto Banús** primero).
 - Plataforma: **solo PC (ordenador)**.
-- Tecnología elegida: **Three.js + Vite + JavaScript** (se ejecuta en el navegador, iteración instantánea). Más adelante se podrá empaquetar como `.exe` con Tauri.
-- Prioridad del usuario: **VER el juego cuanto antes** y mejorarlo poco a poco, versión a versión (v1.0 → v2 → v3 → v4).
-- Filosofía: empezar simple (formas básicas), lanzar algo jugable, e ir mejorando continuamente.
+- Objetivo: producto **fotorrealista y vendible**, lo más parecido a la realidad (Google Maps).
+- **Tecnología ACTUAL: Unreal Engine 5.7** (motor nativo, fotorrealista). Se trabaja en una
+  máquina en la nube (**Shadow**) con un **Claude Code dentro de Shadow** que automatiza Unreal
+  (escribe scripts, los ejecuta en el editor, hace capturas, comprueba y corrige).
+- **Historia (importante para no confundirse):** el proyecto empezó como **prototipo en Three.js**
+  (navegador), congelado en **v2.17** (carpetas `versions/`, `src/`, `index.html`). Sirvió para
+  validar la idea. Para llegar al **fotorrealismo y a un producto vendible** se **migró a
+  Unreal Engine 5**. El código Three.js se conserva solo como referencia histórica; **el
+  desarrollo activo es Unreal** (carpeta `ue5/` + datos en `tools/` y `public/marbella.json`).
+- Prioridad del usuario: **VER el juego cuanto antes** y mejorarlo versión a versión.
+- Filosofía: empezar simple (bloques grises), **todo a la par**, e ir dando realismo por capas.
+
+## Quién es el usuario y cómo trabajar con él
+- **No es programador.** Claude hace TODO: escribe el código, lo ejecuta, lo comprueba con
+  capturas y lo corrige. El usuario solo ejecuta acciones puntuales muy guiadas (abrir un
+  programa, pegar un comando) y da imágenes de referencia.
+- Se frustra con las idas y venidas (pegar capturas, copiar y pegar). **Minimizar su trabajo
+  manual.** El ideal es el bucle autónomo dentro de Shadow.
+- Explicar **claro y sencillo**, sin tecnicismos. Confirmar el "porqué" cuando se decide algo.
 
 ## Forma de trabajar
-- Avanzar por versiones incrementales que el usuario pueda ejecutar y ver.
+- Avanzar por **versiones incrementales** que el usuario pueda ejecutar y ver.
+- **Todo avanza a la par por capas** (NO perfeccionar un edificio mientras el resto es gris):
+  V1 bloques grises → V2 color base → V3 vegetación/mobiliario → V4 texturas+luz → V5 detalles.
 - Mantener archivos pequeños y enfocados.
-- Documento de visión y hoja de ruta en `docs/GAME_VISION.md`.
+- **Contexto operativo de Unreal/Shadow** (el más importante para trabajar): `docs/CLAUDE_EN_SHADOW.md`
+  — el bucle autónomo, coordenadas, estado actual y próximos pasos.
+- Documento de visión y hoja de ruta: `docs/GAME_VISION.md`.
 
 ## Aspecto visual de Marbella — FUENTE OFICIAL: Google Maps
 - **REGLA:** para TODO el aspecto visual de Marbella (edificios, aceras, calles,

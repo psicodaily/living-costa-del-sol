@@ -24,7 +24,49 @@ PROBAR desde el primer día**, mejorando de forma continua.
 
 ---
 
-## 🛠️ Tecnología elegida
+## ⚙️ ACTUALIZACIÓN 2026 — Migración a Unreal Engine 5
+
+> **LO MÁS IMPORTANTE DE ESTE DOCUMENTO.** La tecnología cambió. Todo lo que viene
+> después de esta sección (tabla Three.js, hoja de ruta v1–v4, estado v2.17) es
+> **historia del prototipo** y se conserva solo como referencia.
+
+**Qué pasó:** el proyecto empezó como prototipo en **Three.js** (navegador) para validar la
+idea rápido. Se congeló en **v2.17**. Three.js no llega al **fotorrealismo** ni a un
+**producto vendible**, así que se **migró a Unreal Engine 5.7** (el mismo tipo de motor que
+GTA o los juegos AAA modernos).
+
+### Tecnología actual
+
+| Pieza | Herramienta | Por qué |
+|-------|-------------|---------|
+| Motor | **Unreal Engine 5.7** | Fotorrealismo real (Nanite + Lumen), producto vendible. |
+| Máquina | **Shadow** (PC en la nube) | Potencia para Unreal sin comprar un ordenador caro. |
+| Construir el mundo | **Python** (en el editor) | Coloca edificios, calles, materiales automáticamente. |
+| Lógica del juego | **C++** | Coche, personaje, NPCs, IA. Lo escribe Claude como texto. |
+| Automatización | **Claude Code dentro de Shadow** | Escribe, ejecuta, captura, comprueba y corrige solo. |
+
+**Cómo se trabaja:** el usuario abre Shadow + Unreal + Claude Code. A partir de ahí, Claude
+trabaja en bucle autónomo (ver `docs/CLAUDE_EN_SHADOW.md`).
+
+### Hoja de ruta actual (Unreal) — todo avanza A LA PAR por capas
+
+> Regla de oro: **nunca** perfeccionar una zona mientras el resto sigue gris.
+
+- **V1 — Blockout gris:** todos los edificios y calles como bloques grises a escala real.
+  *(Puerto Banús ya hecho: 109 edificios.)*
+- **V2 — Color base:** blanco/beige/terracota en edificios, asfalto, aceras, agua azul.
+- **V3 — Vegetación y mobiliario:** palmeras, farolas, bancos, papeleras, toldos, señales.
+- **V4 — Texturas y luz:** Megascans fotorrealistas + Lumen + cielo mediterráneo calibrado.
+- **V5 — Detalles y vida:** coches, barcos, terrazas, iluminación nocturna, polish fino.
+
+Y en paralelo, lo jugable: **agua de la dársena** (en curso) → **coche conducible** → **NPCs**.
+
+---
+
+## 🛠️ Tecnología del prototipo (HISTÓRICO — Three.js)
+
+> ⚠️ Esto es del prototipo congelado en v2.17. **Ya no es la tecnología activa.**
+> Se conserva como referencia de lo aprendido.
 
 | Pieza | Herramienta | Por qué |
 |-------|-------------|---------|
@@ -33,13 +75,11 @@ PROBAR desde el primer día**, mejorando de forma continua.
 | Lenguaje | **JavaScript** | Directo, rápido de iterar. |
 | Empaquetado de escritorio (futuro) | **Tauri** | Convertir el juego en un `.exe` ligero para Windows (v4). |
 
-**Cómo se ejecuta:** un solo comando (`npm run dev`) abre el juego en el navegador.
-Cada cambio que se hace se ve automáticamente.
+**Cómo se ejecutaba:** un solo comando (`npm run dev`) abría el juego en el navegador.
 
 > **Nota sobre la ambición AAA:** un GTA real lo hacen cientos de personas durante años.
 > Aquí construimos un juego de mundo abierto *de verdad* pero a una escala realista,
-> priorizando que sea jugable y mejore constantemente. Three.js permite llegar
-> sorprendentemente lejos (mundo 3D, coches, NPCs, físicas, día/noche).
+> priorizando que sea jugable y mejore constantemente.
 
 ---
 
