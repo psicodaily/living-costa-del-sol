@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Puerto Banús — 3D real (Cesium + Google)</title>
+  <!-- CesiumJS desde CDN (no hace falta instalar nada) -->
+  <script>
+    window.CESIUM_BASE_URL = "https://cdn.jsdelivr.net/npm/cesium@1.122/Build/Cesium/";
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/cesium@1.122/Build/Cesium/Cesium.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/cesium@1.122/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
+  <style>
+    html, body, #cesiumContainer { margin: 0; width: 100%; height: 100%; overflow: hidden; font-family: system-ui, sans-serif; }
+    #hint {
+      position: absolute; left: 12px; top: 12px; z-index: 10;
+      background: rgba(0,0,0,.6); color: #fff; padding: 10px 14px; border-radius: 8px;
+      font-size: 13px; line-height: 1.4; max-width: 320px;
+    }
+    #hint b { color: #ffd27a; }
+    #err {
+      position: absolute; left: 50%; top: 40%; transform: translateX(-50%); z-index: 20;
+      background: #b00020; color: #fff; padding: 16px 20px; border-radius: 10px;
+      font-size: 14px; max-width: 480px; display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <div id="hint">
+    🌅 <b>Puerto Banús en 3D real</b><br/>
+    • Arrastra para mirar · rueda para acercar<br/>
+    • Clic derecho + arrastrar para inclinar<br/>
+    <span style="opacity:.8">Datos: Google Photorealistic 3D Tiles (vía Cesium ion)</span>
+  </div>
+  <div id="err"></div>
+
+  <script>
+    // ====== TOKEN GRATIS de Cesium ion ======
+    // Saca el tuyo en https://cesium.com/ion (gratis) y pégalo entre las comillas,
+    // o déjalo así y te lo pedirá al abrir.
+    let TOKEN = "PEGA_AQUI_TU_TOKEN";
+    if (!TOKEN || TOKEN === "PEGA_AQUI_TU_TOKEN") {
+      TOKEN = window.prompt(
+        "Pega tu token GRATIS de Cesium ion\n(lo sacas en cesium.com/ion → Access Tokens):"
+      ) || "";
+    }
+
+    function showErr(msg) {
+      const e = document.getElementById("err");
+      e.style.display = "block";
+      e.innerHTML = msg;
+    }
+
+    async function start() {
+      if (!TOKEN) {
+        showErr("Necesitas un <b>token gratis de Cesium ion</b> (cesium.com/ion). Recarga la página y pégalo.");
+        return;
+      }
+      Cesium.Ion.defaultAccessToken = TOKEN;
+
+      const viewer = new Cesium.Viewer("cesiumContainer", {
+        timeline: false, animation: false, baseLayerPicker: false,
+        geocoder: false, homeButton: false, sceneModePicker: false,
+        navigationHelpButton: false, infoBox: false, selectionIndicator: false,
+      });
+      viewer.scene.globe.show = false; // el 3D de Google ya trae todo
+
+      try {
+        // Asset 2275207 = Google Photorealistic 3D Tiles en Cesium ion
+        const tileset = await Cesium.Cesium3DTileset.fromIonAssetId(2275207);
+        viewer.scene.primitives.add(tileset);
+      } catch (e) {
+        showErr("No se pudo cargar el 3D de Google.<br/>Asegúrate de haber <b>añadido 'Google Photorealistic 3D Tiles'</b> en tu cuenta de Cesium ion (Asset Depot) y de que el token es correcto.<br/><br/>Detalle: " + e);
+        return;
+      }
+
+      // Cámara sobre la dársena de Puerto Banús
+      viewer.scene.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(-4.9510, 36.4820, 550),
+        orientation: {
+          heading: Cesium.Math.toRadians(315),
+          pitch: Cesium.Math.toRadians(-28),
+          roll: 0.0,
+        },
+        duration: 0,
+      });
+    }
+
+    start();
+  </script>
+</body>
+</html>
