@@ -23,6 +23,7 @@ export function buildQuery(bbox = BBOX) {
   nwr["leisure"="marina"](${b});
   nwr["landuse"~"^(grass|residential|commercial|forest)$"](${b});
   way["highway"="pedestrian"]["area"="yes"](${b});
+  nwr["amenity"~"^(hospital|townhall|police|fire_station|pharmacy|fuel|bank|place_of_worship|marketplace)$"](${b});
 );
 out geom;`;
 }

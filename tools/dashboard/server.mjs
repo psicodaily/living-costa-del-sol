@@ -36,9 +36,12 @@ async function readState() {
       note: data.note || null,
       tasks: Array.isArray(data.tasks) ? data.tasks : [],
       roadmap: Array.isArray(data.roadmap) ? data.roadmap : [],
+      ideas: Array.isArray(data.ideas) ? data.ideas : [],
+      ideasNote: data.ideasNote || null,
+      checklist: data.checklist || null,
     };
   } catch {
-    return { version: null, note: null, tasks: [], roadmap: [] };
+    return { version: null, note: null, tasks: [], roadmap: [], ideas: [], ideasNote: null, checklist: null };
   }
 }
 
@@ -192,6 +195,9 @@ const server = http.createServer(async (req, res) => {
         note: state.note,
         tasks: state.tasks,
         roadmap: state.roadmap,
+        ideas: state.ideas,
+        ideasNote: state.ideasNote,
+        checklist: state.checklist,
         workflows,
         game: { up: gameUp, url: `http://localhost:${GAME_PORT}` },
       })
@@ -201,6 +207,16 @@ const server = http.createServer(async (req, res) => {
 
   if (url.pathname === "/" || url.pathname === "/index.html") {
     await serveFile(res, path.join(PUBLIC_DIR, "index.html"), "text/html; charset=utf-8");
+    return;
+  }
+
+  if (url.pathname === "/ideas" || url.pathname === "/ideas.html") {
+    await serveFile(res, path.join(PUBLIC_DIR, "ideas.html"), "text/html; charset=utf-8");
+    return;
+  }
+
+  if (url.pathname === "/plan" || url.pathname === "/plan.html") {
+    await serveFile(res, path.join(PUBLIC_DIR, "plan.html"), "text/html; charset=utf-8");
     return;
   }
 

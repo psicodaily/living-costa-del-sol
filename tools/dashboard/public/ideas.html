@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Banco de ideas — GTA Marbella</title>
+    <style>
+      :root {
+        /* Tema claro · Marbella (arena cálida + mar + sol) */
+        --bg: #f4f1ea;
+        --bg-soft: #efe9df;
+        --surface: #ffffff;
+        --surface-2: #faf7f1;
+        --line: #e6dfd2;
+        --line-strong: #d7cebd;
+        --text: #232a32;
+        --muted: #6a7480;
+        --faint: #9aa2ad;
+        --accent: #0e9c82;     /* mar */
+        --accent-ink: #0a5d4e;
+        --accent-2: #d3870a;   /* sol */
+        --accent-2-ink: #8a5600;
+        --blue: #2f7fd1;
+        --radius: 14px;
+        --shadow-sm: 0 1px 2px rgba(40, 50, 60, 0.05);
+        --shadow: 0 8px 24px rgba(60, 70, 80, 0.07), 0 1px 3px rgba(60, 70, 80, 0.05);
+        --mono: "SF Mono", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+        --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: var(--sans);
+        color: var(--text);
+        background:
+          radial-gradient(900px 480px at 88% -8%, rgba(211, 135, 10, 0.10), transparent 60%),
+          radial-gradient(720px 420px at -5% 0%, rgba(14, 156, 130, 0.09), transparent 58%),
+          var(--bg);
+        background-attachment: fixed;
+      }
+
+      .wrap { max-width: 1060px; margin: 0 auto; padding: 34px 24px 90px; }
+
+      header.top {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 16px; flex-wrap: wrap; margin-bottom: 22px;
+      }
+      .brand { display: flex; align-items: center; gap: 14px; }
+      .brand .mark {
+        width: 44px; height: 44px; border-radius: 12px;
+        background: linear-gradient(135deg, var(--accent-2), #b06d00);
+        display: grid; place-items: center; font-size: 22px;
+        box-shadow: 0 8px 22px rgba(211, 135, 10, 0.28);
+      }
+      h1 { font-size: 21px; margin: 0; letter-spacing: -0.02em; font-weight: 680; }
+      .brand .sub { color: var(--muted); font-size: 12.5px; margin-top: 3px; }
+
+      .back {
+        text-decoration: none; color: var(--accent-ink); font-weight: 650; font-size: 13px;
+        background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+        padding: 9px 15px; border-radius: 999px; white-space: nowrap;
+        transition: transform 120ms ease, box-shadow 120ms ease;
+      }
+      .back:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+
+      .intro {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 16px 20px; box-shadow: var(--shadow); margin-bottom: 8px;
+        display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+      }
+      .intro .lead { color: var(--muted); font-size: 13px; line-height: 1.5; flex: 1; min-width: 240px; }
+      .intro .count-pill {
+        font-family: var(--mono); font-size: 12.5px; color: var(--accent-2-ink); font-weight: 700;
+        background: rgba(211, 135, 10, 0.12); border: 1px solid rgba(211, 135, 10, 0.3);
+        padding: 7px 13px; border-radius: 999px; white-space: nowrap;
+      }
+
+      .legend { font-size: 12px; color: var(--faint); margin: 10px 4px 0; line-height: 1.5; }
+      .section-label {
+        font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.12em;
+        color: var(--faint); font-weight: 700; margin: 28px 4px 12px;
+        display: flex; align-items: center; gap: 8px;
+      }
+      .section-label .n { color: var(--accent-2-ink); font-family: var(--mono); letter-spacing: 0; }
+
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+
+      .idea {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 15px 17px; position: relative; overflow: hidden; box-shadow: var(--shadow);
+        transition: transform 140ms ease, box-shadow 140ms ease;
+      }
+      .idea::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent-2); opacity: 0.55; }
+      .idea:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(60, 70, 80, 0.1); }
+      .idea-head { display: flex; align-items: flex-start; gap: 11px; }
+      .idea-ico {
+        width: 38px; height: 38px; border-radius: 11px; flex: none;
+        display: grid; place-items: center; font-size: 19px;
+        background: var(--surface-2); border: 1px solid var(--line);
+      }
+      .idea-title { font-weight: 650; font-size: 14.5px; line-height: 1.3; }
+      .idea-cat {
+        font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+        color: var(--accent-ink); margin-top: 3px;
+      }
+      .idea-headmain { min-width: 0; flex: 1; }
+      .idea-headright { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex: none; }
+      .vis { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); white-space: nowrap; }
+      .vdots { display: inline-flex; gap: 3px; }
+      .vd { width: 7px; height: 7px; border-radius: 50%; background: var(--line-strong); }
+      .vd.on { background: var(--accent-2); }
+      .badge {
+        margin-left: auto; flex: none;
+        font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+        padding: 4px 9px; border-radius: 999px; white-space: nowrap;
+        background: var(--surface-2); color: var(--muted); border: 1px solid var(--line);
+      }
+      .idea-detail { color: var(--muted); font-size: 13px; line-height: 1.5; margin-top: 10px; }
+
+      /* Ideas grandes (con objetivo, lista, ejemplos y sensación) */
+      .grid.one { grid-template-columns: 1fr; }
+      .grid > .idea.rich { grid-column: 1 / -1; }
+      .idea.rich::before { width: 5px; opacity: 1; background: linear-gradient(180deg, var(--accent-2), var(--accent)); }
+      .obj {
+        margin-top: 11px; font-size: 13px; line-height: 1.5; color: var(--text);
+        background: var(--surface-2); border: 1px solid var(--line);
+        border-radius: 10px; padding: 9px 12px;
+      }
+      .obj b { color: var(--accent-ink); }
+      .central {
+        margin-top: 11px; font-size: 13.5px; line-height: 1.55; color: var(--text);
+        background: linear-gradient(180deg, rgba(14, 156, 130, 0.12), rgba(14, 156, 130, 0.04));
+        border: 1px solid rgba(14, 156, 130, 0.32); border-radius: 10px; padding: 11px 13px;
+      }
+      .central-tag {
+        display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.06em; color: #fff; background: var(--accent);
+        padding: 2px 8px; border-radius: 999px; margin-right: 8px; vertical-align: middle;
+      }
+      .mini-label {
+        font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+        color: var(--faint); font-weight: 700; margin: 14px 0 7px;
+      }
+      ul.bullets { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 18px; }
+      @media (max-width: 560px) { ul.bullets { columns: 1; } }
+      ul.bullets li {
+        font-size: 12.5px; color: var(--muted); line-height: 1.45; padding: 3px 0 3px 16px;
+        position: relative; break-inside: avoid;
+      }
+      ul.bullets li::before { content: "•"; position: absolute; left: 2px; color: var(--accent-2); font-weight: 700; }
+      .examples { margin-top: 12px; display: flex; flex-direction: column; gap: 5px; }
+      .examples .ex {
+        font-size: 12.5px; color: var(--text); font-family: var(--mono);
+        background: rgba(47, 127, 209, 0.08); border: 1px solid rgba(47, 127, 209, 0.2);
+        border-radius: 8px; padding: 6px 10px;
+      }
+      .flow {
+        margin-top: 12px; font-size: 12.5px; color: var(--accent-2-ink); font-weight: 600;
+        background: rgba(211, 135, 10, 0.08); border: 1px solid rgba(211, 135, 10, 0.22);
+        border-radius: 8px; padding: 8px 11px; line-height: 1.5;
+      }
+      .feeling {
+        margin-top: 12px; font-size: 13px; font-style: italic; color: var(--accent-ink); line-height: 1.5;
+        border-left: 3px solid var(--accent); padding: 4px 0 4px 12px;
+      }
+
+      /* Plegado de ideas grandes */
+      .idea-fold { margin-top: 12px; }
+      .idea-fold > summary {
+        cursor: pointer; list-style: none; user-select: none;
+        display: inline-flex; align-items: center; gap: 7px;
+        font-size: 12.5px; font-weight: 650; color: var(--accent-ink);
+        background: var(--surface-2); border: 1px solid var(--line);
+        padding: 7px 13px; border-radius: 999px;
+        transition: background 120ms ease, box-shadow 120ms ease;
+      }
+      .idea-fold > summary::-webkit-details-marker { display: none; }
+      .idea-fold > summary:hover { background: rgba(14, 156, 130, 0.08); box-shadow: var(--shadow-sm); }
+      .idea-fold > summary .chev { font-size: 11px; color: var(--faint); transition: transform 180ms ease; }
+      .idea-fold[open] > summary .chev { transform: rotate(180deg); }
+      .idea-fold .t-open { display: none; }
+      .idea-fold[open] .t-closed { display: none; }
+      .idea-fold[open] .t-open { display: inline; }
+      .fold-inner { padding-top: 4px; }
+
+      /* Relaciones entre ideas */
+      .rel-wrap { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+      .rel-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--faint); margin-right: 2px; }
+      .rel {
+        text-decoration: none; font-size: 12px; color: var(--accent-ink);
+        background: rgba(14, 156, 130, 0.08); border: 1px solid rgba(14, 156, 130, 0.25);
+        padding: 4px 10px; border-radius: 999px; white-space: nowrap;
+        transition: background 120ms ease, transform 120ms ease;
+      }
+      .rel:hover { background: rgba(14, 156, 130, 0.18); transform: translateY(-1px); }
+      .idea.flash { animation: flashpulse 1.8s ease; }
+      @keyframes flashpulse {
+        0% { outline: 0 solid rgba(211, 135, 10, 0); outline-offset: 3px; }
+        18% { outline: 3px solid rgba(211, 135, 10, 0.9); outline-offset: 3px; }
+        100% { outline: 0 solid rgba(211, 135, 10, 0); outline-offset: 3px; }
+      }
+
+      /* Sistemas (desglose de una idea en varios módulos) */
+      .sys-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      @media (max-width: 640px) { .sys-grid { grid-template-columns: 1fr; } }
+      .sys {
+        border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+        background: var(--surface-2); break-inside: avoid;
+      }
+      .sys-name { font-weight: 700; font-size: 12.5px; color: var(--accent-ink); }
+      .sys-note { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
+      .sys ul.bullets { columns: 1; margin-top: 7px; }
+      .sys .examples { margin-top: 7px; }
+      .sys .ex { background: rgba(14, 156, 130, 0.07); border-color: rgba(14, 156, 130, 0.2); }
+
+      .empty { color: var(--faint); font-size: 13px; text-align: center; padding: 24px; border: 1px dashed var(--line-strong); border-radius: 12px; background: var(--surface-2); }
+      .foot { color: var(--faint); font-size: 11.5px; margin-top: 38px; text-align: center; line-height: 1.6; }
+      code { font-family: var(--mono); color: var(--accent-ink); background: rgba(14, 156, 130, 0.1); padding: 1px 6px; border-radius: 5px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <div class="brand">
+          <div class="mark">💡</div>
+          <div>
+            <h1>Banco de ideas</h1>
+            <div class="sub">GTA Marbella · ideas para el futuro</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <a class="back" href="/plan">📋 Plan de trabajo</a>
+          <a class="back" href="/">← Volver al panel</a>
+        </div>
+      </header>
+
+      <div class="intro">
+        <div class="lead" id="intro-text">
+          Cajón de ideas para el futuro, ordenadas por <b>prioridad visual</b>:
+          arriba las que más mejoran el aspecto y la sensación de estar en Marbella.
+        </div>
+        <div class="count-pill" id="count-pill">…</div>
+      </div>
+      <div class="legend">👁 = impacto visual (cuantos más puntos, más mejora el aspecto y el "sabor" a Marbella). · 🔗 = ideas relacionadas (pulsa una para saltar a ella).</div>
+
+      <div id="ideas"></div>
+
+      <div class="foot">
+        Se actualiza solo cada 3&nbsp;segundos. Las ideas se guardan en
+        <code>tools/dashboard/state.json</code> y en <code>docs/IDEAS.md</code>.
+      </div>
+    </div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      }
+
+      function isRich(it) {
+        return (Array.isArray(it.items) && it.items.length) || it.objetivo ||
+               (Array.isArray(it.systems) && it.systems.length);
+      }
+
+      function sysBlock(s) {
+        const note = s.note ? `<div class="sys-note">${escapeHtml(s.note)}</div>` : "";
+        const items = Array.isArray(s.items) && s.items.length
+          ? `<ul class="bullets">${s.items.map((x) => `<li>${escapeHtml(x)}</li>`).join("")}</ul>`
+          : "";
+        const example = Array.isArray(s.example) && s.example.length
+          ? `<div class="examples">${s.example.map((x) => `<div class="ex">${escapeHtml(x)}</div>`).join("")}</div>`
+          : "";
+        return `<div class="sys"><div class="sys-name">${escapeHtml(s.name)}</div>${note}${items}${example}</div>`;
+      }
+
+      // Mapa id → idea (para resolver relaciones). Se rellena en render().
+      let byId = {};
+
+      // Orden temático: dentro de cada nivel visual, las ideas afines van juntas.
+      const THEME_ORDER = ["marbella-visual", "mundo-vivo", "conduccion", "personaje", "camara", "onboarding", "vida-jugador", "crimen-policia", "tecnico", "audio", "lanzamiento"];
+      function themeRank(t) { const i = THEME_ORDER.indexOf(t); return i < 0 ? 999 : i; }
+
+      function relatedBlock(it) {
+        if (!Array.isArray(it.related) || !it.related.length) return "";
+        const chips = it.related
+          .map((rid) => byId[rid])
+          .filter(Boolean)
+          .map((r) => `<a class="rel" href="#idea-card-${escapeHtml(r.id)}" data-target="${escapeHtml(r.id)}">${escapeHtml(r.icon || "💡")} ${escapeHtml(r.title)}</a>`)
+          .join("");
+        if (!chips) return "";
+        return `<div class="rel-wrap"><span class="rel-label">🔗 Relacionadas</span>${chips}</div>`;
+      }
+
+      function ideaCard(it) {
+        const rich = isRich(it);
+        const rel = relatedBlock(it);
+        const cid = escapeHtml(it.id || "");
+        const obj = it.objetivo
+          ? `<div class="obj"><b>🎯 Objetivo:</b> ${escapeHtml(it.objetivo)}</div>`
+          : "";
+        const central = it.central
+          ? `<div class="central"><span class="central-tag">Idea central</span>${escapeHtml(it.central)}</div>`
+          : "";
+        const detail = it.detail ? `<div class="idea-detail">${escapeHtml(it.detail)}</div>` : "";
+        const items = Array.isArray(it.items) && it.items.length
+          ? `<div class="mini-label">Incluiría</div>
+             <ul class="bullets">${it.items.map((x) => `<li>${escapeHtml(x)}</li>`).join("")}</ul>`
+          : "";
+        const examples = Array.isArray(it.examples) && it.examples.length
+          ? `<div class="mini-label">Ejemplos</div>
+             <div class="examples">${it.examples.map((x) => `<div class="ex">${escapeHtml(x)}</div>`).join("")}</div>`
+          : "";
+        const systems = Array.isArray(it.systems) && it.systems.length
+          ? `<div class="mini-label">Sistemas (${it.systems.length})</div>
+             <div class="sys-grid">${it.systems.map(sysBlock).join("")}</div>`
+          : "";
+        const events = Array.isArray(it.events) && it.events.length
+          ? `<div class="mini-label">Eventos especiales</div>
+             <ul class="bullets">${it.events.map((x) => `<li>${escapeHtml(x)}</li>`).join("")}</ul>`
+          : "";
+        const flow = it.flow ? `<div class="flow">🔗 ${escapeHtml(it.flow)}</div>` : "";
+        const feeling = it.feeling ? `<div class="feeling">💭 «${escapeHtml(it.feeling)}»</div>` : "";
+
+        const v = it.visual || 0;
+        const dots = [1, 2, 3, 4, 5].map((n) => `<span class="vd ${n <= v ? "on" : ""}"></span>`).join("");
+        const vis = v ? `<span class="vis" title="Impacto visual ${v}/5">👁 <span class="vdots">${dots}</span></span>` : "";
+        const head = `
+            <div class="idea-head">
+              <div class="idea-ico">${escapeHtml(it.icon || "💡")}</div>
+              <div class="idea-headmain">
+                <div class="idea-title">${escapeHtml(it.title || "Idea")}</div>
+                ${it.category ? `<div class="idea-cat">${escapeHtml(it.category)}</div>` : ""}
+              </div>
+              <div class="idea-headright">${vis}<span class="badge">pendiente</span></div>
+            </div>`;
+        const body = `${detail}${items}${examples}${systems}${events}${flow}${feeling}`;
+
+        // Ideas grandes (con detalle): el cuerpo va plegado tras un botón.
+        if (rich && body.trim()) {
+          const sysCount = Array.isArray(it.systems) ? it.systems.length : 0;
+          const label = sysCount ? `Ver los ${sysCount} sistemas` : "Ver detalles";
+          return `
+            <div class="idea rich" id="idea-card-${cid}">
+              ${head}${obj}${central}${rel}
+              <details class="idea-fold" data-k="idea-${cid}">
+                <summary>
+                  <span class="t-closed">${label}</span>
+                  <span class="t-open">Ocultar detalles</span>
+                  <span class="chev">▾</span>
+                </summary>
+                <div class="fold-inner">${body}</div>
+              </details>
+            </div>`;
+        }
+        return `
+          <div class="idea ${rich ? "rich" : ""}" id="idea-card-${cid}">
+            ${head}${obj}${central}${body}${rel}
+          </div>`;
+      }
+
+      // Conserva qué ideas estaban desplegadas entre refrescos.
+      function captureOpen() {
+        const s = new Set();
+        document.querySelectorAll("details[data-k]").forEach((d) => { if (d.open) s.add(d.dataset.k); });
+        return s;
+      }
+      function restoreOpen(s) {
+        document.querySelectorAll("details[data-k]").forEach((d) => { if (s.has(d.dataset.k)) d.open = true; });
+      }
+
+      // Niveles de prioridad visual (de más a menos impacto en el aspecto).
+      function tierLabel(v) {
+        if (v >= 5) return "🌟 Máxima prioridad visual · puro Marbella";
+        if (v === 4) return "Alta prioridad visual";
+        if (v === 3) return "Prioridad visual media";
+        if (v === 2) return "Más jugabilidad que vista";
+        if (v === 1) return "Sistemas internos (poco visual)";
+        return "Sin clasificar";
+      }
+
+      function render(ideas, note) {
+        const openState = captureOpen();
+        const wrap = $("ideas");
+        if (!ideas || !ideas.length) {
+          wrap.innerHTML = `<div class="empty">Todavía no hay ideas guardadas.</div>`;
+          $("count-pill").textContent = "0 ideas";
+          return;
+        }
+        $("count-pill").textContent = ideas.length + (ideas.length === 1 ? " idea" : " ideas");
+        if (note) $("intro-text").innerHTML = escapeHtml(note);
+
+        // Mapa id → idea para resolver las relaciones entre tarjetas.
+        byId = {};
+        for (const it of ideas) byId[it.id] = it;
+
+        // Orden inteligente: 1º prioridad visual (mayor primero), 2º tema (afines
+        // juntas), 3º orden de aparición.
+        const sorted = ideas
+          .map((it, i) => ({ it, i }))
+          .sort((a, b) =>
+            (b.it.visual || 0) - (a.it.visual || 0) ||
+            themeRank(a.it.theme) - themeRank(b.it.theme) ||
+            a.i - b.i)
+          .map((x) => x.it);
+
+        // Agrupar por nivel de prioridad visual.
+        const order = [];
+        const groups = {};
+        for (const it of sorted) {
+          const lab = tierLabel(it.visual || 0);
+          if (!groups[lab]) { groups[lab] = []; order.push(lab); }
+          groups[lab].push(it);
+        }
+        wrap.innerHTML = order
+          .map((lab) => {
+            const items = groups[lab];
+            return `
+              <div class="section-label">${escapeHtml(lab)} <span class="n">(${items.length})</span></div>
+              <div class="grid">${items.map(ideaCard).join("")}</div>`;
+          })
+          .join("");
+        restoreOpen(openState);
+      }
+
+      let lastSig = "";
+      async function tick() {
+        try {
+          const r = await fetch("/api/state", { cache: "no-store" });
+          const d = await r.json();
+          const sig = JSON.stringify({ i: d.ideas, n: d.ideasNote });
+          if (sig === lastSig) return;
+          lastSig = sig;
+          render(d.ideas, d.ideasNote);
+          maybeJumpToHash();
+        } catch (e) {
+          /* sin conexión: mantenemos lo último */
+        }
+      }
+
+      // Si llegas con #idea-card-XXX (p. ej. desde el Plan), salta a esa idea y la resalta.
+      let hashJumped = false;
+      function maybeJumpToHash() {
+        if (hashJumped) return;
+        const m = (location.hash || "").match(/^#idea-card-(.+)$/);
+        if (!m) return;
+        const card = document.getElementById("idea-card-" + m[1]);
+        if (!card) return;
+        hashJumped = true;
+        const det = card.querySelector("details.idea-fold");
+        if (det) det.open = true;
+        setTimeout(() => {
+          card.scrollIntoView({ behavior: "smooth", block: "center" });
+          card.classList.remove("flash");
+          void card.offsetWidth;
+          card.classList.add("flash");
+        }, 60);
+      }
+
+      // Al pulsar una idea relacionada: salta a ella, la abre si está plegada y la resalta.
+      document.addEventListener("click", (e) => {
+        const link = e.target.closest("a.rel");
+        if (!link) return;
+        e.preventDefault();
+        const card = document.getElementById("idea-card-" + link.dataset.target);
+        if (!card) return;
+        const det = card.querySelector("details.idea-fold");
+        if (det) det.open = true;
+        card.scrollIntoView({ behavior: "smooth", block: "center" });
+        card.classList.remove("flash");
+        void card.offsetWidth; // reinicia la animación
+        card.classList.add("flash");
+      });
+
+      tick();
+      setInterval(tick, 3000);
+    </script>
+  </body>
+</html>

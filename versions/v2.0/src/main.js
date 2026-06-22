@@ -1,0 +1,276 @@
+import * as THREE from "three";
+import { createRealCity } from "./real/city.js";
+import { nearestRoadPoint } from "./real/spawn.js";
+import { createPlayer } from "./player/player.js";
+import { createControls } from "./player/controls.js";
+import { createFollowCamera } from "./player/followCamera.js";
+import { createVehicle } from "./vehicle/vehicle.js";
+import { createSky } from "./world/sky.js";
+import { createDayNight } from "./world/dayNight.js";
+import { createPostFX } from "./render/postfx.js";
+import { createObstacles } from "./physics/obstacles.js";
+import { createHud } from "./ui/hud.js";
+import { createMinimapReal } from "./ui/minimapReal.js";
+import { createPauseMenu } from "./ui/pauseMenu.js";
+import { createRadio } from "./audio/radio.js";
+import { setVolume } from "./audio/sfx.js";
+import { getState, setState } from "./state/gameState.js";
+import { saveGame, loadGame, clearGame } from "./gameplay/save.js";
+import { VERSION, VERSION_NAME } from "./version.js";
+
+// ─────────────────────────────────────────────
+//  GTA MARBELLA — v2.0 "Marbella Real"
+//  El mapa REAL de Marbella (OpenStreetMap) con mi estilo: cielo, día/noche,
+//  brillo de cine, cámara GTA, conducción y HUD. (La IA llega en v2.x.)
+// ─────────────────────────────────────────────
+
+document.title = `GTA Marbella — v${VERSION}`;
+const versionLabel = document.getElementById("version-label");
+if (versionLabel) versionLabel.textContent = `v${VERSION} — "${VERSION_NAME}"`;
+
+init();
+
+async function init() {
+  const canvas = document.getElementById("game-canvas");
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 9000);
+  camera.position.set(0, 10, 20);
+
+  // Cielo + día/noche a la escala del mapa real (mucho más grande).
+  const sky = createSky(scene, {
+    radius: 6000,
+    fogNear: 500,
+    fogFar: 4000,
+    shadowHalf: 250,
+    shadowFar: 1600,
+  });
+
+  // Mapa real de Marbella.
+  const data = await fetch("/marbella.json").then((r) => r.json());
+  const city = createRealCity(data);
+  scene.add(city.group);
+
+  // Colisiones: cajas de edificios (encogidas, las calles reales son estrechas).
+  const SHRINK = 0.62;
+  const obstacles = createObstacles(
+    city.cityBoxes.map((b) => ({ x: b.x, z: b.z, width: b.width * SHRINK, depth: b.depth * SHRINK }))
+  );
+
+  const dayNight = createDayNight({ sky, renderer, scene, showDiscs: false });
+  const postfx = createPostFX(renderer, scene, camera);
+
+  // Punto de aparición: vértice de calle más cercano al centro y despejado.
+  const cx0 = (city.bounds.minX + city.bounds.maxX) / 2;
+  const cz0 = (city.bounds.minZ + city.bounds.maxZ) / 2;
+  const [spx, spz] = findSpawn(data, obstacles, cx0, cz0);
+
+  // Jugador.
+  const player = createPlayer(scene);
+  player.group.position.set(spx, 0, spz);
+
+  // Coche aparcado al lado, en un punto despejado.
+  const car = createVehicle(scene, { x: spx + 6, z: spz, color: 0xd11f2a, kind: "car", maxSpeed: 44, accel: 26, turn: 1.8 });
+  for (let i = 0; i < 12; i++) obstacles.resolve(car.group.position, car.getRadius());
+
+  const { keys, onPress } = createControls();
+  const followCamera = createFollowCamera(camera, canvas);
+  let vehicle = null;
+  let mode = "foot";
+
+  // HUD y sistemas de mi estilo.
+  const hud = createHud();
+  const minimap = createMinimapReal(data.roads);
+  const radio = createRadio();
+  const fps = makeFps(renderer);
+  const clockEl = makeBadge("top:64px;right:16px;font-size:20px;font-weight:800;color:#ffd24a;");
+  const speedoEl = makeBadge("bottom:24px;right:24px;font-size:26px;font-weight:800;color:#ffd24a;");
+  speedoEl.style.opacity = "0";
+  const radioEl = makeBadge("top:104px;left:16px;font-size:14px;font-weight:700;color:#ffd24a;");
+  radioEl.style.opacity = "0";
+  let radioTimer = 0;
+  let minimapT = 0;
+  let autosaveT = 0;
+
+  const pause = createPauseMenu({
+    onSensitivity: (m) => followCamera.setSensitivity(m),
+    onVolume: (v) => setVolume(v),
+    onTime: (h) => dayNight.setTime(h),
+    onEffects: (on) => postfx.setEnabled(on),
+    onToggle: () => followCamera.setActive(!pause.isPaused()),
+    onSave: () => doSave(),
+    onRestart: () => {
+      clearGame();
+      location.reload();
+    },
+  });
+
+  onPress("KeyE", () => {
+    if (mode === "drive" && vehicle) {
+      mode = "foot";
+      const h = vehicle.getHeading();
+      player.group.position.set(vehicle.group.position.x + Math.cos(h) * 2.4, 0, vehicle.group.position.z - Math.sin(h) * 2.4);
+      player.group.visible = true;
+      vehicle = null;
+      return;
+    }
+    const dx = player.group.position.x - car.group.position.x;
+    const dz = player.group.position.z - car.group.position.z;
+    if (dx * dx + dz * dz < 36) {
+      vehicle = car;
+      mode = "drive";
+      player.group.visible = false;
+    }
+  });
+
+  onPress("KeyR", () => {
+    radio.cycle();
+    radioEl.textContent = "📻 " + radio.getName();
+    radioEl.style.opacity = "1";
+    radioTimer = 3.5;
+  });
+
+  window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    postfx.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  function doSave() {
+    const s = getState();
+    saveGame({ money: s.money, health: s.health, px: player.group.position.x, pz: player.group.position.z });
+  }
+
+  // Cargar partida (posición, dinero, salud).
+  const saved = loadGame();
+  if (saved) {
+    setState({ money: saved.money ?? 2500, health: saved.health ?? 100 });
+    if (typeof saved.px === "number") player.group.position.set(saved.px, 0, saved.pz);
+  }
+
+  const clock = new THREE.Clock();
+  const _sunDir = new THREE.Vector3();
+
+  function animate() {
+    requestAnimationFrame(animate);
+    const rawDelta = clock.getDelta();
+    const delta = Math.min(rawDelta, 0.05);
+
+    if (pause.isPaused()) {
+      postfx.render();
+      return;
+    }
+
+    if (mode === "foot") {
+      player.update(delta, keys, followCamera.getYaw());
+      obstacles.resolve(player.group.position, 0.7);
+      followCamera.update(delta, player.group.position);
+      speedoEl.style.opacity = "0";
+    } else {
+      vehicle.update(delta, keys);
+      const push = obstacles.resolve(vehicle.group.position, vehicle.getRadius());
+      if (push > 0.05 && Math.abs(vehicle.getSpeed()) > 6) vehicle.applyImpact(Math.min(28, Math.abs(vehicle.getSpeed()) * 0.8));
+      followCamera.update(delta, vehicle.group.position, vehicle.getHeading() + Math.PI);
+      speedoEl.style.opacity = "1";
+      speedoEl.textContent = `${Math.round(Math.abs(vehicle.getSpeed()) * 3.6)} km/h`;
+    }
+
+    const activePos = mode === "foot" ? player.group.position : vehicle.group.position;
+
+    // Día/noche: además, sombras y cúpula del cielo siguen al jugador.
+    dayNight.update(delta);
+    _sunDir.copy(sky.sun.position);
+    sky.sun.position.set(activePos.x + _sunDir.x, _sunDir.y, activePos.z + _sunDir.z);
+    sky.sun.target.position.set(activePos.x, 0, activePos.z);
+    sky.sun.target.updateMatrixWorld();
+    sky.sky.position.set(camera.position.x, 0, camera.position.z);
+
+    hud.update(delta);
+    fps.update(rawDelta);
+    clockEl.textContent = "🕐 " + dayNight.getClock();
+
+    if (radioTimer > 0) {
+      radioTimer -= delta;
+      if (radioTimer <= 0) radioEl.style.opacity = "0";
+    }
+
+    minimapT += delta;
+    if (minimapT > 0.1) {
+      minimapT = 0;
+      const heading = mode === "foot" ? player.group.rotation.y : vehicle.getHeading();
+      const dots = mode === "foot" ? [{ x: car.group.position.x, z: car.group.position.z, color: "#ff4444", size: 3 }] : [];
+      minimap.update(activePos.x, activePos.z, heading, dots);
+    }
+
+    autosaveT += delta;
+    if (autosaveT > 15) {
+      autosaveT = 0;
+      doSave();
+    }
+
+    postfx.render();
+  }
+  animate();
+
+  const loading = document.getElementById("loading");
+  if (loading) {
+    requestAnimationFrame(() => loading.classList.add("hidden"));
+    setTimeout(() => loading.remove(), 800);
+  }
+}
+
+// Busca el vértice de calle despejado más cercano al centro de la ciudad.
+function findSpawn(data, obstacles, tx, tz) {
+  const pts = [];
+  for (const r of data.roads) for (const p of r.path || []) pts.push(p);
+  const d2 = (p) => (p[0] - tx) ** 2 + (p[1] - tz) ** 2;
+  pts.sort((a, b) => d2(a) - d2(b));
+  let checked = 0;
+  for (const [x, z] of pts) {
+    if (checked++ > 4000) break;
+    if (obstacles.resolve({ x, z }, 2.5) === 0) return [x, z];
+  }
+  return nearestRoadPoint(data.roads, tx, tz);
+}
+
+// ── Pequeños ayudantes de HUD ──
+function makeBadge(extra) {
+  const el = document.createElement("div");
+  el.style.cssText = [
+    "position:fixed", "padding:6px 14px", "background:rgba(10,20,35,0.78)",
+    "color:#fff", "font-family:Consolas, monospace",
+    "border:1px solid rgba(255,255,255,0.15)", "border-radius:10px",
+    "pointer-events:none", "user-select:none", "z-index:6", "transition:opacity 0.3s ease",
+    extra,
+  ].join(";");
+  document.body.appendChild(el);
+  return el;
+}
+
+function makeFps(renderer) {
+  const el = makeBadge("top:14px;right:16px;font-size:13px;text-align:right;");
+  let frames = 0;
+  let accum = 0;
+  return {
+    update(rawDelta) {
+      frames++;
+      accum += rawDelta;
+      if (accum >= 0.5) {
+        const f = Math.round(frames / accum);
+        el.textContent = `${f} FPS · ${renderer.info.render.calls} draws`;
+        el.style.color = f >= 50 ? "#7CFC83" : f >= 30 ? "#ffd24a" : "#ff6b6b";
+        frames = 0;
+        accum = 0;
+      }
+    },
+  };
+}

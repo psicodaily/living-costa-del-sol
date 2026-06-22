@@ -23,7 +23,8 @@ if (existsSync(target)) {
 mkdirSync(target, { recursive: true });
 
 // Archivos/carpetas que forman una copia jugable (sin node_modules ni dist).
-const items = ["src", "index.html", "vite.config.js", "package.json"];
+// "public" incluye marbella.json (el mapa real), necesario desde la v2.0.
+const items = ["src", "index.html", "vite.config.js", "package.json", "public"];
 for (const item of items) {
   const from = join(root, item);
   if (existsSync(from)) cpSync(from, join(target, item), { recursive: true });

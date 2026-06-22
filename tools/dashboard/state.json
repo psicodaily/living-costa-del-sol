@@ -1,36 +1,118 @@
 {
-  "version": "v1.6 — \"Choques de verdad\" (en desarrollo)",
-  "note": "Tablero mantenido por Claude. Se anota aquí todo lo que corre en segundo plano y el avance de versiones.",
+  "version": "GIRO: migración a Unreal Engine 5 (Three.js congelado en v2.17)",
+  "note": "Tablero mantenido por Claude. Se anota aquí todo lo que corre en segundo plano y el avance de versiones. · COORDINACIÓN 2 CHATS (22-jun): los chats NO comparten memoria; se coordinan SOLO por estos archivos. Chat A = UNREAL (editor UE5 en Vagon, máquina lista) → toca el proyecto UE5, scripts Python y docs/UNREAL_MIGRATION.md. Chat B = ESCANEO DEL MAPA → toca tools/ (gmaps, ue5_extract), ue5/*.json y docs/METODO_MAPEADO.md+NOMBRES.md. Punto de entrega entre ambos: ue5/puertobanus_blockout.json. Regla: no tocar el mismo archivo a la vez.",
   "tasks": [
     {
-      "id": "osm-research",
-      "title": "Investigación: Marbella real desde OpenStreetMap",
+      "id": "ue5-agua-darsena",
+      "title": "Hito 3: agua de la dársena (UE5)",
       "status": "en-curso",
       "kind": "workflow",
-      "detail": "Construyendo el generador de datos (Plan 1) tarea por tarea, con pruebas. Plan en docs/superpowers/plans/2026-06-21-marbella-datos-prebake.md. Al terminar habrá un visor 2D con el plano real de Marbella. Apunta a la v1.9 'Marbella reconocible'.",
-      "startedAt": "2026-06-21T14:50:00",
-      "updatedAt": "2026-06-21T15:45:00",
-      "estimate": "Construyendo ahora las 8 tareas del Plan 1 (datos). El paso 6 descarga Marbella de verdad y el 7 te deja verla en un visor 2D.",
+      "detail": "HITOS 1 y 2 LOGRADOS: el usuario anda en UE5 y Puerto Banús (109 edificios) está importado como maqueta gris (ue5/import_puertobanus.py) y se pasea por dentro. AHORA Hito 3: plugin Water activado + Water Body Lake creado en el nivel. En segundo plano corre un workflow que investiga la API Python del Water plugin (UE5.7) y escribe ue5/water_marina.py para dar al lago la forma EXACTA de la dársena (polígono real, 20 puntos). Esperando a que el usuario compile los shaders del agua para ver el azul.",
+      "startedAt": "2026-06-22T11:35:00",
+      "updatedAt": "2026-06-22T11:35:00",
       "steps": [
-        { "label": "Investigar (5 expertos en paralelo)", "done": true },
-        { "label": "Verificar las afirmaciones técnicas", "done": true },
-        { "label": "Sintetizar el informe técnico", "done": true },
-        { "label": "Escribir el documento de diseño", "done": true },
-        { "label": "Aprobar el diseño", "done": true },
-        { "label": "Escribir el plan de implementación", "done": true },
-        { "label": "Construir el generador de datos (Plan 1)", "done": false },
-        { "label": "Ver Marbella real dentro del juego (Plan 2)", "done": false }
+        { "label": "Hito 1: andar en UE5", "done": true },
+        { "label": "Hito 2: maqueta gris de Puerto Banús + andar dentro", "done": true },
+        { "label": "Hito 3: agua de la dársena (Water Body Lake con forma real)", "done": false },
+        { "label": "Hito 4: vestir edificios (color/material)", "done": false },
+        { "label": "Hito 5: luz/cielo mediterráneo", "done": false },
+        { "label": "Hito 6: coche + NPCs", "done": false }
+      ]
+    },
+    {
+      "id": "unreal-migration",
+      "title": "Migración a Unreal Engine 5 (realismo AAA)",
+      "status": "en-curso",
+      "kind": "feature",
+      "detail": "DECISIÓN del usuario: pasar a UE5 para conseguir realismo tipo GTA V. Plan completo en docs/UNREAL_MIGRATION.md. BLOQUEO actual (Fase 0): el PC del usuario es muy simple y un VPS normal sin GPU no vale; UE5 necesita gráfica potente. Opciones: A) PC en la nube tipo Shadow (~30€/mes, recomendado para empezar), B) GPU por horas (Paperspace/AWS), C) comprar PC/gráfica. Se reaprovechan los datos reales de Marbella (OSM) y todo el diseño. Realismo real posible con Cesium + Google 3D Tiles (foto-real) o plugin StreetMap (OSM). Mi papel: planificar + C++ + Python para Unreal + guiar paso a paso (no puedo manejar el editor por él). El proyecto Three.js queda congelado y jugable en versions/ (hasta v2.17).",
+      "startedAt": "2026-06-22T09:30:00",
+      "updatedAt": "2026-06-22T10:30:00",
+      "estimate": "Fase 0 RESUELTA (máquina Vagon 'Planeta' con UE5 + Epic preinstalados). EN CURSO Fase 1: crear proyecto Third Person y comprobar que el muñeco anda. Este chat lleva UNREAL; el otro lleva el escaneo del mapa.",
+      "steps": [
+        { "label": "Fase 0: decidir y preparar máquina con GPU (nube o PC)", "done": true },
+        { "label": "Fase 1: instalar UE5 + proyecto base (anda por un nivel)", "done": false },
+        { "label": "Fase 2: meter Marbella (Cesium foto-real / StreetMap OSM)", "done": false },
+        { "label": "Fase 3: personaje + coche", "done": false },
+        { "label": "Fase 4: detalle y vida (assets, agua, nubes, tráfico)", "done": false },
+        { "label": "Fase 5: jugabilidad (misiones, dinero, policía)", "done": false }
+      ]
+    },
+    {
+      "id": "puerto-banus-fiel",
+      "title": "Puerto Banús FIEL (Google Maps + modelos CC0)",
+      "status": "en-curso",
+      "kind": "feature",
+      "detail": "Puedo abrir Google Maps (satélite + Street View) con Playwright y descargar modelos CC0 (Quaternius) con mi navegador. Estrategia elegida: procedural + packs CC0 (un estilo low-poly coherente, look GTA). HECHO: v2.13 arreglos de la dársena; v2.14 distrito con edificios 'ricos' (escaparate+toldo+cornisa, alturas variadas), paseo (farolas/papeleras) y faro; v2.15 palmeras reales CC0 instanciadas + sistema de carga de modelos. Siguiente: barcos/coches/mobiliario CC0, y fachadas con más detalle (balcones, terrazas), aparcamiento, aceras y carretera con textura.",
+      "startedAt": "2026-06-22T07:30:00",
+      "updatedAt": "2026-06-22T08:40:00",
+      "estimate": "v2.13–v2.15 hechas. v2.16+: más modelos CC0 (barcos/coches) + fachadas/aparcamiento/aceras.",
+      "steps": [
+        { "label": "Capturar Google Maps + descargar modelos CC0 (pipeline)", "done": true },
+        { "label": "v2.13 arreglos dársena", "done": true },
+        { "label": "v2.14 distrito (edificios ricos, faro, mobiliario)", "done": true },
+        { "label": "v2.15 palmeras reales CC0 instanciadas", "done": true },
+        { "label": "v2.16+ barcos/coches CC0 + fachadas + aparcamiento + aceras", "done": false }
+      ]
+    },
+    {
+      "id": "mundo-3d-v210",
+      "title": "v2.10–v2.12: mundo 3D, zonas y Puerto Banús con yates",
+      "status": "terminado",
+      "kind": "feature",
+      "detail": "HECHO y congelado (versions/v2.10, v2.11, v2.12). v2.10: arreglado el 'todo marrón' + MAR + líneas de carril + spawn en Puerto Banús con coches. v2.11: ZONAS en el mapa. v2.12: Puerto Banús con yates + más tráfico/peatones.",
+      "startedAt": "2026-06-21T18:45:00",
+      "updatedAt": "2026-06-22T07:20:00",
+      "estimate": "Terminadas.",
+      "steps": [
+        { "label": "v2.10 render + spawn PB", "done": true },
+        { "label": "v2.11 zonas en el mapa", "done": true },
+        { "label": "v2.12 yates + más vida", "done": true },
+        { "label": "v2.13 arreglos de la dársena", "done": true }
+      ]
+    },
+    {
+      "id": "mapa-v29-research",
+      "title": "v2.9 mapa: relieve, leyenda, nombres sobre calles y rutas",
+      "status": "terminado",
+      "kind": "workflow",
+      "detail": "HECHO y congelado en versions/v2.9. El mapa tiene relieve (sombreado de cuestas), leyenda/índice de iconos con filtro, nombres de calle girados SOBRE cada carretera (ajustados al tramo) y rutas tipo GPS (clic en el mapa → camino por las calles, dibujado en el mapa grande y en el radar). Grafo de enrutado nuevo que une rotondas y parte los cruces: cubre el 98,7% de la ciudad.",
+      "startedAt": "2026-06-21T18:00:00",
+      "updatedAt": "2026-06-21T18:40:00",
+      "estimate": "v2.9 terminada.",
+      "steps": [
+        { "label": "Investigar los 6 planos (workflow)", "done": true },
+        { "label": "Implementar v2.9 (relieve, leyenda, nombres, ruta)", "done": true },
+        { "label": "v2.10: mar/calles/aceras + spawn Puerto Banús", "done": true },
+        { "label": "v2.11: zonas, pasos de peatones, vida + yates", "done": false }
+      ]
+    },
+    {
+      "id": "osm-research",
+      "title": "Geometría base de la Marbella real (OSM como apoyo)",
+      "status": "en-curso",
+      "kind": "workflow",
+      "detail": "PLANES 1, 2 y 3 COMPLETOS. Ya puedes ANDAR y CONDUCIR por la Marbella real en http://localhost:5173/juego-real.html (4807 edificios, calles, rotondas, colisiones, coche). Visor 2D: /debug-map.html · Visor 3D: /real.html. 22 pruebas en verde. Hecho en archivos propios para no chocar con el otro chat. Último paso (futuro): fusionarlo en el juego principal (main.js) cuando el otro chat se estabilice. NOTA: OSM aporta solo la GEOMETRÍA base (calles, formas) como apoyo; el ASPECTO VISUAL (edificios, aceras, colores, locales) se hará copiando Google Maps (satélite + Street View).",
+      "startedAt": "2026-06-21T14:50:00",
+      "updatedAt": "2026-06-21T16:55:00",
+      "estimate": "¡Jugable! Andar y conducir por Marbella en /juego-real.html. Pendiente solo fusionarlo en el juego principal (cuando el otro chat estabilice main.js), idealmente tras pasar al VPS.",
+      "steps": [
+        { "label": "Investigar y verificar", "done": true },
+        { "label": "Documento de diseño", "done": true },
+        { "label": "Generador de datos OSM (Plan 1)", "done": true },
+        { "label": "Visor 3D de Marbella (Plan 2)", "done": true },
+        { "label": "Andar y conducir por Marbella (Plan 3)", "done": true },
+        { "label": "Fusionar en el juego principal (futuro)", "done": false }
       ]
     },
     {
       "id": "vps-migration",
       "title": "Mover el proyecto al VPS de Contabo",
-      "status": "en-curso",
+      "status": "pausado",
       "kind": "infra",
-      "detail": "Llevar el desarrollo y los trabajos de IA al VPS (Ubuntu, IP 13.140.171.122) para aligerar tu PC. El juego se seguirá viendo en tu navegador (se dibuja en tu PC). Copia en el escritorio sincronizada con Git.",
+      "detail": "EN PAUSA a petición tuya (se retoma cuando tú lo digas). Llevar el desarrollo y los trabajos de IA al VPS (Ubuntu, IP 13.140.171.122) para aligerar tu PC. La llave SSH ya está creada; falta autorizarla y preparar el servidor.",
       "startedAt": "2026-06-21T15:30:00",
-      "updatedAt": "2026-06-21T15:35:00",
-      "estimate": "Esperando a que autorices la llave SSH en el servidor (un comando que ejecutas tú con tu contraseña). En cuanto veas 'LLAVE_INSTALADA', sigo yo solo con la instalación.",
+      "updatedAt": "2026-06-21T16:08:00",
+      "estimate": "En pausa hasta que tú digas. Para retomar: autorizar la llave SSH en el servidor.",
       "steps": [
         { "label": "Comprobar acceso al VPS (SSH abierto)", "done": true },
         { "label": "Crear y autorizar la llave SSH", "done": false },
@@ -60,11 +142,2859 @@
     { "version": "v1.6", "title": "Choques de verdad", "status": "current", "summary": "Ya no atraviesas edificios; el coche se abolla y daña al chocar, con sacudida de cámara." },
     { "version": "v1.7", "title": "Más coches y motos", "status": "next", "summary": "Varios vehículos (deportivo, furgoneta, todoterreno) y scooters/motos." },
     { "version": "v1.8", "title": "Día y noche + ambiente de cine", "status": "next", "summary": "Ciclo día/noche, farolas y faros, efectos visuales cinematográficos." },
-    { "version": "v1.9", "title": "Marbella reconocible", "status": "next", "summary": "Paseo marítimo, Puerto Banús con yates y barrios distintos. (Aquí encaja 'Marbella real' desde OSM.)" },
+    { "version": "v1.9", "title": "Marbella reconocible", "status": "next", "summary": "Paseo marítimo, Puerto Banús con yates y barrios distintos. (Aquí encaja la Marbella real copiada de Google Maps.)" },
     { "version": "v1.10", "title": "Gente viva", "status": "next", "summary": "Peatones por las aceras que reaccionan a ti y no se amontonan." },
     { "version": "v1.11", "title": "Tráfico", "status": "next", "summary": "Coches de la IA circulando, con semáforos y frenadas." },
     { "version": "v1.12", "title": "Policía y nivel de búsqueda", "status": "next", "summary": "Policías que patrullan y te detectan; estrellas de búsqueda." },
     { "version": "v1.13", "title": "Alma: sonido, misiones y guardado", "status": "next", "summary": "Radio y sonido ambiente, misiones con diálogos, tiendas y guardar partida." },
     { "version": "v2.0", "title": "Salto mayor", "status": "next", "summary": "Reconstrucción de base: física real, mundo mayor o terreno con relieve. Los 3 pilares conviviendo." }
-  ]
+  ],
+  "ideasNote": "Banco de ideas inteligente: ordenadas por PRIORIDAD VISUAL (👁 1–5) y, dentro de cada nivel, agrupadas por tema. Cada idea enlaza con sus ideas relacionadas (pulsa una para saltar). Sin número de versión fijo; todas en estado 'pendiente'. Detalle completo en docs/IDEAS.md.",
+  "ideas": [
+    {
+      "id": "interiores",
+      "title": "Interiores básicos",
+      "category": "Mundo",
+      "icon": "🚪",
+      "visual": 4,
+      "theme": "mundo-vivo",
+      "related": ["apartamentos", "detalles-espanoles", "inicio-juego", "objetos-mundo"],
+      "objetivo": "Poder entrar en algunos edificios sin pantallas de carga largas, dando variedad y vida al mundo.",
+      "central": "Pasar de fuera a dentro de forma fluida, sin cortes.",
+      "systems": [
+        {
+          "name": "1 · Tipos de interior",
+          "items": ["portal de vivienda", "tienda pequeña", "garaje", "cafetería o bar", "recepción/oficina"]
+        },
+        {
+          "name": "2 · Entrada sin cortes",
+          "note": "Sin pantalla de carga larga.",
+          "items": ["puerta que se abre", "transición de luz fuera → dentro", "carga rápida del interior"]
+        },
+        {
+          "name": "3 · Interiores con vida",
+          "items": ["mobiliario y objetos coherentes", "algún NPC dentro", "sonido del exterior filtrado"]
+        },
+        {
+          "name": "4 · Para qué sirven",
+          "items": ["refugiarse (lluvia o policía)", "comprar o trabajar", "guardar el coche (garaje)", "puntos de interés"]
+        }
+      ],
+      "feeling": "Ver una puerta abierta y poder entrar de verdad, no chocarte con una fachada."
+    },
+    {
+      "id": "ciudad-respira",
+      "title": "Ciudad que respira",
+      "category": "Mundo",
+      "icon": "🏙️",
+      "visual": 4,
+      "theme": "mundo-vivo",
+      "related": ["vida-urbana", "clima", "ia-profunda"],
+      "objetivo": "Que la ciudad cambie su ritmo según la hora y el momento, en vez de estar siempre igual.",
+      "central": "La misma calle se siente distinta a las 8:00, a las 14:00 o a medianoche.",
+      "systems": [
+        {
+          "name": "1 · Ritmo por horas",
+          "items": ["mañana: gente al trabajo, tráfico denso", "mediodía: terrazas y comercios activos", "tarde: paseo y compras", "noche: menos gente, ambiente distinto", "madrugada: calles casi vacías"]
+        },
+        {
+          "name": "2 · Densidad variable",
+          "items": ["más gente en horas punta", "menos de noche", "tráfico según el momento"]
+        },
+        {
+          "name": "3 · Zonas que cambian",
+          "items": ["centro activo de día", "ocio nocturno en otras zonas", "playa según el calor y la hora"]
+        }
+      ],
+      "feeling": "Notar que la ciudad tiene su propio reloj y su rutina."
+    },
+    {
+      "id": "vida-urbana",
+      "title": "Vida urbana",
+      "category": "Mundo",
+      "icon": "🚶",
+      "visual": 4,
+      "theme": "mundo-vivo",
+      "related": ["ciudad-respira", "ia-profunda", "detalles-espanoles", "npc-coches-realistas", "objetos-mundo", "diversidad-humana"],
+      "objetivo": "Llenar las calles de vida cotidiana española: terrazas, gente esperando, ciclistas, repartidores.",
+      "central": "Una calle nunca está vacía: siempre hay pequeñas escenas de vida.",
+      "systems": [
+        {
+          "name": "1 · Gente con quehaceres",
+          "items": ["paseantes", "gente esperando el autobús", "personas con bolsas de compra", "alguien hablando por teléfono"]
+        },
+        {
+          "name": "2 · Terrazas y comercio",
+          "items": ["terrazas de bar llenas", "clientes entrando y saliendo de tiendas", "camareros atendiendo"]
+        },
+        {
+          "name": "3 · Movilidad blanda",
+          "items": ["ciclistas", "patinetes", "repartidores en moto o bici"]
+        },
+        {
+          "name": "4 · Microescenas",
+          "items": ["saludos", "colas", "gente sentada en bancos", "turistas haciendo fotos"]
+        }
+      ],
+      "feeling": "Caminar y sentir que la calle está llena de vida real."
+    },
+    {
+      "id": "eventos",
+      "title": "Eventos espontáneos",
+      "category": "Mundo",
+      "icon": "⚠️",
+      "visual": 3,
+      "theme": "mundo-vivo",
+      "related": ["narrativa-dinamica", "trafico-emergente", "ia-profunda", "oportunidades-emergentes", "emergencias-mundo"],
+      "objetivo": "Que la ciudad genere pequeños sucesos por sí sola, distintos cada vez.",
+      "central": "Cosas que pasan sin que tú las provoques: la ciudad tiene vida propia.",
+      "systems": [
+        {
+          "name": "1 · Tipos de evento",
+          "items": ["accidentes leves", "obras en la calle", "discusiones", "coches averiados", "una mudanza, un reparto"]
+        },
+        {
+          "name": "2 · Aparición natural",
+          "note": "No son misiones: surgen y se resuelven solos.",
+          "items": ["aparecen cerca del jugador", "duran un tiempo", "se resuelven aunque no intervengas"]
+        },
+        {
+          "name": "3 · Puedes intervenir o no",
+          "items": ["mirar", "ayudar", "ignorar", "aprovecharlos"]
+        }
+      ],
+      "feeling": "Que cada paseo tenga alguna pequeña sorpresa."
+    },
+    {
+      "id": "conducir-real",
+      "title": "Conducir se siente real",
+      "category": "Conducción",
+      "icon": "🏎️",
+      "visual": 2,
+      "theme": "conduccion",
+      "related": ["trafico-emergente", "danos-avanzados", "vehiculos-realistas", "animaciones", "fisicas-caos"],
+      "objetivo": "Que conducir tenga tacto y peso real, no que el coche se mueva como sobre raíles.",
+      "central": "El coche tiene peso, agarre e inercia: cada superficie se conduce distinto.",
+      "systems": [
+        {
+          "name": "1 · Físicas de conducción",
+          "items": ["peso e inercia del coche", "agarre de los neumáticos", "suspensión que se nota", "transferencia de peso al frenar y girar"]
+        },
+        {
+          "name": "2 · Ayudas y dificultad",
+          "items": ["ABS opcional", "control de tracción", "modo más arcade o más simulación"]
+        },
+        {
+          "name": "3 · Superficies",
+          "items": ["asfalto seco", "asfalto mojado (resbala)", "arena (más lento)", "tierra y baches"]
+        },
+        {
+          "name": "4 · Sensación de velocidad",
+          "items": ["cámara que vibra a tope", "efecto de velocidad", "frenadas con derrape"]
+        }
+      ],
+      "feeling": "Que cada coche se conduzca distinto y se sienta de verdad bajo las manos."
+    },
+    {
+      "id": "danos-avanzados",
+      "title": "Sistema de daños avanzado",
+      "category": "Conducción",
+      "icon": "🔧",
+      "visual": 3,
+      "theme": "conduccion",
+      "related": ["conducir-real", "crimen-control", "fidelidad-visual", "vehiculos-realistas", "fisicas-caos"],
+      "objetivo": "Que los coches se rompan de forma realista y el daño afecte a cómo conducen.",
+      "central": "El daño no es solo estético: cambia el comportamiento del coche.",
+      "systems": [
+        {
+          "name": "1 · Daño visual",
+          "items": ["abolladuras y rayones", "cristales rotos", "faros rotos", "piezas colgando o sueltas", "pintura saltada"]
+        },
+        {
+          "name": "2 · Daño funcional",
+          "items": ["motor: pierde potencia", "ruedas pinchadas: tira hacia un lado", "dirección dañada", "frenos que fallan"]
+        },
+        {
+          "name": "3 · Humo y fuego",
+          "items": ["humo del motor", "fugas de líquidos", "riesgo de incendio si te pasas"]
+        },
+        {
+          "name": "4 · Reparación",
+          "items": ["talleres", "reparación con dinero", "desgaste con el uso"]
+        }
+      ],
+      "feeling": "Que tras una buena persecución el coche quede hecho polvo y se note al conducir."
+    },
+    {
+      "id": "animaciones",
+      "title": "Movimiento humano del jugador",
+      "category": "Personajes",
+      "icon": "🧍",
+      "visual": 4,
+      "theme": "personaje",
+      "related": ["editor-personaje", "npc-coches-realistas", "vehiculos-realistas", "conducir-real", "objetos-mundo", "clima", "interaccion-mundo", "objetos-jugador"],
+      "objetivo": "Que controlar al personaje se sienta natural y humano: con peso, postura, lenguaje corporal e imperfecciones reales.",
+      "central": "Nada de movimiento flotante ni teletransportes: el personaje tiene cuerpo, nota el entorno y nunca sale todo perfecto.",
+      "systems": [
+        {
+          "name": "1 · Movimiento base (caminar/correr)",
+          "note": "Transición con aceleración, no instantáneo. ❓ ¿Parece que el personaje tiene cuerpo?",
+          "items": ["caminar lento / normal / rápido", "correr y sprint", "aceleración natural y frenadas suaves", "cambios de dirección con peso", "distinta sensación según la velocidad"]
+        },
+        {
+          "name": "2 · Movimiento vertical",
+          "note": "❓ ¿Se mueve o se teletransporta?",
+          "items": ["salto pequeño y salto en carrera", "bajar escalones con naturalidad", "subir bordillos", "salvar obstáculos bajos", "trepar muros bajos y rampas", "subir pendientes", "caída con peso según la altura"]
+        },
+        {
+          "name": "3 · Posturas y lenguaje corporal",
+          "note": "❓ ¿La postura transmite intención?",
+          "items": ["de pie relajado", "postura alerta", "agacharse / semiagachado", "sentarse", "apoyarse", "transición suave entre posturas"]
+        },
+        {
+          "name": "4 · Subir y bajar escaleras",
+          "note": "No es un 'teleport animado'.",
+          "items": ["pies colocados por escalón", "ajuste de velocidad y balance", "sincronización con la inclinación", "escaleras normales / largas / irregulares"]
+        },
+        {
+          "name": "5 · Interacción física con el entorno",
+          "note": "❓ ¿El personaje nota el entorno?",
+          "items": ["apoyar la mano al girar", "ajustar los pies en escaleras", "tocar la pared al pasar por un sitio estrecho", "esquivar a la gente", "recolocarse al pararse"]
+        },
+        {
+          "name": "6 · Movimiento en espacios urbanos",
+          "note": "❓ ¿Se adapta al espacio?",
+          "items": ["entrar por puertas con naturalidad", "subir aceras", "pasar entre mesas de terraza", "caminar entre grupos sin atravesarlos"]
+        },
+        {
+          "name": "7 · Interacción con objetos",
+          "note": "Animaciones contextuales, no genéricas.",
+          "items": ["abrir puertas", "empujar objetos ligeros", "recoger objetos del suelo", "sentarse en bancos", "apoyarse en paredes"]
+        },
+        {
+          "name": "8 · Interacción con vehículos",
+          "note": "❓ ¿El coche es un objeto o una extensión del jugador?",
+          "items": ["entrar distinto según el espacio", "cerrar la puerta de forma distinta", "apoyarse en el coche", "mirar atrás al salir", "sin teletransportarse dentro"]
+        },
+        {
+          "name": "9 · Física corporal (peso y balance)",
+          "items": ["peso simulado e inercia", "equilibrio en giros", "inclinación en pendientes", "recuperación tras impactos"],
+          "example": ["Chocas → tambaleo", "Bajas cuesta → aceleración natural"]
+        },
+        {
+          "name": "10 · Acciones rápidas",
+          "note": "❓ ¿Todo sale demasiado perfecto?",
+          "items": ["girar rápido", "frenar en seco", "esquivar", "pequeños tropiezos", "recuperar el equilibrio"]
+        },
+        {
+          "name": "11 · Reacciones físicas",
+          "note": "A golpes, caídas, choques e impactos.",
+          "items": ["retroceso", "caída al suelo", "recuperación progresiva"]
+        },
+        {
+          "name": "12 · Estado del cuerpo según contexto",
+          "note": "❓ ¿El estado afecta al cuerpo?",
+          "items": ["Lluvia → pasos distintos", "Calor → menos energía", "Cargado → cambia la postura", "Cansado → respiración visible"]
+        },
+        {
+          "name": "13 · Superficies y movimiento",
+          "items": ["asfalto → normal", "arena → más lento", "mojado → resbalón leve", "hierba → ligera resistencia", "interior → sonido de pasos distinto"]
+        },
+        {
+          "name": "14 · Transiciones de animación",
+          "note": "Sin cortes bruscos: blending suave.",
+          "items": ["caminar → correr", "correr → saltar", "correr → agacharse", "agachado → levantarse"]
+        },
+        {
+          "name": "15 · Movimiento social",
+          "note": "❓ ¿Parece consciente de los demás?",
+          "items": ["mirar a quien habla", "girar el cuerpo parcialmente", "seguir con la mirada", "respetar el espacio personal"]
+        },
+        {
+          "name": "16 · Animaciones de espera (idle)",
+          "note": "❓ ¿Parece una persona esperando?",
+          "items": ["mirar alrededor", "cambiar el apoyo entre piernas", "mirar el móvil", "recolocarse la ropa", "tocar el bolsillo", "respiración visible"]
+        },
+        {
+          "name": "17 · Pequeñas imperfecciones humanas",
+          "note": "❓ ¿Hay imperfección humana?",
+          "items": ["pasos no idénticos", "pausas mínimas", "ajustes de postura", "micromovimientos"]
+        }
+      ],
+      "feeling": "Que mover al personaje se sienta como mover a una persona, no a un muñeco."
+    },
+    {
+      "id": "editor-personaje",
+      "title": "Editor de personaje",
+      "category": "Personajes",
+      "icon": "👕",
+      "visual": 3,
+      "theme": "personaje",
+      "related": ["animaciones", "economia-vida", "objetos-jugador"],
+      "objetivo": "Que el jugador pueda personalizar el aspecto de su personaje.",
+      "central": "Tu personaje te representa: ropa y estilo a tu gusto.",
+      "systems": [
+        {
+          "name": "1 · Cuerpo y cara",
+          "items": ["tipo de cuerpo", "rasgos de cara básicos", "tono de piel", "peinado y barba"]
+        },
+        {
+          "name": "2 · Ropa",
+          "items": ["camisetas y camisas", "pantalones", "chaquetas", "calzado", "estilo (casual, deportivo, elegante)"]
+        },
+        {
+          "name": "3 · Complementos",
+          "items": ["gafas de sol", "gorras", "relojes", "mochilas o bolsas"]
+        },
+        {
+          "name": "4 · Dónde se cambia",
+          "items": ["tiendas de ropa", "en casa (armario)", "comprar con dinero del juego"]
+        }
+      ],
+      "feeling": "Verte en el espejo y reconocer 'ese soy yo'."
+    },
+    {
+      "id": "economia",
+      "title": "Economía simple",
+      "category": "Sistemas",
+      "icon": "💶",
+      "visual": 1,
+      "theme": "vida-jugador",
+      "related": ["economia-vida", "apartamentos", "gps-movil"],
+      "objetivo": "Un sistema de dinero básico: ganar, gastar y notar que cuesta.",
+      "central": "El dinero importa desde el primer minuto: nada es gratis.",
+      "systems": [
+        {
+          "name": "1 · Ingresos",
+          "items": ["recados y trabajos", "recompensas", "ventas pequeñas"]
+        },
+        {
+          "name": "2 · Gastos",
+          "items": ["gasolina (opcional)", "comida", "reparaciones", "compras pequeñas"]
+        },
+        {
+          "name": "3 · Sensación de progreso",
+          "items": ["empezar con poco", "ahorrar para algo", "decisiones de gasto"]
+        }
+      ],
+      "feeling": "Que ganar tus primeros euros y gastarlos tenga peso."
+    },
+    {
+      "id": "gps-movil",
+      "title": "GPS y móvil",
+      "category": "Sistemas",
+      "icon": "📱",
+      "visual": 2,
+      "theme": "vida-jugador",
+      "related": ["economia-vida", "inicio-juego", "dia-1"],
+      "objetivo": "Un móvil que sea tu menú dentro del mundo: mapa, mensajes, trabajos y avisos.",
+      "central": "El teléfono es tu centro de control, sin salir del juego.",
+      "systems": [
+        {
+          "name": "1 · Mapa y GPS",
+          "items": ["mapa de la ciudad", "marcar destino", "ruta y navegación", "puntos de interés"]
+        },
+        {
+          "name": "2 · Comunicación",
+          "items": ["mensajes", "llamadas", "contactos", "avisos de trabajos"]
+        },
+        {
+          "name": "3 · Apps del juego",
+          "items": ["trabajos disponibles", "banco y dinero", "ajustes", "cámara y fotos (opcional)"]
+        },
+        {
+          "name": "4 · Integrado en el mundo",
+          "note": "Se saca y se guarda con animación, sin pausar del todo."
+        }
+      ],
+      "feeling": "Sacar el móvil y tener todo a mano, como en la vida real."
+    },
+    {
+      "id": "reputacion",
+      "title": "Reputación y vida persistente del jugador",
+      "category": "Sistemas",
+      "icon": "⭐",
+      "visual": 1,
+      "theme": "vida-jugador",
+      "related": ["crimen-control", "narrativa-dinamica", "economia-vida", "ia-profunda", "oportunidades-emergentes", "mundo-persistente"],
+      "objetivo": "Que el jugador tenga una identidad viva en el mundo: sus acciones dejan huella y cambian cómo reaccionan NPC, policía, economía y oportunidades.",
+      "central": "Esta ciudad tiene memoria de ti: el mundo perdona, pero no olvida todo.",
+      "systems": [
+        {
+          "name": "1 · Identidad del jugador",
+          "note": "El jugador no es anónimo: define cómo el mundo te percibe.",
+          "items": ["reputación general", "reputación legal", "reputación criminal", "reputación social", "estilo de vida (trabajador, neutral, caótico)"]
+        },
+        {
+          "name": "2 · Memoria global del mundo",
+          "note": "No todo se recuerda, solo lo significativo.",
+          "items": ["accidentes causados", "ayuda a NPC", "robos o delitos", "comportamiento agresivo", "conducción peligrosa", "colaboración en emergencias"]
+        },
+        {
+          "name": "3 · Reputación local (por zonas)",
+          "note": "Cada zona tiene su propia opinión de ti.",
+          "items": ["barrio centro", "zonas turísticas", "zonas industriales", "zonas residenciales"],
+          "example": ["Caos en una zona → te reconoce negativamente", "Ayudas mucho → te reconoce positivamente"]
+        },
+        {
+          "name": "4 · Reacción de NPC individual",
+          "note": "Según memoria corta, reputación global y lo que han presenciado.",
+          "items": ["desconocido", "neutral", "confiado", "asustado", "hostil"]
+        },
+        {
+          "name": "5 · Reputación policial",
+          "note": "No es solo 'estrellas': estado dinámico.",
+          "items": ["0 → ignorado", "1 → observación", "2 → identificación parcial", "3 → persecución activa", "4 → alerta alta en la ciudad"]
+        },
+        {
+          "name": "6 · Consecuencias económicas",
+          "note": "La reputación afecta a la economía.",
+          "items": ["cambian los trabajos disponibles", "los salarios suben o bajan", "acceso a zonas o empresas", "confianza de los empleadores"],
+          "example": ["Baja reputación → trabajos ilegales o de riesgo", "Alta reputación → trabajos estables mejor pagados"]
+        },
+        {
+          "name": "7 · Memoria social (rumores)",
+          "note": "Los NPC transmiten información: reputación indirecta.",
+          "items": ["'ese conduce peligroso'", "'ese ayudó a alguien ayer'", "'evita a esa persona'", "'es de confianza'"]
+        },
+        {
+          "name": "8 · Evolución en el tiempo",
+          "note": "El mundo perdona, pero no olvida todo.",
+          "items": ["mejora si actúas bien repetidamente", "empeora si repites malas acciones", "se estabiliza con el tiempo si no haces nada"]
+        },
+        {
+          "name": "9 · Marcas permanentes en el mundo",
+          "note": "El mundo cambia por ti.",
+          "items": ["coches abandonados causados por ti", "zonas con más policía por tus acciones", "NPC que te recuerdan", "eventos históricos en la ciudad"]
+        },
+        {
+          "name": "10 · Oportunidades según reputación",
+          "items": ["Alta: trabajos legales, conducción profesional, servicios confiables", "Baja: trabajos de riesgo, encargos informales, situaciones peligrosas"]
+        },
+        {
+          "name": "11 · Interacción con la vida persistente",
+          "note": "El jugador siente progresión social real.",
+          "items": ["NPC que lo reconocen", "reacciones distintas por zona", "cambios en el trato policial", "variación en su economía"]
+        },
+        {
+          "name": "12 · Eventos históricos personales",
+          "note": "Construye la 'historia del jugador'.",
+          "items": ["primer trabajo", "primer accidente", "primer coche", "primera detención", "grandes eventos de caos"]
+        }
+      ],
+      "feeling": "Esta ciudad tiene memoria de mí."
+    },
+    {
+      "id": "apartamentos",
+      "title": "Apartamentos y garajes",
+      "category": "Sistemas",
+      "icon": "🏠",
+      "visual": 2,
+      "theme": "vida-jugador",
+      "related": ["economia-vida", "mundo-persistente", "inicio-juego", "interiores"],
+      "objetivo": "Tener un sitio propio donde guardar coches, guardar partida y reaparecer.",
+      "central": "Un hogar base que hace tuyo el mundo.",
+      "systems": [
+        {
+          "name": "1 · Tipos de propiedad",
+          "items": ["habitación de alquiler", "apartamento", "casa", "garaje"]
+        },
+        {
+          "name": "2 · Funciones del hogar",
+          "items": ["punto de guardado", "punto de reaparición (respawn)", "guardar y sacar vehículos", "cambiar de ropa"]
+        },
+        {
+          "name": "3 · Progresión",
+          "items": ["empezar humilde", "mejorar de vivienda", "más plazas de garaje"]
+        }
+      ],
+      "feeling": "Llegar a casa, aparcar tu coche y sentir que tienes un sitio en la ciudad."
+    },
+    {
+      "id": "mundo-persistente",
+      "title": "Mundo persistente",
+      "category": "Sistemas",
+      "icon": "💾",
+      "visual": 2,
+      "theme": "tecnico",
+      "related": ["streaming-mundo", "apartamentos", "reputacion", "simulacion-global"],
+      "objetivo": "Que los cambios que haces en el mundo sigan ahí cuando vuelves.",
+      "central": "El mundo recuerda: no se reinicia cada vez.",
+      "systems": [
+        {
+          "name": "1 · Qué persiste",
+          "items": ["coches aparcados", "cambios que hiciste", "estado de propiedades", "progreso y dinero"]
+        },
+        {
+          "name": "2 · Guardado",
+          "items": ["guardado automático", "guardado manual", "continuar donde lo dejaste"]
+        },
+        {
+          "name": "3 · Límites razonables",
+          "note": "No todo persiste para siempre (por rendimiento): lo importante sí."
+        }
+      ],
+      "feeling": "Volver al día siguiente y encontrar tu coche donde lo dejaste."
+    },
+    {
+      "id": "clima",
+      "title": "Clima y ambiente dinámico",
+      "category": "Ambiente",
+      "icon": "🌦️",
+      "visual": 5,
+      "theme": "marbella-visual",
+      "related": ["detalles-espanoles", "ciudad-respira", "camara-avanzada", "fidelidad-visual", "sonido-mundo", "trafico-emergente", "ia-profunda", "economia-vida", "objetos-mundo", "cielo-atmosfera"],
+      "objetivo": "Que el clima no sea solo visual: que afecte al tráfico, a los NPC, al sonido, a la economía y al ritmo de la ciudad.",
+      "central": "El clima cambia gradualmente y todo reacciona: la ciudad respira según el tiempo.",
+      "systems": [
+        {
+          "name": "1 · Ciclo climático base",
+          "note": "Cambia gradualmente, nunca de golpe.",
+          "items": ["soleado", "nublado", "lluvia ligera", "lluvia intensa", "tormenta", "viento fuerte", "niebla", "calor extremo"]
+        },
+        {
+          "name": "2 · Ciclo de tiempo y estaciones",
+          "items": ["🌞 Día/noche: luz progresiva, tráfico y NPC según la hora", "🌸 Primavera: vida activa, más peatones", "☀️ Verano: turismo, calor, terrazas llenas", "🍂 Otoño: lluvia frecuente, menos actividad exterior", "❄️ Invierno: menos gente, clima duro, calles vacías"]
+        },
+        {
+          "name": "3 · Impacto en el tráfico",
+          "items": ["☀️ Soleado: tráfico normal, conducción agresiva, más velocidad", "🌧️ Lluvia: frenadas largas, más accidentes, tráfico lento, más distancia", "🌫️ Niebla: visibilidad reducida, menos velocidad, IA más cauta", "💨 Viento: motos inestables, coches ligeros afectados, peatones dudan"]
+        },
+        {
+          "name": "4 · Impacto en los NPC",
+          "items": ["☀️ Calor: buscan sombra, más terrazas, ropa ligera, más lentos", "🌧️ Lluvia: paraguas, corren a interiores, menos calle, se agrupan bajo techo", "🌬️ Viento: se cubren, evitan zonas abiertas, van más rápido"]
+        },
+        {
+          "name": "5 · Comportamiento social",
+          "note": "La ciudad respira según el clima.",
+          "items": ["terrazas llenas con buen clima", "calles vacías en tormenta", "parques activos en primavera", "interiores saturados en lluvia"]
+        },
+        {
+          "name": "6 · Impacto en el sonido",
+          "items": ["🌧️ Lluvia: agua constante, tráfico amortiguado, menos ecos", "💨 Viento: sonidos irregulares, ambiente vacío, objetos moviéndose", "☀️ Día seco: sonido claro, tráfico definido, voces audibles"]
+        },
+        {
+          "name": "7 · Visibilidad y render",
+          "items": ["niebla → menos distancia visible", "lluvia → reflejos en el suelo", "calor → distorsión ligera (efecto calor)", "tormenta → iluminación inestable"]
+        },
+        {
+          "name": "8 · Efectos en superficies",
+          "items": ["lluvia → charcos dinámicos", "calles mojadas → reflejos realistas", "ropa de NPC → apariencia húmeda", "coches → suciedad y gotas acumuladas"]
+        },
+        {
+          "name": "9 · Eventos climáticos extremos",
+          "note": "Generan situaciones emergentes.",
+          "items": ["tormentas con caos de tráfico", "inundaciones leves en calles bajas", "apagones parciales (luces de ciudad)", "niebla densa en la costa"]
+        },
+        {
+          "name": "10 · Economía y actividad",
+          "items": ["más turismo en verano", "menos trabajo en lluvia", "más entregas en mal tiempo (bonus de pago)", "menos tráfico en condiciones extremas"]
+        },
+        {
+          "name": "11 · IA adaptativa al clima",
+          "note": "La IA recalcula decisiones según el clima.",
+          "example": ["Lluvia → evitar caminar largo, usar coche o interior", "Calor → buscar sombra o descanso", "Tormenta → refugiarse de inmediato"]
+        },
+        {
+          "name": "12 · Transición dinámica",
+          "note": "El clima no cambia de golpe.",
+          "items": ["sol → nubes progresivas", "nubes → lluvia gradual", "lluvia → tormenta o calma", "viento → aumento progresivo"]
+        }
+      ],
+      "feeling": "Que llueva, haga sol o sople viento cambie de verdad cómo se ve, suena y se vive la ciudad."
+    },
+    {
+      "id": "detalles-espanoles",
+      "title": "Detalles españoles",
+      "category": "Ambiente",
+      "icon": "🇪🇸",
+      "visual": 5,
+      "theme": "marbella-visual",
+      "related": ["clima", "vida-urbana", "mapa-ampliado", "fidelidad-visual", "objetos-mundo", "marbella-datos-reales", "marbella-guia-visual", "mar-costa"],
+      "objetivo": "Llenar el mundo de detalles que griten 'esto es España / Marbella', no una ciudad genérica.",
+      "central": "Los pequeños detalles locales son los que hacen que reconozcas el sitio.",
+      "systems": [
+        {
+          "name": "1 · Fachadas y edificios",
+          "items": ["persianas metálicas", "balcones con ropa tendida y plantas", "toldos", "azulejos"]
+        },
+        {
+          "name": "2 · Calle española",
+          "items": ["terrazas de bar", "pasos de peatones y señales españolas", "papeleras y mobiliario local", "cables entre edificios"]
+        },
+        {
+          "name": "3 · Ambiente local",
+          "items": ["palmeras y vegetación mediterránea", "bares y carteles en español", "rotondas", "quioscos"]
+        },
+        {
+          "name": "4 · Marbella en concreto",
+          "items": ["paseo marítimo", "chiringuitos", "zona de lujo y yates", "luz cálida de la costa"]
+        }
+      ],
+      "feeling": "Que cualquiera mire una captura y diga: 'eso es la Costa del Sol'."
+    },
+    {
+      "id": "camara-avanzada",
+      "title": "Cámara avanzada",
+      "category": "Cámara",
+      "icon": "🎬",
+      "visual": 4,
+      "theme": "camara",
+      "related": ["clima", "fidelidad-visual"],
+      "objetivo": "Varias cámaras y modos para que el juego se vea y se sienta de cine.",
+      "central": "La cámara cuenta tanto como lo que se ve: vistas para jugar y para disfrutar.",
+      "systems": [
+        {
+          "name": "1 · Vistas de juego",
+          "items": ["tercera persona (cerca y lejos)", "primera persona", "cámaras de conducción (capó, parachoques, interior)"]
+        },
+        {
+          "name": "2 · Cámara cinematográfica",
+          "items": ["ángulos automáticos de cine", "cámara lenta en momentos clave", "encuadres dramáticos"]
+        },
+        {
+          "name": "3 · Repeticiones (replays)",
+          "items": ["repetir la última acción", "cámara libre para moverte", "guardar o compartir clips"]
+        },
+        {
+          "name": "4 · Comodidad",
+          "items": ["sacudidas opcionales", "campo de visión ajustable", "suavizado de cámara"]
+        }
+      ],
+      "feeling": "Poder parar tras un buen salto y revivirlo desde el mejor ángulo."
+    },
+    {
+      "id": "demo",
+      "title": "Versión Demo",
+      "category": "Lanzamiento",
+      "icon": "🚀",
+      "visual": 1,
+      "theme": "lanzamiento",
+      "related": ["alpha-publica", "lanzamiento-completo"],
+      "objetivo": "Un primer corte público descargable para enseñar el juego y recibir feedback.",
+      "central": "Algo pequeño pero jugable que la gente pueda probar.",
+      "systems": [
+        {
+          "name": "1 · Contenido de la demo",
+          "items": ["una zona limitada de Marbella", "conducir y andar", "un par de trabajos o recados", "lo esencial, que funcione bien"]
+        },
+        {
+          "name": "2 · Objetivo de la demo",
+          "items": ["enseñar la idea", "probar el rendimiento en PCs reales", "recoger opiniones"]
+        },
+        {
+          "name": "3 · Distribución",
+          "items": ["descarga desde la web", "itch.io", "sin registro obligatorio"]
+        }
+      ],
+      "feeling": "Que alguien pruebe la demo y piense 'quiero más'."
+    },
+
+    {
+      "id": "mapa-ampliado",
+      "title": "Mapa ampliado (costa + interior)",
+      "category": "Mundo grande y vivo",
+      "icon": "🗺️",
+      "visual": 5,
+      "theme": "marbella-visual",
+      "related": ["detalles-espanoles", "streaming-mundo", "trafico-emergente", "fidelidad-visual", "marbella-datos-reales", "marbella-guia-visual"],
+      "objetivo": "Dejar de sentirse como una zona aislada y empezar a sentirse como una ciudad conectada.",
+      "items": [
+        "Marbella centro más reconocible",
+        "Paseo marítimo largo y transitable",
+        "Puerto deportivo y zona de lujo",
+        "Urbanizaciones en colinas",
+        "Gasolineras y áreas de servicio",
+        "Carretera costera",
+        "Autovía rápida",
+        "Interior con curvas y desnivel",
+        "Pueblo pequeño conectado",
+        "Miradores",
+        "Túneles",
+        "Aparcamientos",
+        "Playas utilizables",
+        "Bosque o zona natural",
+        "Sistema de carga por zonas para rendimiento"
+      ],
+      "feeling": "Conducir 10 minutos y sentir que cambias de lugar."
+    },
+    {
+      "id": "ia-profunda",
+      "title": "IA más profunda (comportamiento humano)",
+      "category": "Mundo grande y vivo",
+      "icon": "🧠",
+      "visual": 3,
+      "theme": "mundo-vivo",
+      "related": ["vida-urbana", "ciudad-respira", "narrativa-dinamica", "trafico-emergente", "npc-coches-realistas", "clima", "reputacion", "diversidad-humana"],
+      "objetivo": "Crear NPC que no solo se mueven: viven, recuerdan, sienten y toman decisiones coherentes dentro del mundo.",
+      "central": "El objetivo no es que el NPC haga cosas 'inteligentes', sino que sientas: 'esta persona está viva dentro de la ciudad'.",
+      "systems": [
+        {
+          "name": "1 · Rutinas diarias (base de vida)",
+          "note": "Cada NPC tiene una agenda; puede romperse por eventos del mundo. No hace falta simular a todos: solo los cercanos.",
+          "items": ["despertar", "ir a trabajar / estudiar / calle", "comer", "ocio", "volver a casa", "dormir"],
+          "example": ["08:00 sale de casa → 09:00 trabajo → 14:00 comida → 18:00 paseo → 23:00 casa"]
+        },
+        {
+          "name": "2 · Emociones básicas",
+          "note": "Estado emocional dinámico que cambia con eventos, hora, jugador y entorno (ruido, tráfico, caos).",
+          "items": ["neutral", "feliz", "estresado", "enfadado", "asustado", "curioso", "cansado"],
+          "example": ["Atasco → sube el estrés", "Accidente → curiosidad + miedo", "Interacción agresiva → enfado"]
+        },
+        {
+          "name": "3 · Decisiones (IA de comportamiento)",
+          "note": "INPUT (emoción, rutina, entorno, peligro, necesidades) → OUTPUT (acción).",
+          "example": ["Feliz + tiempo libre → pasear / sentarse / socializar", "Estresado → ir más rápido / evitar gente", "Peligro → huir / llamar a la policía / esconderse", "Hambre → buscar comida"]
+        },
+        {
+          "name": "4 · Respuestas emocionales",
+          "note": "Cada emoción cambia el comportamiento directamente.",
+          "items": ["Neutral → estándar", "Feliz → más social y relajado", "Estresado → rápido, evita conflictos", "Enfadado → discute, agresivo", "Asustado → huida inmediata, evita zonas"]
+        },
+        {
+          "name": "5 · Personalidad y diferencias (fijas)",
+          "note": "Rasgos fijos que no cambian (solo cambia la emoción) y se combinan con ella.",
+          "items": ["Tipos: tímido, sociable, agresivo, calmado, curioso, nervioso", "Atributos: edad, paciencia, miedo, velocidad, curiosidad"],
+          "example": ["Tímido + asustado → huye rápido", "Agresivo + enfadado → confronta", "Persona A camina rápido · Persona B se para mucho"]
+        },
+        {
+          "name": "6 · Atención (qué ve el NPC)",
+          "note": "Solo procesa lo cercano: clave para rendimiento + realismo.",
+          "items": ["Ve: jugador, coches rápidos, ruidos fuertes, NPC cercanos, eventos (accidentes, policía)", "Ignora: cosas lejanas o irrelevantes"]
+        },
+        {
+          "name": "7 · Memoria corta (clave del realismo)",
+          "note": "Recuerda eventos recientes durante 1–10 minutos de juego.",
+          "items": ["casi accidente", "pelea cercana", "jugador agresivo", "coche peligroso", "zona caótica"],
+          "example": ["Si casi lo atropellas → te recuerda → te evita → puede alertar a otros"]
+        },
+        {
+          "name": "8 · Memoria social",
+          "note": "Los NPC comparten información básica, que se propaga en grupos pequeños.",
+          "items": ["'hay peligro ahí'", "'ese coche va rápido'", "'evita esa calle'"]
+        },
+        {
+          "name": "9 · IA social",
+          "note": "Las personas se influyen entre sí.",
+          "example": ["Uno corre → otros miran → varios corren → se forma grupo", "Choque → la gente se acerca → alguien se va → otros observan"]
+        },
+        {
+          "name": "10 · Interacción con el jugador",
+          "note": "Te evalúa según tus acciones recientes, tu reputación y lo que haces cerca. Puede escalar.",
+          "items": ["Nivel 0 — no te presta atención", "Nivel 1 — te mira (curioso)", "Nivel 2 — se aparta si eres peligroso", "Nivel 3 — se enfada", "Nivel 4 — huye o corre", "Nivel 5 — llama a la policía"]
+        },
+        {
+          "name": "11 · Vida urbana",
+          "note": "Comportamientos según el lugar.",
+          "items": ["Cafetería: sentarse, pedir, salir", "Parque: correr, descansar", "Playa: caminar, sentarse", "Portal: entrar, salir"]
+        },
+        {
+          "name": "12 · Conversaciones falsas",
+          "note": "No es IA real. Duran 15–60 segundos.",
+          "items": ["Grupos: hablar, despedirse, señalar, mirar el móvil", "Eventos: saludar, reír, discutir"]
+        },
+        {
+          "name": "13 · Flujo completo de IA",
+          "note": "El ciclo que repite cada NPC.",
+          "example": ["observar entorno → actualizar emociones → revisar memoria corta → elegir acción → ejecutar animación → esperar un tiempo corto → repetir"]
+        },
+        {
+          "name": "14 · Optimización",
+          "note": "Cuánta IA usar según la distancia, para que rinda bien.",
+          "items": ["Cerca → IA completa", "Media → IA simplificada", "Lejos → simulación estadística", "Muy lejos → desactivado"]
+        }
+      ],
+      "events": ["Discusión en terraza", "Músico callejero", "Repartidor", "Coche averiado", "Turista perdido", "Policía hablando", "Alguien corriendo al autobús"],
+      "feeling": "Poder dejar el mando 10 minutos y sentir que la ciudad sigue funcionando sola."
+    },
+    {
+      "id": "trafico-emergente",
+      "title": "Tráfico emergente",
+      "category": "Mundo grande y vivo",
+      "icon": "🚦",
+      "visual": 3,
+      "theme": "mundo-vivo",
+      "related": ["conducir-real", "ia-profunda", "mapa-ampliado", "npc-coches-realistas", "vehiculos-realistas", "sonido-mundo", "clima", "emergencias-mundo"],
+      "objetivo": "Que conducir nunca sea exactamente igual dos veces.",
+      "systems": [
+        {
+          "name": "1 · Conductores con personalidad",
+          "note": "Cada vehículo genera un perfil propio.",
+          "items": ["paciencia (0–100)", "agresividad", "velocidad objetivo", "atención", "distancia de seguridad", "experiencia"],
+          "example": ["Tranquilo → mantiene distancia", "Normal → sigue las normas", "Agresivo → acelera y pita", "Inseguro → frena demasiado", "Distraído → tarda en reaccionar"]
+        },
+        {
+          "name": "2 · Destino real",
+          "note": "No aparecen porque sí: cada coche tiene origen → destino → ruta.",
+          "example": ["Casa → oficina", "Playa → centro", "Supermercado → urbanización"]
+        },
+        {
+          "name": "3 · Densidad por hora",
+          "note": "Más o menos coches según la hora. Verano → más coches · lluvia → tráfico lento.",
+          "items": ["05:00 vacío", "08:00 hora punta", "14:00 tráfico medio", "18:00 salida del trabajo", "23:00 pocos coches", "03:00 casi nadie"]
+        },
+        {
+          "name": "4 · Física de seguimiento",
+          "note": "Variables: velocidad, aceleración, distancia y tiempo de reacción.",
+          "example": ["Demasiado cerca → frenada", "Muy lejos → acelerar", "Curva → reducir"]
+        },
+        {
+          "name": "5 · Carriles reales",
+          "note": "Cada coche sabe mantenerse, cambiar, incorporarse y salir.",
+          "items": ["carril lento", "carril rápido", "adelantar", "volver"]
+        },
+        {
+          "name": "6 · Rotondas españolas",
+          "note": "Errores ocasionales: duda, frenazo, entrada lenta.",
+          "example": ["Entrada → mirar hueco", "Dentro → mantener el flujo", "Salida → poner intermitente"]
+        },
+        {
+          "name": "7 · Semáforos inteligentes",
+          "note": "Estados: verde, amarillo, rojo.",
+          "example": ["Cola larga → más verde", "Sin coches → cambio rápido", "Peatones → espera"]
+        },
+        {
+          "name": "8 · Atascos reales",
+          "note": "Causa: obra, accidente, semáforo o coche parado.",
+          "example": ["1 frena → 3 frenan → 20 reducen → atasco"]
+        },
+        {
+          "name": "9 · Accidentes espontáneos",
+          "note": "Probabilidad baja. Resultado: coche parado → cola → desvío.",
+          "items": ["alcance", "incorporación", "frenazo", "golpe aparcando"]
+        },
+        {
+          "name": "10 · Vehículos especiales",
+          "items": ["Autobús: para", "Taxi: recoge", "Repartidor: doble fila", "Camión: gira lento", "Moto: filtra tráfico", "Emergencias: prioridad"]
+        },
+        {
+          "name": "11 · Reacción al jugador",
+          "example": ["Invades carril → pitidos", "Bloqueas → te rodean", "Aparcas mal → esperan", "Choque → evitan la zona"]
+        },
+        {
+          "name": "12 · Sistema de percepción",
+          "note": "Cada coche detecta frontal, laterales y retrovisor. Ignora lo demasiado lejano."
+        },
+        {
+          "name": "13 · Eventos emergentes",
+          "example": ["Obra → desvío → atasco → policía → peatones cruzan", "Ambulancia → coches se apartan → uno frena → otro golpea", "Aparcas mal → cola → pitidos → coches giran"]
+        },
+        {
+          "name": "14 · Aparcamiento vivo",
+          "items": ["Buscar sitio", "Maniobrar", "Salir", "Liberar plaza"]
+        },
+        {
+          "name": "15 · Optimización",
+          "note": "Cuánta simulación según la distancia.",
+          "items": ["50 m → simulación completa", "200 m → simplificada", "500 m → solo velocidad", "1 km → estadística"]
+        }
+      ],
+      "feeling": "Poder dejar el coche aparcado y ver una calle funcionar sola durante 15 minutos sin repetirse."
+    },
+    {
+      "id": "streaming-mundo",
+      "title": "Streaming del mundo",
+      "category": "Mundo grande y vivo",
+      "icon": "🧩",
+      "visual": 2,
+      "theme": "tecnico",
+      "related": ["mapa-ampliado", "mundo-persistente", "marbella-datos-reales", "simulacion-global"],
+      "objetivo": "Que el mundo parezca enorme sin cargarlo todo a la vez, sin lag y sin pantallas de carga.",
+      "central": "El mundo no existe entero a la vez. Solo existe lo que el jugador necesita ver.",
+      "systems": [
+        {
+          "name": "1 · Zonas (chunks)",
+          "note": "El mapa se divide en bloques que se cargan, se mantienen activos y se descargan.",
+          "items": ["ciudad centro", "playa", "carretera", "montaña", "pueblo", "autopista"]
+        },
+        {
+          "name": "2 · Radio de carga",
+          "note": "Cuánto detalle según la distancia al jugador.",
+          "items": ["0–150 m → ultra detallado", "150–500 m → detallado medio", "500–1500 m → simplificado", "1500 m+ → no existe"]
+        },
+        {
+          "name": "3 · Carga progresiva",
+          "note": "Nunca aparece todo de golpe.",
+          "items": ["1. terreno básico", "2. edificios", "3. coches", "4. NPC", "5. detalles (luces, objetos)"]
+        },
+        {
+          "name": "4 · Despawning inteligente",
+          "note": "Lo que desaparece no se borra mal: los coches se guardan en memoria, los NPC guardan su estado y el tráfico se 'resume'.",
+          "example": ["Dejas una calle → vuelves → la calle sigue coherente"]
+        },
+        {
+          "name": "5 · Persistencia ligera",
+          "note": "El mundo recuerda algunas cosas, pero no todo.",
+          "items": ["coches aparcados", "accidentes recientes", "semáforos", "obras", "NPC importantes"]
+        },
+        {
+          "name": "6 · Streaming de tráfico",
+          "note": "Los coches no viajan por todo el mapa.",
+          "items": ["Se generan: delante del jugador, en entradas de carretera y en intersecciones", "Se eliminan: detrás del jugador y lejos de la vista"]
+        },
+        {
+          "name": "7 · Streaming de NPC",
+          "items": ["Activos: cerca del jugador y en calles visibles", "Lejos → solo 'estadística'", "Muy lejos → no existen"]
+        },
+        {
+          "name": "8 · Ocultación (culling)",
+          "note": "No renderizar lo que no se ve: edificios tapados, interiores cerrados, objetos pequeños lejanos.",
+          "items": ["frustum culling", "distance culling", "occlusion culling"]
+        },
+        {
+          "name": "9 · LOD (nivel de detalle)",
+          "note": "Cada objeto tiene varias versiones según la distancia.",
+          "items": ["LOD 0 → ultra detalle (cerca)", "LOD 1 → medio", "LOD 2 → bajo", "LOD 3 → bloque simple"],
+          "example": ["Coche cerca → interior visible", "Coche medio → modelo normal", "Coche lejos → cubo con textura"]
+        },
+        {
+          "name": "10 · Streaming de físicas",
+          "items": ["Activos: objetos, coches y NPC cercanos", "Lejos: sin física, solo posición aproximada"]
+        },
+        {
+          "name": "11 · Memoria del mundo",
+          "note": "Guarda eventos importantes para que el mundo no se sienta reiniciado.",
+          "items": ["accidente grande", "coche abandonado", "obra en carretera", "policía frecuente en una zona"]
+        },
+        {
+          "name": "12 · Regiones calientes",
+          "note": "El jugador 'activa' las zonas donde mira, conduce o se mueve mucho.",
+          "items": ["Zona activa → más IA", "→ más tráfico", "→ más detalle"]
+        },
+        {
+          "name": "13 · Optimización extrema",
+          "note": "Siempre priorizar en este orden.",
+          "items": ["1. lo que el jugador ve", "2. lo que está cerca", "3. lo que se mueve", "4. lo demás se simplifica"]
+        },
+        {
+          "name": "14 · Transición invisible",
+          "note": "Sin pop-in visible ni cargas bruscas.",
+          "items": ["Todo cambia suavemente", "por capas", "en milisegundos"]
+        },
+        {
+          "name": "15 · Resultado final",
+          "note": "El jugador siente 'esto es una ciudad enorme', pero el sistema solo simula un radio pequeño a su alrededor."
+        }
+      ],
+      "feeling": "Conducir 10 minutos en cualquier dirección sin pantallas de carga, sin cortes y sin notar cuándo el mundo se está generando."
+    },
+    {
+      "id": "narrativa-dinamica",
+      "title": "Narrativa dinámica y misiones emergentes",
+      "category": "Mundo grande y vivo",
+      "icon": "🎭",
+      "visual": 1,
+      "theme": "mundo-vivo",
+      "related": ["ia-profunda", "crimen-control", "eventos", "oportunidades-emergentes", "trabajos-dinamicos"],
+      "objetivo": "Que las misiones no sean fijas, sino que aparezcan según lo que está pasando en la ciudad.",
+      "central": "El objetivo no es 'hacer misiones'. Es que el mundo te las vaya contando solo.",
+      "systems": [
+        {
+          "name": "1 · Eventos como semilla",
+          "note": "Las misiones nacen de eventos del mundo.",
+          "items": ["accidente", "persecución policial", "robo", "pelea", "coche averiado", "NPC en peligro", "tráfico bloqueado"],
+          "example": ["Choque en autopista → se convierte en misión"]
+        },
+        {
+          "name": "2 · Generador de historias",
+          "note": "Estructura: inicio → problema → escalada → resolución.",
+          "example": ["NPC pierde el coche → lo buscas → descubres un robo → persecución → recuperación"]
+        },
+        {
+          "name": "3 · Roles dinámicos",
+          "note": "El rol cambia según lo que hagas.",
+          "items": ["testigo", "ayudante", "culpable", "perseguidor", "fugitivo"]
+        },
+        {
+          "name": "4 · NPC con historia propia",
+          "note": "Cada NPC importante tiene nombre, rutina, relación con zonas, estado actual y mini-historia.",
+          "example": ["'Luis, repartidor' → llega tarde → tiene prisa → puede generar un evento"]
+        },
+        {
+          "name": "5 · Consecuencias",
+          "note": "El mundo recuerda tus acciones.",
+          "items": ["Ayudas a alguien → te reconocen", "Robas un coche → la policía te busca", "Causas un accidente → zona más vigilada"]
+        },
+        {
+          "name": "6 · Misión sin marcadores fijos",
+          "note": "No solo iconos estáticos.",
+          "items": ["llamadas", "mensajes", "NPC hablando", "eventos visibles"],
+          "example": ["'¡Oye, ven rápido!'"]
+        },
+        {
+          "name": "7 · Cadenas de eventos",
+          "note": "Una acción puede generar otra.",
+          "example": ["Robo → persecución → choque → atasco → intervención policial → multitud"]
+        },
+        {
+          "name": "8 · Improvisación del sistema",
+          "note": "El juego combina varias cosas para crear la misión.",
+          "items": ["estado del tráfico", "NPC cercanos", "hora del día", "zona"]
+        },
+        {
+          "name": "9 · Escalada dinámica",
+          "note": "Las misiones pueden crecer: simple → media → caos.",
+          "example": ["Disputa pequeña → pelea → policía → persecución en coche"]
+        },
+        {
+          "name": "10 · Zonas con personalidad",
+          "note": "Cada zona tiene su comportamiento.",
+          "items": ["Centro: robos leves y tráfico", "Playa: turistas y eventos sociales", "Industrial: accidentes y camiones"]
+        },
+        {
+          "name": "11 · Reputación local",
+          "note": "Las zonas recuerdan cómo eres.",
+          "items": ["eres problemático", "eres ayudante", "eres desconocido"]
+        },
+        {
+          "name": "12 · Historias ramificadas",
+          "note": "Una misión puede terminar de varias formas.",
+          "items": ["éxito limpio", "éxito caótico", "fallo", "persecución"]
+        },
+        {
+          "name": "13 · Eventos raros",
+          "note": "Muy baja probabilidad.",
+          "items": ["atraco grande", "persecución múltiple", "intervención de helicóptero", "colapso total del tráfico"]
+        },
+        {
+          "name": "14 · Mundo que reacciona",
+          "note": "Después de una misión, el mundo cambia.",
+          "items": ["el tráfico cambia", "la policía aumenta su presencia", "los NPC comentan lo ocurrido"]
+        }
+      ],
+      "feeling": "El juego me está contando historias constantemente sin querer."
+    },
+    {
+      "id": "economia-vida",
+      "title": "Economía y vida persistente del jugador",
+      "category": "Mundo grande y vivo",
+      "icon": "💰",
+      "visual": 1,
+      "theme": "vida-jugador",
+      "related": ["economia", "apartamentos", "gps-movil", "inicio-juego", "crimen-control", "trabajos-dinamicos", "clima", "reputacion"],
+      "objetivo": "Que el jugador tenga una vida dentro del mundo: dinero, propiedades, gastos, progreso y consecuencias reales.",
+      "central": "El jugador ya no 'hace misiones'. Vive, gana, pierde, progresa y sobrevive.",
+      "systems": [
+        {
+          "name": "1 · Dinero real del jugador",
+          "note": "Tiene efectivo, banco (opcional), ingresos y gastos.",
+          "items": ["Fuentes: misiones", "trabajos legales (reparto, taxi)", "eventos", "recompensas policiales", "negocios"]
+        },
+        {
+          "name": "2 · Gastos reales",
+          "note": "El dinero no solo se gana, también se pierde.",
+          "items": ["gasolina", "reparaciones", "multas", "comida", "alojamiento", "transporte"]
+        },
+        {
+          "name": "3 · Trabajos dinámicos",
+          "note": "Trabajos simples integrados en el tráfico real.",
+          "items": ["repartidor", "taxi", "mensajero", "mecánico", "conductor"]
+        },
+        {
+          "name": "4 · Propiedades",
+          "note": "Cada propiedad es punto de guardado, respawn y almacén de vehículos.",
+          "items": ["alquilar piso", "comprar apartamento", "comprar casa", "tener garaje"]
+        },
+        {
+          "name": "5 · Vehículos propios",
+          "note": "Sistema de propiedad de vehículos.",
+          "items": ["coches guardados", "motos guardadas", "reparación y mejora", "personalización básica"]
+        },
+        {
+          "name": "6 · Progresión del jugador",
+          "note": "El jugador mejora con el uso.",
+          "items": ["conducción", "resistencia", "reputación", "habilidades sociales"],
+          "example": ["Más conducción → mejor control de vehículos"]
+        },
+        {
+          "name": "7 · Vida diaria",
+          "note": "Rutinas opcionales que añaden realismo (no obligatorias).",
+          "items": ["dormir", "comer", "cambiar de ropa", "visitar lugares"]
+        },
+        {
+          "name": "8 · Sistema de multas",
+          "note": "Dependen del nivel de búsqueda.",
+          "items": ["multar", "confiscar vehículo", "perseguir", "advertir"]
+        },
+        {
+          "name": "9 · Seguros y riesgo",
+          "note": "Opcional.",
+          "items": ["asegurar coches", "pagar menos por daños", "recuperar vehículos robados"]
+        },
+        {
+          "name": "10 · Mercado de vehículos",
+          "note": "Sistema de compra.",
+          "items": ["concesionarios", "coches usados", "precios variables"]
+        },
+        {
+          "name": "11 · Economía dinámica",
+          "note": "Los precios cambian según zona, demanda, eventos y hora.",
+          "example": ["Zona turística → precios más altos"]
+        },
+        {
+          "name": "12 · Negocios del jugador",
+          "note": "Generan ingresos pasivos.",
+          "items": ["taller", "tienda", "empresa de transporte"]
+        },
+        {
+          "name": "13 · Deudas y riesgo",
+          "note": "Opcional.",
+          "items": ["préstamos", "intereses", "penalizaciones"]
+        },
+        {
+          "name": "14 · Progreso natural del mundo",
+          "note": "El mundo sigue funcionando sin el jugador.",
+          "items": ["los NPC trabajan", "la economía sigue", "el tráfico sigue", "los negocios generan dinero"]
+        }
+      ],
+      "feeling": "Vivir en un mundo que sigue funcionando aunque tú no estés: ganar, perder, progresar y sobrevivir."
+    },
+    {
+      "id": "crimen-control",
+      "title": "Sistema de crimen, control y mundo dinámico avanzado",
+      "category": "Mundo grande y vivo",
+      "icon": "🚨",
+      "visual": 2,
+      "theme": "crimen-policia",
+      "related": ["reputacion", "narrativa-dinamica", "ia-profunda", "economia-vida", "emergencias-mundo"],
+      "objetivo": "Que el crimen no sea solo misiones, sino una parte viva del sistema del mundo.",
+      "central": "El jugador no está en el centro del mundo: el mundo responde a lo que ocurre (crimen, caos, patrones, zonas, historia reciente).",
+      "systems": [
+        {
+          "name": "1 · Tipos de crimen",
+          "note": "Cada tipo afecta al mundo de forma distinta.",
+          "items": ["Menor: robos, hurtos, vandalismo", "Medio: atracos, persecuciones", "Alto: organizaciones, sabotajes"]
+        },
+        {
+          "name": "2 · Nivel de búsqueda avanzado",
+          "note": "No son solo estrellas.",
+          "items": ["0 — limpio", "1 — sospechoso", "2 — identificado", "3 — perseguido", "4 — intensivo", "5 — máximo operativo"]
+        },
+        {
+          "name": "3 · Memoria policial",
+          "note": "No eres 'anónimo' siempre.",
+          "items": ["vehículos usados", "rutas frecuentes", "zonas de actividad", "patrones del jugador"]
+        },
+        {
+          "name": "4 · Persecuciones dinámicas",
+          "note": "Según el nivel de búsqueda.",
+          "items": ["bajo → 1 coche", "medio → varios coches", "alto → barricadas", "máximo → helicóptero + control de carreteras"]
+        },
+        {
+          "name": "5 · Zonas controladas",
+          "note": "Cada zona tiene un nivel policial distinto.",
+          "items": ["centro", "playa", "industrial", "residencial", "autopista"]
+        },
+        {
+          "name": "6 · Bandas / grupos NPC",
+          "note": "Grupos que existen en el mundo: trabajadores, delincuentes menores y bandas organizadas (raras).",
+          "items": ["conflictos", "alianzas", "persecuciones", "venganzas"]
+        },
+        {
+          "name": "7 · Escalada de conflicto",
+          "example": ["Robo pequeño → testigo → policía → persecución → accidente → bloqueo → refuerzos"]
+        },
+        {
+          "name": "8 · Testigos reales",
+          "note": "Los NPC pueden reaccionar.",
+          "items": ["llamar a la policía", "grabar", "huir", "intervenir"]
+        },
+        {
+          "name": "9 · Sistema de discreción",
+          "note": "El jugador puede bajar el nivel de búsqueda.",
+          "items": ["esconderse", "cambiar de coche", "cambiar de ropa", "perder el nivel de búsqueda"]
+        },
+        {
+          "name": "10 · Control de zona",
+          "note": "Acciones repetidas en una zona generan cambios.",
+          "items": ["más policía", "menos tráfico civil", "cambios en los NPC", "eventos más agresivos"]
+        },
+        {
+          "name": "11 · Economía del crimen",
+          "note": "El crimen también tiene economía.",
+          "items": ["recompensas", "pagos por misiones ilegales", "mercado negro (opcional)"]
+        },
+        {
+          "name": "12 · Consecuencias permanentes",
+          "items": ["Zona peligrosa → más vigilada", "Calles bloqueadas → obras", "Reputación criminal → cambia a los NPC"]
+        },
+        {
+          "name": "13 · Escalada nacional (simplificada)",
+          "note": "No es todo el país, pero la presión sube.",
+          "items": ["la atención local sube", "la policía refuerza áreas", "eventos más frecuentes"]
+        },
+        {
+          "name": "14 · IA criminal emergente",
+          "note": "Los NPC criminales actúan solos.",
+          "items": ["escapar solos", "traicionarse", "cambiar rutas", "evitar a la policía"]
+        }
+      ],
+      "feeling": "El mundo ya no gira en torno al jugador: reacciona al crimen, el caos y lo que acaba de pasar."
+    },
+    {
+      "id": "alpha-publica",
+      "title": "Alpha pública y comunidad inicial",
+      "category": "Lanzamiento",
+      "icon": "🧪",
+      "visual": 1,
+      "theme": "lanzamiento",
+      "related": ["demo", "lanzamiento-completo"],
+      "objetivo": "Lanzar el juego al público aunque no esté terminado, para obtener jugadores reales, errores reales y feedback real.",
+      "central": "No busca la perfección, sino jugadores reales, errores reales y feedback real.",
+      "systems": [
+        {
+          "name": "1 · Versión alpha limitada",
+          "note": "No es un juego completo, es una base jugable.",
+          "items": ["mapa reducido o zonas bloqueadas", "sistemas principales activos (conducción, IA básica, tráfico)", "bugs esperados"]
+        },
+        {
+          "name": "2 · Distribución simple",
+          "note": "Sin registro obligatorio.",
+          "items": ["descarga directa desde la web", "launcher básico", "itch.io o plataforma indie"]
+        },
+        {
+          "name": "3 · Actualizaciones frecuentes",
+          "note": "Ciclos rápidos (semanales o quincenales), cada uno enfocado en algo.",
+          "items": ["1ª → arreglar bugs", "2ª → mejoras de IA", "3ª → rendimiento"]
+        },
+        {
+          "name": "4 · Telemetría básica",
+          "note": "Sin invadir la privacidad.",
+          "items": ["FPS medio", "zonas más jugadas", "crashes", "tiempo de juego"]
+        },
+        {
+          "name": "5 · Feedback directo",
+          "note": "Prioridad: escuchar lo que rompe el juego.",
+          "items": ["Discord", "formularios", "comentarios en la web", "clips de jugadores"]
+        },
+        {
+          "name": "6 · Sistema de bugs",
+          "note": "Clasificación por gravedad.",
+          "items": ["crítico (rompe el juego)", "alto (afecta al gameplay)", "medio (molesto)", "bajo (visual)"]
+        },
+        {
+          "name": "7 · Comunidad inicial",
+          "note": "Crear una base de jugadores.",
+          "items": ["Discord oficial", "anuncios de devlog", "clips en redes", "encuestas"]
+        },
+        {
+          "name": "8 · Devlog público",
+          "note": "Transparencia total en cada actualización.",
+          "items": ["qué se añadió", "qué se arregló", "qué está en desarrollo"]
+        },
+        {
+          "name": "9 · Balance del juego",
+          "note": "Ajustes basados en los jugadores.",
+          "items": ["economía", "policía", "tráfico", "dificultad"]
+        },
+        {
+          "name": "10 · Optimización real",
+          "note": "Optimizar según el mundo real.",
+          "items": ["PCs reales", "errores reales", "hardware de bajo rendimiento"]
+        },
+        {
+          "name": "11 · Protección básica",
+          "note": "Evitar problemas comunes.",
+          "items": ["exploits simples", "duplicación de dinero", "corrupción de partidas"]
+        },
+        {
+          "name": "12 · Identidad del juego",
+          "note": "Definir claramente la personalidad del juego.",
+          "items": ["nombre oficial", "estilo visual", "tono (realista, España)", "qué lo hace diferente a GTA"]
+        },
+        {
+          "name": "13 · Objetivo de esta fase",
+          "note": "No es la perfección.",
+          "items": ["descubrir qué es divertido", "qué rompe el juego", "qué engancha"]
+        }
+      ],
+      "feeling": "El juego deja de ser un proyecto individual: pasa a ser un mundo en evolución con jugadores reales dentro."
+    },
+    {
+      "id": "lanzamiento-completo",
+      "title": "Lanzamiento completo (versión 1.0)",
+      "category": "Lanzamiento",
+      "icon": "🏆",
+      "visual": 1,
+      "theme": "lanzamiento",
+      "related": ["alpha-publica", "demo"],
+      "objetivo": "Publicar el juego como producto completo, pulido, con identidad propia, mundo sólido y sistemas estables.",
+      "central": "Ya no es 'tipo GTA': es su propio mundo, con identidad propia.",
+      "systems": [
+        {
+          "name": "1 · Contenido final",
+          "items": ["mapa completo (Marbella + costa + interior + zonas rurales)", "tráfico emergente funcional", "IA avanzada optimizada", "sistema policial completo", "economía jugable", "misiones dinámicas", "sistema de vida del jugador"]
+        },
+        {
+          "name": "2 · Experiencia pulida",
+          "note": "Todo debe sentirse fluido, coherente, sin bugs críticos y con buen rendimiento."
+        },
+        {
+          "name": "3 · Identidad del juego",
+          "note": "Ya no es 'tipo GTA': es su propio mundo.",
+          "items": ["ambientación España realista", "ciudades inspiradas pero ficticias", "cultura urbana propia", "estilo visual definido"]
+        },
+        {
+          "name": "4 · Historia principal (opcional)",
+          "items": ["campaña corta", "personajes principales", "narrativa conectada al mundo sandbox"]
+        },
+        {
+          "name": "5 · Sistema de progreso completo",
+          "note": "El jugador empieza sin nada y elige su camino.",
+          "items": ["empezar sin nada", "progresar económicamente", "comprar propiedades", "construir reputación", "elegir estilo de vida"]
+        },
+        {
+          "name": "6 · Optimización final",
+          "items": ["estabilidad de FPS", "carga rápida del mundo", "streaming optimizado", "soporte para PCs bajos y altos"]
+        },
+        {
+          "name": "7 · Modos de juego",
+          "items": ["libre (sandbox)", "historia", "desafíos", "trabajos"]
+        },
+        {
+          "name": "8 · Sonido y atmósfera",
+          "items": ["radio inmersiva", "sonidos urbanos reales", "ambiente por zonas", "clima dinámico completo"]
+        },
+        {
+          "name": "9 · Polish final",
+          "items": ["Quitar: bugs conocidos, sistemas inconsistentes, mecánicas redundantes", "Mejorar: controles, conducción, IA, animaciones"]
+        },
+        {
+          "name": "10 · Lanzamiento",
+          "note": "Plataformas posibles.",
+          "items": ["web oficial", "launcher propio", "itch.io", "Steam (si se publica profesionalmente)"]
+        },
+        {
+          "name": "11 · Marketing",
+          "items": ["trailer oficial", "clips virales", "demo gratuita", "devlogs finales"]
+        },
+        {
+          "name": "12 · Futuro (después de 1.0)",
+          "items": ["expansiones", "nuevas ciudades", "multiplayer (opcional)", "mods"]
+        }
+      ],
+      "feeling": "El juego deja de ser un proyecto y se convierte en un producto vivo que puede crecer como franquicia."
+    },
+    {
+      "id": "inicio-juego",
+      "title": "Cómo debería empezar el juego",
+      "category": "Inicio y onboarding",
+      "icon": "🎬",
+      "visual": 2,
+      "theme": "onboarding",
+      "related": ["dia-1", "economia-vida", "gps-movil", "apartamentos", "trafico-emergente", "trabajos-dinamicos"],
+      "objetivo": "Que el comienzo enganche y enseñe lo básico viviéndolo, sin tutorial aburrido: empiezas desde cero en una ciudad viva.",
+      "central": "El tutorial no se lee ni se hace con menús: se vive a través del mundo.",
+      "systems": [
+        {
+          "name": "1 · Intro cinemática (1–2 min)",
+          "note": "Mensaje implícito: 'empiezas desde cero en una ciudad viva'.",
+          "items": ["Llegas a la Costa del Sol en autobús o coche compartido", "Te bajas en una estación o zona de ciudad", "Tienes poco dinero", "El mundo sigue vivo alrededor (tráfico, gente, ruido)"]
+        },
+        {
+          "name": "2 · Primera fase: sobrevivir",
+          "note": "Aprender lo básico sin tutorial aburrido. Te guía el mundo, no los menús.",
+          "items": ["'Consigue tu primer trabajo'", "'Busca alojamiento'"]
+        },
+        {
+          "name": "3 · Trabajo inicial (pizzería)",
+          "note": "Te acercas a un local y un NPC te habla: '¿Buscas trabajo? Necesito repartidores'.",
+          "items": ["Empiezas como repartidor", "Aprendes: conducir, mapa básico, tráfico y dinero"]
+        },
+        {
+          "name": "4 · Progresión natural (sin forzar tutorial)",
+          "note": "En vez de 'haz clic aquí', el juego te lo hace vivir.",
+          "example": ["Repartes pizza → ganas dinero → ves anuncios de pisos baratos → necesitas teléfono → compras un móvil → empiezas a usar mapas y contactos"]
+        },
+        {
+          "name": "5 · Sistema de vivienda",
+          "note": "Da progresión real, no solo misiones.",
+          "items": ["Primero: habitación barata, alquiler simple, zona humilde", "Después: piso mejor, garaje y libertad total"]
+        },
+        {
+          "name": "6 · Teléfono como hub del juego",
+          "note": "Tu 'menú dentro del mundo'.",
+          "items": ["trabajo", "mapa", "contactos", "mensajes", "misiones", "GPS"]
+        },
+        {
+          "name": "7 · Estructura del tutorial (sin que lo parezca)",
+          "items": ["Fase 1 (0–30 min): trabajo básico, aprender a moverte, primer dinero", "Fase 2 (30–90 min): alquilar casa, comprar coche barato, más libertad", "Fase 3 (ya libre): haces lo que quieras — crimen, trabajos, exploración"]
+        },
+        {
+          "name": "8 · Errores a evitar",
+          "note": "Lo que NO hay que hacer.",
+          "items": ["❌ Soltar al jugador sin guía", "❌ Obligar a leer textos largos", "❌ Hacer un tutorial tipo videojuego antiguo"]
+        }
+      ],
+      "feeling": "Empezar desde cero en una ciudad viva y aprender jugando, sin que parezca un tutorial."
+    },
+    {
+      "id": "dia-1",
+      "title": "Día 1 — Llegada a la Costa del Sol",
+      "category": "Inicio y onboarding",
+      "icon": "🌅",
+      "visual": 2,
+      "theme": "onboarding",
+      "related": ["inicio-juego", "economia-vida", "gps-movil", "apartamentos", "conducir-real", "trabajos-dinamicos"],
+      "objetivo": "Guion concreto de la primera hora de juego: de bajarte del autobús sin nada a elegir tu camino.",
+      "central": "Llegas sin nada y la ciudad te va enseñando a vivir en ella, paso a paso.",
+      "systems": [
+        {
+          "name": "0 · Intro (0–2 min)",
+          "note": "Llegas en autobús interurbano. Se ve la ciudad (tráfico, gente, sol fuerte, ruido). Te bajas con una mochila.",
+          "items": ["Dinero: 120€", "Sin casa", "Sin trabajo"],
+          "example": ["Conductor: 'Suerte por aquí, la vas a necesitar.' → el bus se va y te quedas solo"]
+        },
+        {
+          "name": "1 · Primera libertad (2–5 min)",
+          "note": "No hay flechas aún. El juego solo sugiere: 'encuentra información de trabajo' y 'busca dónde quedarte'.",
+          "items": ["caminar", "explorar", "robar un coche (si quieres)", "hablar con NPC"]
+        },
+        {
+          "name": "2 · Primer contacto (5–10 min)",
+          "note": "Cerca hay una pizzería. Si te acercas, un NPC: '¿Buscas trabajo? Necesito repartidores urgentes.'",
+          "items": ["Aceptar ✔ → te dan una moto vieja o bici y te explican muy poco (solo el destino)", "Irte"]
+        },
+        {
+          "name": "3 · Primer trabajo (10–20 min)",
+          "note": "Misión simple: recoger un pedido y entregar en 2–3 puntos.",
+          "items": ["Aprendes: mapa básico, tráfico real, semáforos y GPS muy simple"],
+          "example": ["Recompensa: 40–80€", "NPC: 'No está mal para empezar…'"]
+        },
+        {
+          "name": "4 · Primera necesidad: el móvil (20–30 min)",
+          "note": "El juego sugiere: 'necesitas un teléfono para acceder a mejores trabajos'.",
+          "items": ["Vas a una tienda de electrónica o mercado barato", "Compras un móvil básico (~80€)", "Desbloqueas: mapa completo, mensajes y trabajos nuevos"]
+        },
+        {
+          "name": "5 · Buscar casa (30–45 min)",
+          "note": "El móvil te manda un anuncio: 'Habitación en zona obrera – 200€/mes'. Aún no tienes suficiente.",
+          "items": ["Sigues trabajando o buscas alternativas baratas", "Dormir en la calle (riesgo)", "Usar una habitación compartida"]
+        },
+        {
+          "name": "6 · Primera decisión importante (45–60 min)",
+          "note": "Opciones reales que marcan tu camino.",
+          "items": ["A) Seguir trabajando legal (pizzería, taxi futuro): progreso lento", "B) Explorar la ciudad: descubrir zonas y oportunidades", "C) Caos (sandbox): robar coche, huir de la policía, cambiar la historia"]
+        },
+        {
+          "name": "7 · Final del Día 1 (libre)",
+          "note": "Cae la noche: farolas, menos gente, más ambiente inmersivo.",
+          "example": ["El juego guarda estado: 'Has empezado tu vida en la Costa del Sol'"]
+        }
+      ],
+      "feeling": "Tu primer día: llegas sin nada y la ciudad te va enseñando a vivir en ella."
+    },
+    {
+      "id": "trabajos-dinamicos",
+      "title": "Trabajos dinámicos según tu vida",
+      "category": "Mundo grande y vivo",
+      "icon": "💼",
+      "visual": 2,
+      "theme": "mundo-vivo",
+      "related": ["oportunidades-emergentes", "economia-vida", "gps-movil", "inicio-juego", "dia-1", "narrativa-dinamica", "interaccion-mundo"],
+      "objetivo": "Que el mundo no te dé misiones fijas, sino oportunidades según quién eres y dónde estás.",
+      "central": "No eliges misiones en un menú: la ciudad te ofrece trabajo según tu vida.",
+      "systems": [
+        {
+          "name": "1 · Perfil del jugador (capa principal)",
+          "note": "El juego siempre sabe tu situación, y eso decide qué trabajos aparecen.",
+          "items": ["dinero", "si tienes móvil", "si tienes casa", "si tienes vehículo", "reputación (limpio / sospechoso / criminal)", "ubicación"]
+        },
+        {
+          "name": "2 · Trabajos por contexto (lo clave)",
+          "note": "No salen de un menú fijo: aparecen según tu situación.",
+          "items": ["🚶 A pie: la pizzería ofrece reparto, una tienda pide ayuda, NPC piden favores", "🛵 Con vehículo: reparto mejor pagado, mensajería urgente, transporte", "📱 Con móvil: trabajos por mensajes y llamadas ('necesitamos a alguien ahora')", "🌙 De noche: trabajos ilegales (riesgo alto), guardias, eventos raros"]
+        },
+        {
+          "name": "3 · Legal básico (inicio)",
+          "note": "Se generan automáticamente cerca; un NPC te habla físicamente.",
+          "items": ["repartidor de comida", "ayudante de tienda", "mensajero", "limpieza rápida"]
+        },
+        {
+          "name": "4 · Trabajo por móvil",
+          "note": "Cuando tienes teléfono. Se generan según el tráfico, la demanda de NPC y la zona.",
+          "example": ["'Trabajo urgente: entrega un paquete en 3 puntos – 60€'", "'Taxi necesita conductor ahora'"]
+        },
+        {
+          "name": "5 · Trabajos de conducción",
+          "note": "Si tienes coche. Clave: más tráfico = más demanda.",
+          "items": ["taxi informal", "transporte de NPC", "llevar un coche al taller", "mover mercancía"]
+        },
+        {
+          "name": "6 · Trabajos de NPC (emergentes)",
+          "note": "NPC en la calle generan misiones según eventos reales del mundo.",
+          "example": ["'Se me ha estropeado el coche'", "'Necesito llegar al hospital'", "'Me han robado el bolso'"]
+        },
+        {
+          "name": "7 · Trabajos de riesgo (más adelante)",
+          "note": "Solo si el jugador muestra cierto comportamiento (conducción agresiva, reputación baja, zonas peligrosas).",
+          "items": ["entregas ilegales", "huir de la policía (no como misión fija, sino un evento que puede 'convertirse' en trabajo)"]
+        },
+        {
+          "name": "8 · Sistema de generación (cómo decide el juego)",
+          "note": "Cada pocos segundos el juego evalúa.",
+          "items": ["En zona urbana → generar 1–3 oportunidades", "En un trabajo → reducir nuevas ofertas", "Poco dinero → más probabilidad de trabajo", "De noche → más riesgo y más pago"]
+        },
+        {
+          "name": "9 · Cómo aparecen (muy importante)",
+          "note": "Nada de menús aburridos: son notificaciones del mundo.",
+          "items": ["llamada", "mensaje", "NPC acercándose", "cartel en una tienda", "conversación escuchada"]
+        },
+        {
+          "name": "10 · Oportunidad real (no 'elige misión')",
+          "note": "El jugador nunca ve 'elige misión'; ve 'hay algo pasando cerca de ti'."
+        },
+        {
+          "name": "11 · Balance",
+          "note": "Para que funcione bien.",
+          "items": ["1–2 oportunidades cada pocos minutos", "nunca saturar", "siempre 1 opción segura", "siempre 1 opción mejor pagada", "siempre poder ignorar todo"]
+        }
+      ],
+      "feeling": "La ciudad me ofrece cosas; no estoy en un menú de misiones, puedo vivir aquí."
+    },
+    {
+      "id": "oportunidades-emergentes",
+      "title": "Oportunidades emergentes (eventos que se vuelven trabajo)",
+      "category": "Mundo grande y vivo",
+      "icon": "✨",
+      "visual": 2,
+      "theme": "mundo-vivo",
+      "related": ["trabajos-dinamicos", "narrativa-dinamica", "eventos", "ia-profunda", "crimen-control", "trafico-emergente", "emergencias-mundo", "reputacion"],
+      "objetivo": "Que el mundo genere eventos reales y el sistema decida si pueden convertirse en algo que el jugador haga.",
+      "central": "No haces misiones: el mundo dice 'si quieres, métete en lo que está pasando ahora mismo'.",
+      "systems": [
+        {
+          "name": "1 · Capa base: eventos del mundo",
+          "note": "La ciudad siempre simula cosas, ocurran o no por el jugador.",
+          "items": ["accidentes", "discusiones", "coches averiados", "robos menores", "repartidores retrasados", "policía patrullando", "obras", "tráfico bloqueado"]
+        },
+        {
+          "name": "2 · Detector de oportunidad",
+          "note": "Cada evento pasa un filtro; si todo es 'sí', se activa la oportunidad.",
+          "items": ["¿Es visible para el jugador?", "¿Está cerca?", "¿Puede interactuar?", "¿Tiene lógica jugable?"]
+        },
+        {
+          "name": "3 · Conversión a trabajo dinámico",
+          "note": "Un mismo evento se convierte en cosas distintas según el contexto.",
+          "example": ["Accidente → 🔧 mover el coche / 🚑 llevar al herido / 📸 testigo / 🚔 evitar la zona policial", "Reparto fallido → 🍕 haz la entrega / ⏱ entrega urgente con bonus / 📱 recoger pedido abandonado", "NPC en problemas → 🏃 perseguir al ladrón / 🚕 llevarle a casa / 📞 llamar a la policía", "Policía patrullando → 🚗 acompañar convoy / 📦 transporte vigilado / ⚠️ escapar si eres criminal"]
+        },
+        {
+          "name": "4 · Sistema de decisión",
+          "note": "El juego evalúa proximidad, visibilidad y tu contexto.",
+          "items": ["📍 cerca = jugable · lejos = ignorado", "👀 si lo ves = activo", "🧍 poco dinero → más trabajos", "coche → trabajos de conducción", "móvil → trabajos por llamada", "reputación → cambia el tipo de evento"]
+        },
+        {
+          "name": "5 · Transformación dinámica",
+          "note": "Un evento evoluciona con el tiempo.",
+          "example": ["accidente → tráfico bloqueado → NPC herido → llega la policía → intervienes → 'misión improvisada'"]
+        },
+        {
+          "name": "6 · Niveles de interacción",
+          "items": ["Nivel 0: ignorar", "Nivel 1: observar", "Nivel 2: interactuar a medias", "Nivel 3: convertirte en protagonista del evento"]
+        },
+        {
+          "name": "7 · Eventos en cadena (lo más importante)",
+          "note": "Un evento genera otro: crea 'historia viva'.",
+          "example": ["accidente → atasco → enfado NPC → pelea → policía → persecución"]
+        },
+        {
+          "name": "8 · Oportunidad invisible",
+          "note": "El jugador no ve 'misión disponible'; ve 'algo está pasando aquí'."
+        },
+        {
+          "name": "9 · Eventos especiales (raros)",
+          "note": "Muy baja probabilidad.",
+          "items": ["persecución policial en cadena", "helicóptero", "colapso de tráfico", "robo a gran escala", "emergencia médica múltiple"]
+        },
+        {
+          "name": "10 · Balance",
+          "note": "Reglas para que funcione bien.",
+          "items": ["no más de 1–3 eventos activos cerca", "no todos se convierten en trabajos", "algunos solo son ambientación", "siempre variedad, nunca repetición exacta"]
+        }
+      ],
+      "feeling": "El mundo no me espera: si estoy aquí pasan cosas, y las misiones no están escritas, emergen."
+    },
+    {
+      "id": "fidelidad-visual",
+      "title": "Fidelidad visual y dirección artística",
+      "category": "Ambiente",
+      "icon": "🎨",
+      "visual": 5,
+      "theme": "marbella-visual",
+      "related": ["detalles-espanoles", "clima", "mapa-ampliado", "camara-avanzada", "danos-avanzados", "streaming-mundo", "marbella-datos-reales", "npc-coches-realistas", "vehiculos-realistas", "objetos-mundo", "marbella-guia-visual", "principios-visuales", "cielo-atmosfera"],
+      "objetivo": "Que el mundo se vea realista, coherente y con sabor español: materiales, luz, atmósfera y detalle a nivel de un juego moderno.",
+      "central": "El estilo lo es todo: España realista, todo coherente, nada plano ni repetido.",
+      "systems": [
+        {
+          "name": "1 · Texturas base del mundo",
+          "items": ["asfalto (seco, mojado, desgastado)", "hormigón urbano (pisos y edificios)", "ladrillo y fachadas mediterráneas", "pintura de carreteras (líneas, pasos de peatones)", "metal (farolas, coches, señales)", "cristal (ventanas y escaparates)", "tierra, arena y vegetación", "paredes interiores básicas"]
+        },
+        {
+          "name": "2 · Calidad de materiales (PBR)",
+          "note": "Objetivo: evitar que todo se vea plano o repetido.",
+          "items": ["reflejos realistas", "rugosidad variable", "suciedad ligera integrada", "desgaste por uso", "variación aleatoria ligera (no repetitivo)"]
+        },
+        {
+          "name": "3 · Identidad visual española",
+          "note": "Que parezca España sin copiar ciudades reales.",
+          "items": ["persianas metálicas", "balcones con objetos", "terrazas de bares", "cables entre edificios", "rotondas y señales españolas", "aceras estrechas en zonas urbanas", "mezcla de edificios modernos y antiguos"]
+        },
+        {
+          "name": "4 · Iluminación base",
+          "note": "Sistema de luz realista.",
+          "items": ["sol cálido mediterráneo", "sombras suaves y largas", "iluminación interior visible desde la calle", "farolas nocturnas funcionales", "luces de coches con rebote realista"]
+        },
+        {
+          "name": "5 · Atmósfera y color (post-procesado)",
+          "items": ["color grading cálido (España / Costa del Sol)", "contraste moderado", "bloom suave en las luces", "niebla ligera a distancia", "saturación controlada (no exagerada)"]
+        },
+        {
+          "name": "6 · Reflejos y superficies",
+          "items": ["coches con reflejos dinámicos", "calles mojadas con reflejo visible", "cristales que reflejan el entorno", "charcos en el suelo tras la lluvia"]
+        },
+        {
+          "name": "7 · Detalle urbano (dressing)",
+          "note": "El mundo debe sentirse vivo.",
+          "items": ["papeleras, bancos, señales", "plantas, macetas, árboles urbanos", "terrazas con sillas y mesas", "publicidad ficticia", "objetos pequeños en las calles", "variación de edificios (no repetidos)"]
+        },
+        {
+          "name": "8 · Vehículos (realismo visual)",
+          "items": ["pintura con brillo realista", "suciedad acumulada", "daños progresivos visibles", "luces físicas (faros, intermitentes)", "interior básico visible desde fuera"]
+        },
+        {
+          "name": "9 · Nivel de detalle (LOD visual)",
+          "note": "Optimización visual según la distancia.",
+          "items": ["Cerca: texturas completas + detalles finos", "Medio: menos detalle y menos objetos secundarios", "Lejos: siluetas + texturas simples"]
+        },
+        {
+          "name": "10 · Coherencia artística",
+          "note": "Reglas obligatorias.",
+          "items": ["todo el mundo comparte el mismo estilo visual", "no mezclar realismo con cartoon", "mantener escala humana consistente", "evitar assets 'fuera de estilo'"]
+        }
+      ],
+      "feeling": "Que al ver una captura pienses 'esto es la Costa del Sol', no un mapa genérico."
+    },
+    {
+      "id": "marbella-datos-reales",
+      "title": "Mundo basado en la Marbella real (Google Maps)",
+      "category": "Ambiente",
+      "icon": "🛰️",
+      "visual": 5,
+      "theme": "marbella-visual",
+      "related": ["mapa-ampliado", "fidelidad-visual", "streaming-mundo", "detalles-espanoles", "trafico-emergente", "marbella-guia-visual"],
+      "objetivo": "Construir el mundo copiando la Marbella real de Google Maps (satélite + Street View) para que sea fiel y reconocible.",
+      "central": "La fuente visual es Google Maps; no se inventa nada. OpenStreetMap solo se usa de apoyo si falta geometría exacta.",
+      "systems": [
+        {
+          "name": "1 · Fuente visual: Google Maps",
+          "note": "La referencia oficial para TODO el aspecto.",
+          "items": ["Vista satélite: formas de manzanas y edificios, alturas aprox., trazado de calles", "Street View: colores y materiales de fachadas, ventanas, aceras, mobiliario, vegetación", "Capturas de cada zona como referencia al construir", "Comparar el resultado con Google Maps hasta que coincida"]
+        },
+        {
+          "name": "2 · Qué copiar de la vista satélite",
+          "items": ["forma y tamaño de cada edificio", "alturas aproximadas (número de plantas)", "trazado de calles y manzanas", "rotondas, plazas y zonas verdes", "línea de costa y playas", "colores de tejados y del suelo"]
+        },
+        {
+          "name": "3 · Qué copiar de Street View",
+          "items": ["colores y materiales de las fachadas", "ventanas, persianas y balcones", "aceras (ancho, bordillos, pavimento)", "mobiliario urbano y señales", "vegetación real de cada calle", "comercios y rótulos"]
+        },
+        {
+          "name": "4 · Red de carreteras fiel",
+          "items": ["carriles reales (mirando Street View)", "líneas continuas/discontinuas como en la realidad", "rotondas fieles en estructura", "autopistas, salidas, cruces y semáforos"]
+        },
+        {
+          "name": "5 · Terreno y proporciones",
+          "items": ["pendientes y elevación del terreno", "proporciones reales", "densidad urbana correcta"]
+        },
+        {
+          "name": "6 · OpenStreetMap solo como apoyo",
+          "note": "Únicamente si Google Maps no basta.",
+          "items": ["geometría exacta de calles si hiciera falta", "nombres de calles y datos sueltos", "siempre como complemento, nunca como base visual"]
+        },
+        {
+          "name": "7 · Vida y aspecto coherentes",
+          "items": ["tráfico realista", "iluminación natural mediterránea", "materiales coherentes con lo real"]
+        }
+      ],
+      "feeling": "Poner el juego al lado de Google Maps y que sea la misma Marbella."
+    },
+    {
+      "id": "npc-coches-realistas",
+      "title": "NPC y coches realistas (vida creíble)",
+      "category": "Mundo grande y vivo",
+      "icon": "👥",
+      "visual": 4,
+      "theme": "mundo-vivo",
+      "related": ["animaciones", "vida-urbana", "ia-profunda", "trafico-emergente", "fidelidad-visual", "interiores", "vehiculos-realistas", "objetos-mundo", "sonido-mundo", "diversidad-humana"],
+      "objetivo": "Que las personas y los coches dejen de ser formas simples y se vean y se comporten como reales, llenando la ciudad de vida creíble.",
+      "central": "La ciudad se siente viva: gente humana de verdad y coches reales, no cajas ni muñecos.",
+      "systems": [
+        {
+          "name": "1 · NPC humanos completos",
+          "items": ["proporciones humanas reales (altura, hombros, postura)", "caras con rasgos básicos (no planas ni genéricas)", "animaciones de caminar naturales", "movimientos de brazos y cabeza", "variación de cuerpos (delgado, normal, mayor)"]
+        },
+        {
+          "name": "2 · Movimiento natural (no robótico)",
+          "items": ["caminar con peso corporal", "mirar alrededor mientras caminan", "pequeños ajustes de postura", "reaccionar a obstáculos", "parar, girar y dudar antes de cruzar"]
+        },
+        {
+          "name": "3 · Vida en terrazas y bares",
+          "items": ["NPC sentados conversando", "gestos de manos al hablar", "risas, discusiones y charlas cortas", "mirar el móvil", "pedir comida o bebida", "levantarse y marcharse"]
+        },
+        {
+          "name": "4 · Gente en las calles",
+          "items": ["grupos caminando", "personas solas con un objetivo", "mirar escaparates", "esperar en semáforos", "cruzar con duda si hay tráfico", "reaccionar a ruido o accidentes"]
+        },
+        {
+          "name": "5 · Coches que dejan de ser cajas",
+          "items": ["modelos con proporciones reales", "faros físicos (no luces planas)", "ruedas con suspensión visible", "reflejos de carrocería", "suciedad y desgaste leve"]
+        },
+        {
+          "name": "6 · Comportamiento de los coches",
+          "items": ["frenadas suaves o bruscas según el conductor", "intermitentes funcionales", "giros con radio realista", "cambios de carril con anticipación", "errores humanos ocasionales"]
+        },
+        {
+          "name": "7 · Tráfico variado (no repetitivo)",
+          "items": ["coches pequeños urbanos", "furgonetas de reparto", "motos y scooters", "coches familiares", "vehículos de lujo ocasionales", "autobuses y taxis"]
+        },
+        {
+          "name": "8 · NPC reaccionan a los coches",
+          "items": ["apartarse si se acercan", "mirar si pasa uno rápido", "asustarse si casi hay choque", "grabar accidentes con el móvil", "discutir tras un impacto"]
+        },
+        {
+          "name": "9 · Pequeños detalles que dan realismo",
+          "items": ["ajustarse la ropa", "mirar el reloj o el móvil", "fumar en las esquinas", "hablar solos brevemente", "esperar apoyados en paredes", "bolsas de compra visibles", "basura ligera en las calles"]
+        },
+        {
+          "name": "10 · Optimización visual (LOD)",
+          "items": ["Cerca: NPC detallados + animaciones completas", "Media: animaciones simplificadas", "Lejos: simulación estadística (sin animación completa)", "Muy lejos: solo densidad de movimiento"]
+        },
+        {
+          "name": "11 · Vida visible desde fuera",
+          "items": ["gente dentro de las cafeterías", "movimiento detrás de los cristales", "sombras dinámicas en interiores"]
+        }
+      ],
+      "feeling": "Mirar la calle y creer que hay vida real: personas y coches que se mueven como de verdad."
+    },
+    {
+      "id": "vehiculos-realistas",
+      "title": "Sistema de vehículos realistas (coches y motos)",
+      "category": "Conducción",
+      "icon": "🚗",
+      "visual": 4,
+      "theme": "conduccion",
+      "related": ["conducir-real", "danos-avanzados", "trafico-emergente", "npc-coches-realistas", "fidelidad-visual", "sonido-mundo", "animaciones", "fisicas-caos"],
+      "objetivo": "Que todos los vehículos parezcan reales, coherentes entre sí y con comportamiento humano creíble, sin copiar marcas reales.",
+      "central": "Parecidos a la vida real en proporción, no en marca: nada de efecto 'coche de juguete'.",
+      "systems": [
+        {
+          "name": "1 · Diseño (realismo sin copia directa)",
+          "note": "Inspirados en formas reales, sin clonar marcas.",
+          "items": ["sedanes tipo europeo", "compactos urbanos", "SUV familiares", "deportivos genéricos", "furgonetas de reparto", "taxis y vehículos de servicio", "scooters y motos deportivas"]
+        },
+        {
+          "name": "2 · Proporciones y escala real",
+          "note": "Evita el efecto 'coche de juguete'.",
+          "items": ["altura realista", "ancho de carril correcto", "ruedas proporcionales", "interior coherente con el exterior", "posición del conductor realista"]
+        },
+        {
+          "name": "3 · Materiales y superficies",
+          "items": ["pintura con reflejo físico", "variación de brillo según la luz", "suciedad progresiva (polvo, barro, agua)", "desgaste visual leve", "cristales con transparencia y reflejo", "faros físicos reales"]
+        },
+        {
+          "name": "4 · Variación de modelos",
+          "note": "El tráfico no repite coches idénticos.",
+          "items": ["versiones distintas del mismo tipo", "colores variados", "estados (nuevo, usado, viejo)", "personalización ligera de NPC"],
+          "example": ["10 compactos → todos distintos en color y detalle"]
+        },
+        {
+          "name": "5 · Motos y scooters",
+          "note": "Tienen su propia lógica.",
+          "items": ["scooter urbano (típico de España)", "moto deportiva", "moto de reparto", "moto vieja ruidosa"],
+          "example": ["Se cuelan entre el tráfico", "aceleración rápida", "maniobras agresivas", "aparcan en huecos pequeños"]
+        },
+        {
+          "name": "6 · Física de conducción realista",
+          "note": "No 'siguen un camino': tienen física.",
+          "items": ["aceleración progresiva", "frenada con peso", "derrape leve en curvas", "suspensión visible en baches", "transferencia de peso al girar", "choque con masa real"]
+        },
+        {
+          "name": "7 · IA de conductores (comportamiento humano)",
+          "note": "Cada vehículo tiene un conductor con personalidad.",
+          "items": ["tranquilo → mantiene distancia", "normal → respeta normas", "agresivo → adelanta y pita", "nervioso → frena tarde", "torpe → errores de conducción"]
+        },
+        {
+          "name": "8 · Tráfico coherente",
+          "note": "Se comportan como sistema.",
+          "items": ["respetan carriles", "usan intermitentes (a veces mal)", "cambian de carril con lógica", "respetan semáforos", "reaccionan a accidentes"]
+        },
+        {
+          "name": "9 · Daños visuales progresivos",
+          "note": "El daño afecta a la conducción, la velocidad y la estabilidad.",
+          "items": ["rayones leves", "golpes en carrocería", "faros rotos", "humo del motor", "ruedas dañadas", "puertas deformadas"]
+        },
+        {
+          "name": "10 · Vehículos de servicio",
+          "note": "Tipos especiales con comportamiento propio.",
+          "items": ["taxis", "ambulancias", "policía", "reparto", "autobuses"],
+          "example": ["prioridad en el tráfico", "rutas específicas", "reacción a emergencias"]
+        },
+        {
+          "name": "11 · Sonido realista",
+          "items": ["motor en ralentí", "aceleración progresiva", "frenada", "golpes", "intermitentes", "moto filtrándose entre coches"]
+        },
+        {
+          "name": "12 · Interacción con el entorno",
+          "note": "Reaccionan a peatones, accidentes, policía, jugador y tráfico lento.",
+          "example": ["Peatón cruza → el coche frena", "Accidente → desvío automático"]
+        },
+        {
+          "name": "13 · Optimización visual (LOD)",
+          "items": ["Cerca: detalles completos (interior + reflejos)", "Media: modelo simplificado", "Lejos: silueta con textura simple", "Muy lejos: simulación estadística"]
+        }
+      ],
+      "feeling": "Que cada coche y cada moto se vean y se conduzcan como de verdad, y que el tráfico nunca parezca de juguete."
+    },
+    {
+      "id": "objetos-mundo",
+      "title": "Objetos del mundo (props, fauna y detalle urbano)",
+      "category": "Ambiente",
+      "icon": "🪑",
+      "visual": 5,
+      "theme": "marbella-visual",
+      "related": ["detalles-espanoles", "fidelidad-visual", "vida-urbana", "npc-coches-realistas", "interiores", "sonido-mundo", "clima", "interaccion-mundo", "marbella-guia-visual", "principios-visuales"],
+      "objetivo": "Dotar al mundo de objetos reales y coherentes para que cada calle, playa o barrio se sienta habitado, funcional y creíble.",
+      "central": "Los objetos correctos en el sitio correcto hacen que la ciudad se sienta vivida, aunque no haya gente.",
+      "systems": [
+        {
+          "name": "1 · Mobiliario urbano",
+          "note": "Todo colocado con lógica urbana real.",
+          "items": ["farolas (moderno, clásico, industrial)", "bancos públicos", "papeleras", "contenedores de basura (reciclaje)", "señales de tráfico", "semáforos", "bolardos y postes", "vallas y barandillas"]
+        },
+        {
+          "name": "2 · Infraestructura de calle",
+          "note": "Dan 'densidad real' a la ciudad.",
+          "items": ["alcantarillas", "tapas de registro", "hidrantes", "buzones", "cabinas telefónicas (raras)", "parquímetros", "postes eléctricos"]
+        },
+        {
+          "name": "3 · Detalles de vida cotidiana",
+          "items": ["bolsas de basura", "cajas abandonadas", "bicicletas aparcadas", "patinetes eléctricos", "conos de obra", "carteles temporales", "mobiliario de terrazas (mesas, sillas, sombrillas)"]
+        },
+        {
+          "name": "4 · Terrazas y vida social",
+          "note": "Muy importantes en España. Dan vida sin NPC activos constantes.",
+          "items": ["mesas exteriores de bares", "sillas apiladas", "ceniceros", "bebidas y platos", "toldos y sombrillas", "menús y carteles"]
+        },
+        {
+          "name": "5 · Naturaleza urbana",
+          "note": "Varía según la zona: costa ≠ ciudad ≠ interior.",
+          "items": ["árboles variados (palmeras, pinos, urbanos)", "arbustos", "césped", "flores en macetas", "maleza en zonas abandonadas"]
+        },
+        {
+          "name": "6 · Fauna urbana (animales)",
+          "note": "No son decoración fija: tienen comportamiento simple.",
+          "items": ["🐕 Perros: callejeros, con dueño, en parques; reaccionan a NPC y jugador", "🐈 Gatos: callejeros, se esconden, en zonas tranquilas", "🐦 Pájaros: bandadas, reaccionan al ruido, se posan en farolas"]
+        },
+        {
+          "name": "7 · Objetos de movilidad",
+          "note": "Hacen que la ciudad no esté vacía.",
+          "items": ["coches aparcados", "motos en aceras", "bicicletas", "carritos de limpieza", "camiones de basura", "furgonetas de reparto"]
+        },
+        {
+          "name": "8 · Estado dinámico de objetos",
+          "note": "Sensación de mundo vivo persistente.",
+          "items": ["papeleras llenas o vacías", "contenedores movidos", "bancos ocupados o libres", "terrazas montadas o cerradas", "obras activas o terminadas"]
+        },
+        {
+          "name": "9 · Daño y desgaste del entorno",
+          "note": "El mundo no es perfecto: añade mucho realismo urbano.",
+          "items": ["grafitis", "paredes sucias", "mobiliario roto", "farolas dañadas", "señales dobladas", "basura en el suelo"]
+        },
+        {
+          "name": "10 · Interacción del jugador con objetos",
+          "note": "No todo es decorativo: parte es interactivo.",
+          "items": ["sentarse en bancos", "mover objetos ligeros", "chocar contra contenedores", "romper elementos débiles", "usar mobiliario de terraza"]
+        },
+        {
+          "name": "11 · Distribución inteligente",
+          "note": "Los objetos se colocan según la zona.",
+          "items": ["Playa: duchas, sombrillas, papeleras ligeras, chiringuitos", "Ciudad: farolas densas, bancos, contenedores, terrazas", "Industrial: maquinaria, cajas, contenedores grandes"]
+        }
+      ],
+      "feeling": "Que cada esquina tenga detalles reales —terrazas, palmeras, un gato— y se sienta una ciudad de verdad."
+    },
+    {
+      "id": "sonido-mundo",
+      "title": "Sistema de sonido del mundo (ciudad viva)",
+      "category": "Sonido",
+      "icon": "🔊",
+      "visual": 1,
+      "theme": "audio",
+      "related": ["clima", "vehiculos-realistas", "trafico-emergente", "npc-coches-realistas", "objetos-mundo", "realismo-sensorial"],
+      "objetivo": "Crear una atmósfera sonora dinámica y coherente: que la ciudad se sienta viva, con profundidad, espacio y actividad, aunque no mires.",
+      "central": "Nunca un solo sonido domina: capas de audio con espacio, distancia y oclusión hacen viva la ciudad.",
+      "systems": [
+        {
+          "name": "1 · Capas de sonido (audio layering)",
+          "note": "Nunca un solo sonido domina todo.",
+          "items": ["ambiente general (ciudad base)", "tráfico (coches, motos, frenadas)", "peatones (pasos, voces)", "interiores (bares, tiendas)", "naturaleza (viento, mar, aves)", "eventos (sirenas, accidentes, obras)"]
+        },
+        {
+          "name": "2 · Sonido de tráfico realista",
+          "note": "Según tipo de motor, velocidad, distancia y aceleración/frenada.",
+          "example": ["coches lejanos → murmullo continuo", "coche cerca → motor claro + ruedas", "moto → sonido agudo en movimiento", "atascos → ruido denso", "autopista → flujo continuo en capas"]
+        },
+        {
+          "name": "3 · Direccionalidad 3D",
+          "note": "Cada sonido tiene posición, volumen por distancia, dirección y oclusión por edificios.",
+          "example": ["Coche pasa detrás de un edificio → sonido amortiguado"]
+        },
+        {
+          "name": "4 · Distancia y atmósfera sonora",
+          "items": ["Cerca (0–50 m): claros y detallados", "Media (50–200 m): atenuados", "Lejos (200 m+): solo ambiente general", "Muy lejos: solo 'ruido urbano global'"]
+        },
+        {
+          "name": "5 · Terrazas y vida social",
+          "note": "Las conversaciones no son inteligibles completas, solo fragmentos realistas.",
+          "items": ["conversaciones múltiples superpuestas", "risas ocasionales", "platos, vasos, sillas moviéndose", "música de fondo (radio o local)"]
+        },
+        {
+          "name": "6 · Interiores (bares, tiendas, casas)",
+          "items": ["Desde fuera: sonido filtrado por paredes, ecos suaves, música amortiguada, voces indistintas", "Dentro: sonido claro, reverberación interior, ruido de objetos"]
+        },
+        {
+          "name": "7 · Ecos y reverberación urbana",
+          "note": "El entorno modifica el sonido.",
+          "items": ["calles estrechas → eco fuerte", "plazas abiertas → sonido disperso", "túneles → reverberación larga", "interiores → eco controlado", "autopistas → ruido constante sin eco"]
+        },
+        {
+          "name": "8 · Peatones (sonido humano)",
+          "items": ["pasos según la superficie (asfalto, arena, interior)", "conversaciones aleatorias", "móviles (notificaciones, llamadas)", "reacciones vocales (sorpresa, enfado, risa)"]
+        },
+        {
+          "name": "9 · Clima sonoro",
+          "note": "El sonido cambia según el clima.",
+          "items": ["Día soleado: ambiente claro, tráfico normal, terrazas activas", "Noche: menos tráfico, ecos marcados, sonidos aislados", "Lluvia: menos agudos, agua constante, coches silenciosos pero pesados"]
+        },
+        {
+          "name": "10 · Eventos sonoros dinámicos",
+          "items": ["sirenas de policía a distancia", "ambulancias cruzando la ciudad", "accidentes con impacto fuerte", "obras de construcción", "perros ladrando a distancia"]
+        },
+        {
+          "name": "11 · Mezcla inteligente (audio mixing)",
+          "note": "El sistema ajusta solo.",
+          "items": ["volumen general según la situación", "prioridad de sonidos importantes", "reducción de ruido redundante", "enfoque en lo cercano al jugador"]
+        },
+        {
+          "name": "12 · Sonido del vehículo del jugador",
+          "items": ["motor en distintas revoluciones", "cambio de marcha", "freno", "derrape", "impacto", "interior del coche (opcional)"]
+        },
+        {
+          "name": "13 · Oclusión realista (muy importante)",
+          "note": "El sonido cambia si hay obstáculos.",
+          "items": ["detrás de edificios → amortiguado", "túneles → reverberación", "entre calles → filtrado natural", "dentro del coche → sonido exterior reducido"]
+        }
+      ],
+      "feeling": "Cerrar los ojos y saber que estás en una ciudad viva solo por cómo suena."
+    },
+    {
+      "id": "emergencias-mundo",
+      "title": "Sistema de emergencias del mundo (policía, ambulancias, bomberos)",
+      "category": "Crimen y policía",
+      "icon": "🚑",
+      "visual": 2,
+      "theme": "crimen-policia",
+      "related": ["crimen-control", "oportunidades-emergentes", "trafico-emergente", "eventos", "ia-profunda", "sonido-mundo", "fisicas-caos", "simulacion-global"],
+      "objetivo": "Que el mundo responda a incidentes de forma dinámica, creíble y escalable, con caos controlado y reacciones en cadena.",
+      "central": "Los incidentes no son misiones: son sucesos del mundo, y los servicios de emergencia responden de forma adaptativa (ni instantánea ni omnipotente).",
+      "systems": [
+        {
+          "name": "1 · Generación de incidentes",
+          "note": "No son misiones: son sucesos del mundo.",
+          "items": ["accidentes de tráfico", "atropellos", "incendios pequeños", "robos callejeros", "peleas entre NPC", "averías de vehículos", "colapsos de tráfico"]
+        },
+        {
+          "name": "2 · Detección y escalado",
+          "note": "El sistema decide si escalar según el contexto.",
+          "items": ["Nivel 1 (menor): choque leve, discusión, caída de NPC", "Nivel 2 (medio): accidente con tráfico bloqueado, pelea activa, vehículo inutilizado", "Nivel 3 (grave): incendio, múltiples heridos, persecución, caos urbano"]
+        },
+        {
+          "name": "3 · Respuesta policial",
+          "note": "La policía no es instantánea ni omnipotente.",
+          "items": ["patrullas cercanas responden primero", "bloqueo de zona", "control de tráfico", "persecuciones si hay sospechosos", "sirenas dinámicas, coordinación, perímetro y arrestos progresivos"]
+        },
+        {
+          "name": "4 · Ambulancias y servicios médicos",
+          "note": "Tiempos de respuesta realistas; el tráfico afecta la llegada; prioridad según gravedad.",
+          "items": ["llegada con prioridad alta", "estabilización del NPC", "transporte al hospital", "liberación de la escena"]
+        },
+        {
+          "name": "5 · Bomberos y emergencias de fuego",
+          "note": "El fuego puede propagarse si no se controla.",
+          "items": ["activación por incendios de vehículos, edificios pequeños o accidentes con explosión", "apagado progresivo", "evacuación de zona", "control y enfriamiento del área"]
+        },
+        {
+          "name": "6 · Caos de tráfico dinámico",
+          "note": "El tráfico reacciona al caos, no sigue rutas fijas.",
+          "items": ["calles bloqueadas", "desvíos automáticos", "embotellamientos", "conductores nerviosos", "motos colándose"]
+        },
+        {
+          "name": "7 · IA de respuesta inteligente",
+          "note": "No es 'ir directo': es adaptativo.",
+          "items": ["evaluar distancia vs prioridad", "elegir ruta óptima", "evitar zonas peligrosas", "coordinar con otras unidades", "replanificar si hay bloqueo"]
+        },
+        {
+          "name": "8 · Reacción de NPC civiles",
+          "note": "Crea 'ruido social' alrededor del evento.",
+          "items": ["sacar el móvil y grabar", "huir de la escena", "acercarse por curiosidad", "discutir entre ellos", "bloquear el tráfico sin querer"]
+        },
+        {
+          "name": "9 · Interacción del jugador",
+          "note": "El jugador es parte del sistema, no externo.",
+          "items": ["ayudar en accidentes", "obstaculizar emergencias", "escapar de la policía", "provocar caos", "llamar a los servicios (si tiene móvil)"]
+        },
+        {
+          "name": "10 · Persecuciones dinámicas",
+          "note": "No siguen scripts fijos.",
+          "items": ["la policía inicia persecución", "el tráfico reacciona", "NPC se apartan o estorban", "rutas cambian en tiempo real", "helicóptero si escala a nivel alto"]
+        },
+        {
+          "name": "11 · Escalado en cadena (caos realista)",
+          "note": "El mundo puede 'desbordarse' de forma natural.",
+          "example": ["accidente → tráfico → pelea → policía → más caos → ambulancia → bloqueo total"]
+        }
+      ],
+      "feeling": "Que un pequeño accidente pueda desencadenar caos real, con policía, ambulancias y bomberos respondiendo como de verdad."
+    },
+    {
+      "id": "interaccion-mundo",
+      "title": "Interacción total del jugador con el mundo",
+      "category": "Personajes",
+      "icon": "🤲",
+      "visual": 3,
+      "theme": "personaje",
+      "related": ["animaciones", "objetos-mundo", "vehiculos-realistas", "ia-profunda", "trabajos-dinamicos", "emergencias-mundo", "objetos-jugador"],
+      "objetivo": "Permitir que el jugador interactúe con casi todo el entorno de forma coherente, física y contextual, sin menús rígidos.",
+      "central": "Las acciones dependen del contexto físico real: un mundo vivo y manipulable, no menús.",
+      "systems": [
+        {
+          "name": "1 · Interacción contextual (base)",
+          "note": "Las acciones dependen del contexto físico real.",
+          "items": ["mirar objeto → usar / tocar / recoger", "cerca de vehículo → entrar / abrir / forzar", "cerca de puerta → abrir / llamar / forzar", "cerca de NPC → hablar / ayudar / intimidar"]
+        },
+        {
+          "name": "2 · Escalar, subir y movilidad vertical",
+          "note": "No es parkour libre: interacción física con puntos válidos.",
+          "items": ["saltar bordillos", "subir muros bajos", "escalar vallas", "trepar estructuras simples", "subir por escaleras manuales"]
+        },
+        {
+          "name": "3 · Interacción con objetos del mundo",
+          "note": "Cada objeto tiene su lógica.",
+          "items": ["bancos → sentarse", "puertas → abrir/cerrar", "sillas → mover", "cajas → empujar o apilar", "contenedores → abrir", "máquinas → activar"]
+        },
+        {
+          "name": "4 · Trabajos manuales (actividades físicas)",
+          "note": "No son menús, son acciones en el mundo.",
+          "items": ["repartir paquetes → coger, llevar, entregar", "limpieza → barrer, recoger", "construcción → transportar materiales", "mecánico básico → usar herramientas", "cocina → pasos simples"]
+        },
+        {
+          "name": "5 · Física de objetos (interacción real)",
+          "note": "Todo con masa y resistencia física.",
+          "items": ["empujar objetos ligeros", "tirar cosas al suelo", "mover contenedores", "romper objetos frágiles", "apilar cajas"]
+        },
+        {
+          "name": "6 · Interacción con vehículos",
+          "note": "Sin teletransportes ni cortes invisibles.",
+          "items": ["abrir puertas", "entrar/salir con animación", "conducir", "cambiar de asiento (pasajero)", "empujar coche averiado", "inspeccionar vehículo"]
+        },
+        {
+          "name": "7 · Acciones de precisión (skill-based)",
+          "note": "Añaden jugabilidad real dentro del mundo.",
+          "items": ["aparcar vehículos", "entregar objetos sin romperlos", "subir escaleras bajo presión", "esquivar el tráfico", "cargar objetos pesados"]
+        },
+        {
+          "name": "8 · Interacción con NPC",
+          "note": "Los NPC responden con IA emocional.",
+          "items": ["hablar", "pedir ayuda", "dar objetos", "colaborar en tareas", "empujar (física)", "intimidar o provocar reacción"]
+        },
+        {
+          "name": "9 · Manipulación del entorno dinámico",
+          "note": "El mundo reacciona a los cambios físicos.",
+          "items": ["bloquear calles con objetos", "mover elementos del entorno", "crear rutas alternativas", "generar caos físico (volcar cosas)", "ayudar a despejar zonas"]
+        },
+        {
+          "name": "10 · Impacto físico (cuerpo del jugador)",
+          "note": "El personaje tiene peso, inercia, caídas con daño y equilibrio.",
+          "example": ["Si te empuja un coche → no desapareces, caes con física real"]
+        },
+        {
+          "name": "11 · Interacción bajo presión (emergencia)",
+          "note": "En situaciones críticas cambia la interacción.",
+          "example": ["Menos precisión, movimientos más rápidos o torpes, decisiones automáticas", "En persecución → saltos automáticos más fluidos pero menos precisos"]
+        }
+      ],
+      "feeling": "Poder tocar, mover, romper y usar casi todo: que el mundo sea manipulable de verdad, no un decorado."
+    },
+    {
+      "id": "fisicas-caos",
+      "title": "Físicas avanzadas de caos (choques y colisiones en cadena)",
+      "category": "Conducción",
+      "icon": "💥",
+      "visual": 3,
+      "theme": "conduccion",
+      "related": ["danos-avanzados", "vehiculos-realistas", "conducir-real", "emergencias-mundo", "trafico-emergente", "objetos-mundo"],
+      "objetivo": "Que accidentes, impactos y colisiones no sean eventos aislados, sino simulaciones emergentes con reacción en cadena, daño progresivo y consecuencias.",
+      "central": "El daño depende del impacto, no de un script: el mundo se 'rompe' (y se recupera) de forma dinámica.",
+      "systems": [
+        {
+          "name": "1 · Física de impacto realista",
+          "note": "Cada choque se calcula de verdad.",
+          "items": ["velocidad real", "masa del vehículo u objeto", "ángulo de impacto", "punto de contacto", "estado del vehículo"],
+          "example": ["rebotes realistas", "deformación progresiva", "transferencia de energía", "pérdida de control"]
+        },
+        {
+          "name": "2 · Destrucción progresiva (no script)",
+          "note": "El daño depende del impacto, no del evento.",
+          "items": ["rayones leves", "abolladuras moderadas", "piezas sueltas", "rotura de faros", "desprendimiento de partes"]
+        },
+        {
+          "name": "3 · Accidentes en cadena",
+          "note": "Crea caos emergente real.",
+          "example": ["coche 1 frena mal → coche 2 impacta → coche 3 esquiva → choque lateral → tráfico bloqueado"]
+        },
+        {
+          "name": "4 · Comportamiento de colisión de la IA",
+          "note": "No son perfectos: cometen errores humanos.",
+          "items": ["intentan esquivar", "frenan tarde o pronto según personalidad", "pierden control si van rápido", "pueden chocar entre sí en pánico"]
+        },
+        {
+          "name": "5 · Efecto de masa y peso",
+          "note": "Los choques se sienten distintos siempre.",
+          "items": ["coches ligeros → fáciles de empujar", "furgonetas → más estables", "motos → alta inestabilidad", "camiones → inercia fuerte"]
+        },
+        {
+          "name": "6 · Física de peatones",
+          "note": "Sin ragdoll absurdo, sino controlado.",
+          "items": ["caídas realistas", "tropiezos", "reacción de dolor", "recuperación progresiva", "impacto con vehículos"]
+        },
+        {
+          "name": "7 · Interacción vehículo ↔ entorno",
+          "items": ["chocan con farolas", "empujan contenedores", "rompen vallas", "dañan mobiliario urbano", "modifican el tráfico físicamente"]
+        },
+        {
+          "name": "8 · Daño funcional de vehículos",
+          "note": "El daño no es solo visual.",
+          "items": ["motor dañado → menos velocidad", "ruedas dañadas → pérdida de control", "dirección afectada → conducción inestable", "humo → visibilidad reducida"]
+        },
+        {
+          "name": "9 · Propagación del caos",
+          "note": "El mundo se 'rompe' dinámicamente.",
+          "example": ["pequeño choque → tráfico lento → frenadas en cadena → choque múltiple → ambulancias → policía → bloqueo total"]
+        },
+        {
+          "name": "10 · Reacción del entorno",
+          "items": ["NPC miran o graban", "peatones se alejan", "conductores se bloquean o se ponen nerviosos", "se forma tráfico alternativo"]
+        },
+        {
+          "name": "11 · Efectos visuales dinámicos",
+          "note": "Según el impacto.",
+          "items": ["polvo", "cristales rotos", "humo", "piezas sueltas", "marcas en el suelo", "líquidos (aceite, gasolina)"]
+        },
+        {
+          "name": "12 · Recuperación del mundo",
+          "note": "El mundo no queda roto para siempre.",
+          "items": ["grúas retiran vehículos", "la policía despeja la zona", "el tráfico se reorganiza", "los objetos se recolocan con el tiempo"]
+        }
+      ],
+      "feeling": "Que ningún choque sea igual y que un accidente pueda volverse caos real... pero que el mundo se recupere después."
+    },
+    {
+      "id": "simulacion-global",
+      "title": "Simulación global del mundo (el motor invisible)",
+      "category": "Sistemas",
+      "icon": "⚙️",
+      "visual": 1,
+      "theme": "tecnico",
+      "related": ["streaming-mundo", "mundo-persistente", "emergencias-mundo", "ia-profunda", "fisicas-caos", "clima"],
+      "objetivo": "Que todo el mundo funcione como un sistema coherente detrás de cámaras, evitando incoherencias, bugs emergentes y comportamiento aleatorio sin lógica.",
+      "central": "El motor invisible que coordina todo: si una pieza falla, el mundo pierde credibilidad.",
+      "systems": [
+        {
+          "name": "1 · Simulación global (el 'reloj del mundo')",
+          "note": "Sin esto, todo lo demás se descoordina.",
+          "items": ["hora global", "día/noche", "estado de tráfico global", "densidad de NPC", "máximo de eventos activos", "clima sincronizado"]
+        },
+        {
+          "name": "2 · Gestión de densidad (optimización viva)",
+          "note": "Hace posible el mundo abierto sin destruir el rendimiento.",
+          "items": ["más NPC en zonas activas", "menos NPC en zonas vacías", "tráfico reducido fuera de cámara", "simulación parcial a distancia"]
+        },
+        {
+          "name": "3 · Streaming del mundo (carga invisible)",
+          "note": "Clave para 'mundo grande sin lag'.",
+          "items": ["carga por zonas cercanas", "descarga de zonas lejanas", "persistencia de estado (lo que pasó se guarda)"]
+        },
+        {
+          "name": "4 · Eventos prioritarios",
+          "note": "Sin esto, el mundo se rompe por saturación.",
+          "items": ["límite de eventos activos", "prioridad: emergencias > tráfico > ambientación", "cancelación de eventos secundarios"]
+        },
+        {
+          "name": "5 · Consistencia del mundo",
+          "note": "Lo que hace que 'parezca real'.",
+          "items": ["un NPC no puede estar en dos sitios a la vez", "los coches no aparecen de la nada a la vista", "los eventos siguen lógica física", "la policía no aparece sin ruta"]
+        },
+        {
+          "name": "6 · Respawn inteligente",
+          "note": "NPC y coches no reaparecen mágicamente.",
+          "items": ["respawn fuera de vista", "respawn con lógica de ciudad", "reposición gradual de tráfico", "recuperación del mundo tras el caos"]
+        },
+        {
+          "name": "7 · Memoria del mundo (no solo NPC)",
+          "note": "Crea un 'mapa vivo'.",
+          "items": ["zonas dañadas", "tráfico habitual", "puntos de caos frecuentes", "zonas seguras o peligrosas"]
+        },
+        {
+          "name": "8 · Limitador de caos",
+          "note": "Sin esto, el juego se vuelve caos infinito injugable.",
+          "items": ["límite de accidentes simultáneos", "límite de persecuciones", "límite de incendios activos", "control de densidad policial"]
+        },
+        {
+          "name": "9 · Eventos silenciosos",
+          "note": "Da sensación de mundo independiente.",
+          "items": ["discusiones de NPC fuera de cámara", "pequeños accidentes resueltos solos", "tráfico que se reorganiza solo", "vida fuera del jugador"]
+        },
+        {
+          "name": "10 · Normalización del mundo",
+          "note": "El mundo no se queda roto.",
+          "items": ["la policía limpia la zona", "el tráfico vuelve a fluir", "los objetos se recolocan", "los NPC retoman rutinas"]
+        },
+        {
+          "name": "11 · Control de variación (evitar repetición)",
+          "items": ["variación de eventos", "variación de rutas de NPC", "variación de tráfico", "variación de clima local"]
+        },
+        {
+          "name": "12 · Sincronización general",
+          "note": "Si una pieza falla, el mundo pierde credibilidad.",
+          "items": ["IA", "tráfico", "clima", "sonido", "eventos", "física"]
+        }
+      ],
+      "feeling": "Que todo encaje detrás de cámaras: un mundo coherente que nunca se rompe ni se siente aleatorio."
+    },
+    {
+      "id": "marbella-guia-visual",
+      "title": "Guía visual de Marbella real (referencia)",
+      "category": "Ambiente",
+      "icon": "📸",
+      "visual": 5,
+      "theme": "marbella-visual",
+      "related": ["detalles-espanoles", "fidelidad-visual", "marbella-datos-reales", "objetos-mundo", "mapa-ampliado", "clima", "principios-visuales", "mar-costa"],
+      "objetivo": "Una referencia concreta de cómo se ve Marbella de verdad (colores, edificios, carriles, rotondas, fuentes, vegetación, negocios...) para recrearla fielmente, como mirándola por Google Maps. Detalle completo en docs/MARBELLA_VISUAL.md.",
+      "central": "No inventar: copiar la imagen real de Marbella, zona por zona y detalle por detalle.",
+      "systems": [
+        {
+          "name": "1 · Casco antiguo (centro histórico)",
+          "note": "El corazón andaluz: estrecho, blanco y peatonal.",
+          "items": ["casas encaladas (blancas) de 2–3 plantas", "calles estrechas empedradas o adoquinadas", "macetas de barro con geranios en las paredes", "rejas negras y puertas de madera", "buganvilla morada y fucsia trepando", "restaurantes con mesas fuera y toldos", "tejados de teja árabe (terracota)"]
+        },
+        {
+          "name": "2 · Plaza de los Naranjos",
+          "note": "La plaza icónica del casco antiguo.",
+          "items": ["naranjos plantados en cuadrícula", "suelo empedrado", "fuente renacentista de piedra en el centro (pilón y columna)", "Ayuntamiento de fachada ocre/almagra con escudo", "Ermita de Santiago (blanca)", "terrazas de restaurante alrededor"]
+        },
+        {
+          "name": "3 · Avenida del Mar",
+          "note": "Conecta el casco antiguo con la playa.",
+          "items": ["avenida peatonal ancha en pendiente suave", "esculturas de bronce de Salvador Dalí a los lados", "palmeras y parterres", "láminas de agua y fuentes", "bancos y farolas", "suelo de baldosa clara"]
+        },
+        {
+          "name": "4 · Paseo marítimo y playas",
+          "note": "El frente de mar largo y soleado.",
+          "items": ["paseo de baldosa con barandilla blanca", "hileras de palmeras (datileras y washingtonias)", "arena dorada-grisácea, mar azul-turquesa", "chiringuitos de madera en la arena", "hamacas y sombrillas (azul/blanco/beige)", "duchas, barcas de pesca y espetos de sardinas", "carril bici y farolas blancas"]
+        },
+        {
+          "name": "5 · Puerto Banús (zona de lujo)",
+          "note": "La marina glamurosa.",
+          "items": ["yates blancos grandes amarrados", "edificios blancos bajos con arcos", "tiendas de marcas de lujo", "coches deportivos aparcados (Ferrari, Lamborghini, Rolls-Royce)", "palmeras y suelo adoquinado", "mástiles, banderas y ambiente de glamour"]
+        },
+        {
+          "name": "6 · Avenidas comerciales (Ricardo Soriano, Ramón y Cajal)",
+          "note": "Los grandes ejes con tráfico.",
+          "items": ["bloques de 6–10 plantas con comercios en los bajos", "mediana con palmeras", "bancos, hoteles y oficinas", "marquesinas de autobús", "tráfico denso y taxis blancos"]
+        },
+        {
+          "name": "7 · La Alameda y parques",
+          "note": "Sombra y azulejo andaluz.",
+          "items": ["ficus enormes que dan sombra", "bancos de azulejos andaluces de colores", "fuente ornamental", "farolas fernandinas (negras, clásicas)", "suelo de baldosa", "parterres con flores"]
+        },
+        {
+          "name": "8 · Urbanizaciones en las colinas (Sierra Blanca, Milla de Oro)",
+          "note": "Villas de lujo en la montaña.",
+          "items": ["villas blancas mediterráneas con teja árabe", "muros encalados y cancelas", "cipreses, palmeras y setos recortados", "piscinas azules", "hoteles de lujo bajos con jardines (estilo pueblo andaluz)", "vistas al mar"]
+        },
+        {
+          "name": "9 · Bloques de apartamentos modernos",
+          "note": "La Marbella residencial de costa.",
+          "items": ["fachadas blancas, crema o beige de 4–8 plantas", "terrazas amplias con barandilla blanca o de cristal", "toldos beige o a rayas", "persianas y aparatos de aire acondicionado en fachada", "áticos con terraza grande", "garajes y portales con seto"]
+        },
+        {
+          "name": "10 · Calles, carriles y señalización",
+          "note": "Cómo son las vías de verdad.",
+          "items": ["avenidas: 2–3 carriles por sentido con mediana de palmeras", "calles del centro: 1 carril, muchas peatonales", "línea continua donde no se adelanta; discontinua donde sí", "carriles bici en el paseo y algunas avenidas", "pasos de cebra con semáforos de peatones", "semáforos en cruces; rotondas con 'ceda el paso'", "señales españolas (stop, ceda, 50/30) y señalización turística marrón", "aparcamiento en línea: azul (zona ORA) o blanco (libre)"]
+        },
+        {
+          "name": "11 · Negocios, bares y restaurantes",
+          "note": "Los bajos de los edificios están llenos de vida comercial.",
+          "items": ["bares y restaurantes con terraza y toldo (nombre en el toldo)", "chiringuitos en la playa (pescado, espetos)", "tiendas de ropa, souvenirs y marcas de lujo (Banús)", "supermercados (tipo Mercadona/Carrefour) y fruterías", "farmacias con cruz verde luminosa", "bancos, inmobiliarias (muchas) y peluquerías", "gasolineras, hoteles y heladerías", "rótulos y carteles luminosos"]
+        },
+        {
+          "name": "12 · Rotondas (cómo son)",
+          "note": "Marbella es famosa por sus rotondas muy cuidadas.",
+          "items": ["césped cuidado y parterres de flores de temporada", "palmeras grandes en el centro", "a veces una escultura moderna o una fuente", "bordillos pintados, bien señalizadas", "iluminación de noche"]
+        },
+        {
+          "name": "13 · Fuentes (cómo son)",
+          "note": "Hay fuentes ornamentales por toda la ciudad.",
+          "items": ["la renacentista de la Plaza de los Naranjos (piedra, pilón, columna)", "fuentes de chorros y láminas de agua en avenidas y rotondas", "alguna con escultura central", "iluminadas de noche"]
+        },
+        {
+          "name": "14 · Vegetación típica",
+          "note": "Verde mediterráneo por todas partes.",
+          "items": ["palmeras (las más icónicas)", "buganvilla morada y fucsia", "adelfas (rosa y blanco)", "hibisco y aves del paraíso (strelitzia)", "jacarandás (flores moradas en mayo–junio)", "pinos piñoneros y cipreses", "geranios, agaves y cactus"]
+        },
+        {
+          "name": "15 · Obras y grúas",
+          "note": "Marbella está en construcción constante (muy reconocible).",
+          "items": ["grúas torre amarillas o blancas en el horizonte", "edificios en obra con andamios y red verde/azul", "vallas de obra y carteles de inmobiliarias (obra nueva)", "promociones de lujo a medio construir", "polígonos con naves y talleres (San Pedro, La Ermita)"]
+        },
+        {
+          "name": "16 · Mobiliario urbano y pavimento",
+          "note": "Los detalles de calle que lo rellenan todo.",
+          "items": ["farolas fernandinas y modernas", "bancos (algunos de azulejo)", "pavimento de baldosa y adoquín peatonal", "papeleras verdes o grises", "marquesinas, bolardos y contenedores", "alcorques con árboles en la acera"]
+        },
+        {
+          "name": "17 · Colores de los edificios",
+          "note": "La paleta real de la Costa del Sol.",
+          "items": ["dominan el blanco, crema, beige y arena", "toques de ocre, terracota y almagra (rojizo) en lo histórico", "tejados de teja árabe (terracota)", "barandillas blancas y de cristal", "toldos beige o crema", "carpintería en marrón, blanco o verde"]
+        },
+        {
+          "name": "18 · Luz, cielo y fondo",
+          "note": "La atmósfera que lo une todo.",
+          "items": ["sol fuerte y cielo azul intenso casi todo el año", "luz cálida y sombras marcadas", "atardeceres anaranjados sobre el mar", "la montaña La Concha y Sierra Blanca de fondo", "el Mediterráneo siempre presente al sur"]
+        }
+      ],
+      "feeling": "Que al verlo digas: 'esto es Marbella, lo reconozco'."
+    },
+    {
+      "id": "principios-visuales",
+      "title": "Principios de realismo visual (que parezca real)",
+      "category": "Ambiente",
+      "icon": "🎯",
+      "visual": 5,
+      "theme": "marbella-visual",
+      "related": ["fidelidad-visual", "marbella-guia-visual", "detalles-espanoles", "objetos-mundo", "clima", "npc-coches-realistas", "vehiculos-realistas", "cielo-atmosfera", "realismo-sensorial"],
+      "objetivo": "Que cada decisión visual aumente la sensación de mundo real, evaluando siempre el conjunto y no los objetos por separado.",
+      "central": "No diseñar objetos aislados, sino cómo se ven dentro del entorno completo.",
+      "systems": [
+        {
+          "name": "1 · Principio general",
+          "note": "No diseñes elementos aislados: diseña cómo se ven dentro del entorno completo.",
+          "items": ["Evaluar SIEMPRE: materiales, iluminación, escala, movimiento, desgaste, reflejos, variación e interacción con el clima"]
+        },
+        {
+          "name": "2 · Naturaleza y vegetación",
+          "note": "La vegetación debe sentirse viva. ❓ ¿Parece un sitio vivo o un escenario?",
+          "items": ["que los árboles no parezcan copias (variación entre ejemplares)", "diferencias de tamaño y densidad natural", "orientación no repetitiva", "que el viento se sienta distinto según la intensidad", "que unas hojas se muevan distinto a otras", "césped con irregularidades", "color influido por la luz y reacción al clima", "❌ evitar: árboles idénticos, hojas estáticas, patrones repetidos"]
+        },
+        {
+          "name": "3 · Materiales y superficies",
+          "note": "Cada material debe transmitir su personalidad. ❓ ¿Se siente tocable?",
+          "items": ["rugosidad y relieve percibido", "que el sol afecte distinto a metal, cristal y tela", "marcas de uso, desgaste y suciedad variable", "superficies húmedas que cambian la sensación", "que no todo tenga el mismo nivel de limpieza", "aplicar a: edificios, asfalto, arena, piedra, metal, madera, vegetación, interiores", "❌ evitar: texturas planas, repetición evidente, materiales uniformes"]
+        },
+        {
+          "name": "4 · Personas",
+          "note": "Deben parecer humanas incluso quietas. ❓ ¿Parecen personas o modelos?",
+          "items": ["piel que responde a la luz (no plana), variaciones de tono", "ropa con comportamiento propio y pliegues naturales", "que no estén perfectamente quietas (movimiento secundario)", "pequeñas diferencias humanas", "movimiento con peso", "❌ evitar: aspecto plástico, caras rígidas, ropa pegada"]
+        },
+        {
+          "name": "5 · Luz y atmósfera",
+          "note": "La iluminación construye la realidad. ❓ ¿La escena transmite ambiente?",
+          "items": ["cómo cambia una calle según la hora y el ángulo solar", "sombras suaves o duras; rebotes y reflejos indirectos", "diferencia clara entre sol y sombra", "luz cálida y fría según el momento", "que interiores y exteriores se sientan distintos", "buscar profundidad, volumen y contraste natural", "❌ evitar: luz uniforme, exceso de saturación, escenas planas"]
+        },
+        {
+          "name": "6 · Reflejos y superficies",
+          "note": "Reflejos solo donde tengan sentido.",
+          "items": ["según material, humedad, ángulo de observación, luz ambiental y suciedad", "reflejos que cambian con el movimiento", "sobre todo en: coches, escaparates, ventanas, mar, charcos y metal"]
+        },
+        {
+          "name": "7 · Movimiento del mundo",
+          "note": "El mundo nunca debe parecer congelado. ❓ ¿Sigue existiendo sin el jugador?",
+          "items": ["pequeñas animaciones ambientales", "sensación de aire y viento (telas, hojas, vegetación)", "reacción del entorno", "detalles visibles aunque no interactúes", "priorizar el movimiento sutil antes que la exageración"]
+        },
+        {
+          "name": "8 · Ciudad y detalle urbano",
+          "note": "El detalle humano hace creíble la ciudad. ❓ ¿Parece construido por personas reales?",
+          "items": ["desgaste desigual (zonas más cuidadas que otras)", "señales imperfectas", "mobiliario variado", "elementos que indiquen uso humano"]
+        },
+        {
+          "name": "9 · Coches y objetos",
+          "note": "Coherencia y variedad en lo que llena el mundo.",
+          "items": ["materiales distintos entre modelos", "reflejos que cambian", "suciedad variable y desgaste lógico", "comportamiento visual distinto según el contexto"]
+        },
+        {
+          "name": "10 · Coherencia visual (el filtro)",
+          "note": "Cada mejora visual debe pasar este filtro.",
+          "items": ["preguntar: ¿esto aumenta la percepción de realidad?", "si no mejora la percepción real del mundo → no priorizar"]
+        }
+      ],
+      "feeling": "Que el jugador no piense 'qué buenos gráficos', sino 'esto parece un lugar real'."
+    },
+    {
+      "id": "diversidad-humana",
+      "title": "Diversidad humana y comportamiento por contexto",
+      "category": "Mundo grande y vivo",
+      "icon": "👨‍👩‍👧‍👦",
+      "visual": 4,
+      "theme": "mundo-vivo",
+      "related": ["ia-profunda", "npc-coches-realistas", "vida-urbana", "ciudad-respira", "principios-visuales", "realismo-sensorial"],
+      "objetivo": "Que la ciudad se llene de personas distintas que encajan con cada zona (edad, perfil y comportamiento), no de NPC repetidos.",
+      "central": "No llenar el mundo de NPC: llenarlo de personas que parezcan pertenecer al sitio.",
+      "systems": [
+        {
+          "name": "1 · Diversidad de personas",
+          "note": "❓ ¿Parece una ciudad o una multitud copiada?",
+          "items": ["que no todos tengan la misma edad", "grupos sociales distintos", "mezcla de perfiles en la ciudad", "cada zona con población diferente", "personas que destacan y otras que pasan desapercibidas"]
+        },
+        {
+          "name": "2 · Edades distintas",
+          "note": "❓ ¿La edad cambia el comportamiento o solo la apariencia?",
+          "items": ["Niños: corretean, miran cosas, van con familia, juegan, se paran más", "Adolescentes: en grupos, móvil, sin rumbo claro, miran coches/escaparates", "Adultos: trabajan, hacen recados, comen fuera, conducen", "Mayores: caminan distinto, descansan más, observan, pasean"]
+        },
+        {
+          "name": "3 · Comportamiento por contexto",
+          "note": "❓ Si pienso en el lugar, ¿esta gente encaja?",
+          "items": ["Puerto deportivo: miran yates, hacen fotos, niños viendo deportivos, grupos sin prisa, turistas", "Centro: gente con compras, trabajadores, terrazas llenas", "Playa: gente descansando, niños jugando, grupos entrando y saliendo", "Residencial: paseos tranquilos, vecinos, actividad baja"]
+        },
+        {
+          "name": "4 · Microacciones humanas",
+          "note": "❓ ¿La gente parece tener intención propia?",
+          "items": ["mirar escaparates", "señalar cosas", "sentarse sin objetivo", "esperar", "hablar entre grupos", "sacar el móvil y hacerse fotos", "cambiar el ritmo al caminar", "mirar vehículos llamativos", "reaccionar a sonidos"]
+        },
+        {
+          "name": "5 · Comportamientos raros pero reales",
+          "note": "❓ ¿Hay imperfección humana?",
+          "items": ["personas que se paran sin motivo", "gente indecisa", "pequeños despistes", "cambios de ruta", "curiosidad espontánea", "momentos de aburrimiento"]
+        },
+        {
+          "name": "6 · Regla general",
+          "note": "No llenar el mundo de NPC, sino de personas que parezcan pertenecer al sitio.",
+          "items": ["contexto > cantidad", "comportamiento > animación", "variedad > volumen"]
+        }
+      ],
+      "feeling": "Que mires a la gente y pienses 'esto es una ciudad de verdad', no una multitud copiada."
+    },
+    {
+      "id": "objetos-jugador",
+      "title": "Objetos del jugador (inventario físico)",
+      "category": "Personajes",
+      "icon": "🎒",
+      "visual": 3,
+      "theme": "personaje",
+      "related": ["interaccion-mundo", "animaciones", "editor-personaje", "economia-vida", "trabajos-dinamicos", "reputacion"],
+      "objetivo": "Ampliar lo que el jugador puede llevar, usar y expresar en el mundo, con un inventario que existe físicamente y tiene consecuencias.",
+      "central": "El inventario no es un menú: los objetos se ven, se llevan en las manos y cambian cómo te mueves y cómo reacciona el mundo.",
+      "systems": [
+        {
+          "name": "1 · Objetos que puede llevar",
+          "note": "❓ ¿El jugador parece una persona que vive en el mundo?",
+          "items": ["móvil", "cartera", "llaves", "mochila", "bolsas", "paraguas", "cámara", "linterna", "herramientas", "objetos temporales"]
+        },
+        {
+          "name": "2 · Equipamiento visible",
+          "note": "❓ ¿El inventario existe físicamente?",
+          "items": ["que el cuerpo cambie según lo que lleva", "bolsillos más llenos o vacíos", "mochilas", "ropa distinta según la situación", "objetos visibles en la mano"]
+        },
+        {
+          "name": "3 · Objetos que cambian el comportamiento",
+          "note": "❓ ¿Llevar algo tiene consecuencias?",
+          "items": ["algunas cosas ocupan las manos", "algunos objetos ralentizan", "algunos obligan a guardar o transportar", "algunos cambian la postura"]
+        },
+        {
+          "name": "4 · Objetos cotidianos interactivos",
+          "note": "❓ ¿Interactúa o solo activa menús?",
+          "items": ["abrir el paraguas", "sacar el móvil", "usar la linterna", "dejar una bolsa", "guardar algo"]
+        },
+        {
+          "name": "5 · Herramientas y utilidades",
+          "note": "❓ ¿Los objetos crean nuevas acciones?",
+          "items": ["objetos para trabajos", "objetos para explorar", "herramientas contextuales", "equipamiento temporal"]
+        },
+        {
+          "name": "6 · Objetos de tensión narrativa",
+          "note": "Si existen elementos de conflicto o peligro. ❓ ¿Cambian la situación o solo añaden acción?",
+          "items": ["que cambien cómo reacciona el mundo", "que generen tensión", "que afecten al comportamiento de los NPC", "que tengan coste o consecuencias"]
+        },
+        {
+          "name": "7 · Reacción del mundo al equipamiento",
+          "note": "❓ ¿El mundo nota lo que llevo?",
+          "items": ["personas observando ciertos objetos", "diferencias entre zonas", "cambios de actitud", "acceso distinto a algunos lugares"]
+        },
+        {
+          "name": "8 · Movimiento influido por objetos",
+          "note": "❓ ¿El cuerpo refleja lo que transporta?",
+          "items": ["postura distinta", "velocidad distinta", "gestos distintos", "cambios de equilibrio"]
+        }
+      ],
+      "feeling": "Que el jugador parezca una persona que vive en el mundo, no un menú con patas."
+    },
+    {
+      "id": "cielo-atmosfera",
+      "title": "Cielo y atmósfera (que el cielo nunca se sienta igual)",
+      "category": "Ambiente",
+      "icon": "🌤️",
+      "visual": 5,
+      "theme": "marbella-visual",
+      "related": ["clima", "fidelidad-visual", "principios-visuales", "camara-avanzada", "marbella-guia-visual", "mar-costa"],
+      "objetivo": "Que el cielo y la atmósfera nunca se sientan iguales: que den la hora, profundidad y momentos memorables.",
+      "central": "El cielo es protagonista: por la luz y el aire deberías reconocer la hora y sentir el tamaño del mundo.",
+      "systems": [
+        {
+          "name": "1 · El cielo nunca igual",
+          "note": "❓ ¿Podría reconocer la hora solo mirando arriba?",
+          "items": ["días completamente despejados", "cielos con capas distintas", "días más apagados", "cielos con profundidad", "momentos en que el cielo es protagonista"]
+        },
+        {
+          "name": "2 · Amaneceres",
+          "note": "❓ ¿Parece que el día está naciendo?",
+          "items": ["primeras luces suaves", "sombras largas", "ciudad despertando poco a poco", "cambios lentos de color", "sensación de comienzo"]
+        },
+        {
+          "name": "3 · Atardeceres",
+          "note": "❓ ¿Dan ganas de quedarse mirando?",
+          "items": ["luz más cálida", "reflejos más largos", "ambiente más tranquilo", "cambio de actividad en la ciudad", "sensación de transición"]
+        },
+        {
+          "name": "4 · Nubes",
+          "note": "❓ ¿Parecen formar parte del clima?",
+          "items": ["distintos tipos de cielo", "nubes altas y bajas", "variación natural", "movimiento distinto según la altura", "días parcialmente cubiertos", "densidad desigual"]
+        },
+        {
+          "name": "5 · Sol",
+          "note": "❓ ¿El sol influye de verdad en el mundo?",
+          "items": ["posición variable", "reflejos distintos según la hora", "sombras que cambian de carácter", "luz más dura o más suave"]
+        },
+        {
+          "name": "6 · Noches",
+          "note": "❓ ¿La noche cambia cómo se vive la ciudad?",
+          "items": ["noches claras", "noches oscuras", "contaminación lumínica urbana", "diferencias entre zonas"]
+        },
+        {
+          "name": "7 · Horizonte",
+          "note": "❓ ¿El mundo parece tener tamaño?",
+          "items": ["profundidad atmosférica", "lejanía distinta según el clima", "sensación de distancia", "pérdida progresiva de detalle"]
+        },
+        {
+          "name": "8 · Clima visual (el aire)",
+          "note": "❓ ¿El aire parece existir?",
+          "items": ["aire más limpio algunos días", "ambiente más pesado otros", "humedad visible", "sensación de calor (distorsión)"]
+        },
+        {
+          "name": "9 · Transiciones",
+          "note": "❓ ¿El tiempo pasa o solo cambia de estado?",
+          "items": ["que el mundo cambie lentamente", "momentos difíciles de notar", "cambios que solo se perciben tras un rato"]
+        },
+        {
+          "name": "10 · Momentos especiales",
+          "note": "❓ ¿Hay días que el jugador recuerde?",
+          "items": ["cielos que sorprendan", "días memorables", "momentos que inviten a parar"]
+        }
+      ],
+      "feeling": "Que haya días y cielos que el jugador recuerde, que inviten a pararse a mirar."
+    },
+    {
+      "id": "mar-costa",
+      "title": "Mar, playa y costa (que el mar no sea una superficie)",
+      "category": "Ambiente",
+      "icon": "🌊",
+      "visual": 5,
+      "theme": "marbella-visual",
+      "related": ["detalles-espanoles", "marbella-guia-visual", "fidelidad-visual", "clima", "cielo-atmosfera", "principios-visuales"],
+      "objetivo": "Que el mar, la playa y la costa se sientan vivos y reales, no una textura plana.",
+      "central": "El mar es una masa de agua con movimiento que nunca se repite; la costa parece usada y la arena, real.",
+      "systems": [
+        {
+          "name": "1 · El mar (no una superficie)",
+          "note": "❓ ¿Una masa de agua o una textura?",
+          "items": ["zonas más tranquilas y otras más movidas", "pequeñas variaciones constantes", "cambios según el viento", "diferencias entre costa y mar abierto", "movimiento que nunca se repite exactamente"]
+        },
+        {
+          "name": "2 · Contacto agua ↔ playa",
+          "note": "❓ ¿Parece que el mar toca la tierra?",
+          "items": ["cambios en la línea del agua", "arena distinta cerca del mar", "zonas húmedas y secas", "transiciones irregulares", "restos naturales acumulados (algas, conchas)"]
+        },
+        {
+          "name": "3 · Arena",
+          "note": "❓ ¿Arena o una superficie pintada?",
+          "items": ["textura desigual", "pequeños relieves", "acumulaciones naturales", "zonas más compactas", "diferencias según la humedad"]
+        },
+        {
+          "name": "4 · Huellas y marcas",
+          "note": "❓ ¿El jugador deja huella?",
+          "items": ["pisadas temporales", "marcas distintas según la superficie", "zonas más transitadas", "rastros que desaparecen con el tiempo"]
+        },
+        {
+          "name": "5 · Movimiento de barcos",
+          "note": "❓ ¿Apoyados o flotando?",
+          "items": ["pequeñas oscilaciones constantes", "movimiento distinto según el tamaño", "respuesta visual al agua", "sensación de peso"]
+        },
+        {
+          "name": "6 · Costa viva",
+          "note": "❓ ¿La costa parece usada?",
+          "items": ["movimiento sutil en objetos costeros", "pequeños cambios visuales", "acumulación natural de elementos"]
+        },
+        {
+          "name": "7 · Vida marina visible",
+          "note": "❓ ¿El agua parece vacía?",
+          "items": ["peces ocasionales", "pequeños movimientos bajo el agua", "diferencias según la zona", "vida que aparece sin buscarla"]
+        },
+        {
+          "name": "8 · Interacción del jugador con el agua",
+          "note": "❓ ¿El cuerpo nota el agua?",
+          "items": ["cambios visuales al entrar", "movimiento distinto", "reacción del entorno (salpicaduras, ondas)"]
+        },
+        {
+          "name": "9 · Interacción objetos ↔ agua",
+          "note": "❓ ¿El agua tiene presencia física?",
+          "items": ["objetos que flotan distinto", "cambios según el tamaño", "respuesta visual coherente"]
+        },
+        {
+          "name": "10 · Profundidad",
+          "note": "❓ ¿Se entiende la profundidad mirando?",
+          "items": ["cambio progresivo de color", "pérdida de visibilidad", "diferencias entre zonas"]
+        },
+        {
+          "name": "11 · Momentos costeros",
+          "note": "❓ ¿La playa tiene personalidad?",
+          "items": ["mañanas tranquilas", "tardes activas", "cambios según la hora", "atmósferas distintas"]
+        },
+        {
+          "name": "12 · Detalles casi invisibles",
+          "note": "❓ ¿Podría existir esto en una playa real?",
+          "items": ["zonas alteradas por el paso de gente", "pequeñas irregularidades", "imperfecciones naturales", "elementos que aparecen raramente"]
+        }
+      ],
+      "feeling": "Que mires el mar y la playa y pienses 'esto está vivo', no 'es una textura'."
+    },
+    {
+      "id": "realismo-sensorial",
+      "title": "Realismo sensorial (sensación > contenido)",
+      "category": "Ambiente",
+      "icon": "🌫️",
+      "visual": 5,
+      "theme": "marbella-visual",
+      "related": ["principios-visuales", "diversidad-humana", "ia-profunda", "sonido-mundo", "clima", "interiores"],
+      "objetivo": "Añadir sensación de mundo real (olor imaginado, temperatura, ritmo, historia, silencio...) por encima de añadir más contenido.",
+      "central": "Cuando dudes entre más contenido o más sensación, elige sensación.",
+      "systems": [
+        {
+          "name": "1 · Olor imaginado",
+          "note": "❓ ¿Podría imaginar el olor del lugar?",
+          "items": ["que las zonas parezcan oler distinto (visualmente)", "sensación de humedad", "sensación de comida", "sensación de mar", "sensación de calor"]
+        },
+        {
+          "name": "2 · Temperatura percibida",
+          "note": "❓ ¿Parece hacer una temperatura concreta?",
+          "items": ["zonas que parecen más calientes", "sombra que se siente fresca", "materiales que parecen calentarse", "gente buscando zonas cómodas"]
+        },
+        {
+          "name": "3 · Espacio personal humano",
+          "note": "❓ ¿Las personas parecen conscientes unas de otras?",
+          "items": ["la gente evita invadirse", "los grupos mantienen distancia", "reacciones al acercarse demasiado", "formas distintas de ocupar el espacio"]
+        },
+        {
+          "name": "4 · Cansancio y energía",
+          "note": "❓ ¿Todo el mundo tiene demasiada energía?",
+          "items": ["ritmos distintos", "pausas", "gente descansando", "cambios según la hora"]
+        },
+        {
+          "name": "5 · Diferencias económicas visibles",
+          "note": "❓ ¿Todo el mapa tiene el mismo nivel de riqueza?",
+          "items": ["barrios más cuidados", "zonas más gastadas", "vehículos distintos", "ritmo distinto"]
+        },
+        {
+          "name": "6 · Interiores que existen",
+          "note": "❓ ¿Los edificios son cajas o lugares?",
+          "items": ["ventanas con profundidad", "luces interiores", "sensación de vida detrás"]
+        },
+        {
+          "name": "7 · Microdesorden",
+          "note": "❓ ¿Parece demasiado perfecto?",
+          "items": ["objetos ligeramente movidos", "pequeñas imperfecciones", "cosas fuera de sitio"]
+        },
+        {
+          "name": "8 · Historia del lugar",
+          "note": "❓ ¿Parece construido ayer?",
+          "items": ["zonas antiguas", "cosas reparadas", "elementos reutilizados"]
+        },
+        {
+          "name": "9 · Ritmo urbano",
+          "note": "❓ ¿Todo pasa al mismo ritmo?",
+          "items": ["momentos muertos", "zonas tranquilas", "explosiones de actividad"]
+        },
+        {
+          "name": "10 · Visión humana",
+          "note": "❓ ¿Ve como una cámara o como una persona?",
+          "items": ["adaptación visual a la luz", "cambios por brillo (deslumbramiento)", "percepción distinta según la hora"]
+        },
+        {
+          "name": "11 · Contacto cuerpo ↔ mundo",
+          "note": "❓ ¿El jugador ocupa espacio?",
+          "items": ["rozar objetos", "espacio físico", "sensación de presencia"]
+        },
+        {
+          "name": "12 · Errores humanos",
+          "note": "❓ ¿Todo funciona demasiado bien?",
+          "items": ["gente que duda", "gente que cambia de idea", "comportamientos imperfectos"]
+        },
+        {
+          "name": "13 · Silencio",
+          "note": "❓ ¿El mundo sabe parar?",
+          "items": ["momentos tranquilos", "ausencia de estímulos"]
+        },
+        {
+          "name": "14 · Historia invisible",
+          "note": "❓ ¿Parece que llegué a un sitio ya existente?",
+          "items": ["cosas que ocurrieron antes", "señales de uso", "pequeños rastros"]
+        },
+        {
+          "name": "15 · Espera",
+          "note": "❓ ¿Todo está siempre ocurriendo?",
+          "items": ["gente esperando", "tiempo muerto", "pequeñas acciones"]
+        },
+        {
+          "name": "16 · Regla general",
+          "note": "Cuando dudes entre añadir más contenido o más sensación: elige sensación.",
+          "items": ["sensación > contenido"]
+        }
+      ],
+      "feeling": "Que el sitio se sienta real con los cinco sentidos, no solo que tenga muchas cosas."
+    }
+  ],
+  "checklist": {
+    "note": "Plan de trabajo en orden (de lo primero a lo último). Cada tarea está partida en SUBTAREAS pequeñas: marca cada paso al terminarlo y así no se olvida nada. Es una propuesta; podemos reordenar o añadir pasos cuando quieras.",
+    "phases": [
+      {
+        "title": "Fase 0 · Cimientos del mundo",
+        "goal": "La base sobre la que se construye todo lo demás.",
+        "tasks": [
+          { "id": "base-osm", "title": "Recrear Marbella desde Google Maps (mapa base)", "detail": "Copiar la ciudad real usando Google Maps (satélite + Street View) como referencia visual.", "idea": "marbella-datos-reales", "subtasks": ["Tomar Google Maps (satélite + Street View) como referencia visual", "Copiar el trazado de calles y manzanas del satélite", "Recrear los edificios con su forma y altura reales", "Marcar el mar y la línea de costa", "Comparar con Google Maps hasta que coincida", "Usar OSM solo de apoyo si falta geometría exacta"] },
+          { "id": "carga-zonas", "title": "Cargar el mundo por zonas (sin que pese todo)", "detail": "Streaming básico para que vaya fluido.", "idea": "streaming-mundo", "subtasks": ["Dividir el mapa en zonas (chunks)", "Cargar solo las zonas cercanas al jugador", "Descargar las zonas lejanas", "Probar que no hay tirones al moverse"] },
+          { "id": "reloj-mundo", "title": "Reloj del mundo: hora y ciclo día/noche", "detail": "Una hora global que controle luz y actividad.", "idea": "simulacion-global", "subtasks": ["Crear una hora global del juego", "Mover el sol según la hora", "Luz distinta de día y de noche", "Velocidad del tiempo ajustable"] },
+          { "id": "zonas-barrios", "title": "Definir las zonas/barrios reales", "detail": "Marcar dónde va cada zona para colocar todo con coherencia.", "idea": "marbella-guia-visual", "subtasks": ["Marcar el casco antiguo", "Marcar Puerto Banús", "Marcar el paseo marítimo y playas", "Marcar las avenidas principales", "Marcar las urbanizaciones de las colinas", "Marcar zonas de polígono/industrial"] },
+          { "id": "relieve-terreno", "title": "Relieve del terreno (colinas y La Concha)", "detail": "Pendientes reales y la montaña de fondo.", "idea": "marbella-datos-reales", "subtasks": ["Añadir pendientes y desniveles", "Colinas con urbanizaciones", "Montaña La Concha de fondo", "Que las calles sigan el relieve"] }
+        ]
+      },
+      {
+        "title": "Fase 1 · Que parezca Marbella (lo visual primero)",
+        "goal": "Que en cuanto lo abras, se vea la Costa del Sol.",
+        "tasks": [
+          { "id": "luz-mediterranea", "title": "Iluminación cálida mediterránea", "detail": "Sol cálido y sombras de costa.", "idea": "fidelidad-visual", "subtasks": ["Color del sol cálido (dorado)", "Intensidad fuerte al mediodía", "Sombras suaves y largas", "Luz de relleno azulada del cielo", "Ajustar exposición (que no queme ni oscurezca)"] },
+          { "id": "materiales-pbr", "title": "Materiales realistas (PBR)", "detail": "Que nada se vea plano.", "idea": "fidelidad-visual", "subtasks": ["Material de asfalto", "Material de hormigón/edificios", "Cristales con reflejo y transparencia", "Algo de suciedad y desgaste", "Variación para que no se repita igual"] },
+          { "id": "detalles-esp-1", "title": "Detalles españoles de fachada", "detail": "Lo que da el 'sabor' España.", "idea": "detalles-espanoles", "subtasks": ["Persianas metálicas en ventanas", "Balcones con barandilla y plantas", "Toldos en ventanas y comercios", "Rejas y carpintería (blanco/marrón/verde)", "Aparatos de aire acondicionado en fachadas", "Ropa tendida en balcones"] },
+          { "id": "mobiliario-calle", "title": "Mobiliario urbano básico", "detail": "Objetos de calle con lógica.", "idea": "objetos-mundo", "subtasks": ["Farolas (fernandinas y modernas)", "Bancos", "Papeleras", "Señales de tráfico", "Semáforos", "Colocarlos con lógica (no flotando)"] },
+          { "id": "vegetacion", "title": "Vegetación mediterránea", "detail": "Mucho verde, según zona.", "idea": "objetos-mundo", "subtasks": ["Palmeras (datilera y washingtonia)", "Pinos y cipreses", "Arbustos y setos recortados", "Buganvilla, adelfas y geranios", "Césped y parterres de flores", "Variar según zona (costa/centro/colina)"] },
+          { "id": "paseo-playa", "title": "Paseo marítimo, playa y chiringuitos", "detail": "La zona costera icónica.", "idea": "detalles-espanoles", "subtasks": ["Paseo de baldosa con barandilla blanca", "Hilera de palmeras del paseo", "Arena (tono dorado-grisáceo)", "Mar azul-turquesa con oleaje suave", "Chiringuitos de madera", "Hamacas, sombrillas y duchas", "Carril bici del paseo"] },
+          { "id": "cielo-dianoche", "title": "Cielo y transición día/noche", "detail": "Que se note pasar de día a noche.", "idea": "clima", "subtasks": ["Cielo azul de día con nubes", "Atardecer anaranjado", "Cielo de noche con luna/estrellas", "Que las farolas se enciendan de noche"] },
+          { "id": "reflejos-mojado", "title": "Reflejos y calles mojadas", "detail": "Base para la lluvia.", "idea": "clima", "subtasks": ["Suelo más oscuro y brillante al mojarse", "Charcos en zonas bajas", "Reflejos del entorno en el suelo", "Que se seque poco a poco al parar la lluvia"] },
+          { "id": "imperfecciones", "title": "Imperfecciones: grafitis y desgaste", "detail": "Que el mundo no sea perfecto.", "idea": "objetos-mundo", "subtasks": ["Grafitis en algunas paredes", "Pintura desconchada y manchas de humedad", "Suciedad ligera en esquinas y bordillos", "Mobiliario gastado u oxidado", "Alguna baldosa rota o bache"] },
+          { "id": "contenedores-paradas", "title": "Contenedores, papeleras y paradas de bus", "detail": "Mobiliario que falta.", "idea": "objetos-mundo", "subtasks": ["Contenedores de basura y reciclaje", "Algún contenedor soterrado", "Marquesinas de autobús (con banco y publicidad)", "Bolardos", "Bolsas de basura junto a contenedores"] },
+          { "id": "obras-gruas", "title": "Obras y grúas en el horizonte", "detail": "Marbella siempre en construcción.", "idea": "marbella-guia-visual", "subtasks": ["Grúas torre en el horizonte", "Edificios en obra con andamios y red", "Vallas de obra y conos", "Carteles de inmobiliarias / obra nueva", "Alguna estructura de hormigón a medias"] },
+          { "id": "pajaros", "title": "Pájaros: gaviotas y palomas", "detail": "Volando y posados.", "idea": "objetos-mundo", "subtasks": ["Gaviotas volando junto al mar", "Palomas en el suelo de las plazas", "Pájaros posados en farolas y cables", "Bandadas que reaccionan al ruido"] }
+        ]
+      },
+      {
+        "title": "Fase 2 · Que se sienta vivo",
+        "goal": "Calles con gente y coches, no vacías.",
+        "tasks": [
+          { "id": "peatones", "title": "Peatones andando por las aceras", "detail": "Gente con rumbo.", "idea": "vida-urbana", "subtasks": ["NPC que caminan por las aceras", "Que vayan a un destino (no en círculos)", "Que esquiven obstáculos y entre ellos", "Que esperen y crucen por los pasos", "Densidad variable según la zona"] },
+          { "id": "npc-humanos", "title": "NPC con aspecto humano y al andar", "detail": "Que no parezcan muñecos.", "idea": "npc-coches-realistas", "subtasks": ["Modelos humanos con buenas proporciones", "Animación de andar natural", "Variación de cuerpos y ropa", "Caras básicas (no planas)", "Movimiento de brazos y cabeza"] },
+          { "id": "trafico-basico", "title": "Coches básicos circulando", "detail": "Tráfico simple que respeta las vías.", "idea": "trafico-emergente", "subtasks": ["Coches que siguen los carriles", "Parar en semáforos y ceder en rotondas", "Velocidad y distancia razonables", "Aparecer/desaparecer fuera de vista"] },
+          { "id": "coches-realistas", "title": "Coches con aspecto realista", "detail": "Que no sean cajas.", "idea": "vehiculos-realistas", "subtasks": ["Modelos con proporciones reales", "Faros y luces físicas", "Reflejos de carrocería", "Variedad de colores y modelos", "Algo de suciedad/desgaste"] },
+          { "id": "terrazas-gente", "title": "Terrazas con gente sentada", "detail": "Vida social en bares.", "idea": "vida-urbana", "subtasks": ["Mesas y sillas de terraza", "NPC sentados conversando", "Gestos al hablar y mirar el móvil", "Camareros que van y vienen"] },
+          { "id": "sonido-ambiente", "title": "Sonido ambiente de ciudad", "detail": "Capas básicas de sonido.", "idea": "sonido-mundo", "subtasks": ["Ruido base de ciudad", "Sonido de tráfico según cercanía", "Voces y pasos de peatones", "Sonido del mar en el paseo"] },
+          { "id": "ciudad-horas", "title": "La ciudad cambia según la hora", "detail": "Ritmo distinto día/noche.", "idea": "ciudad-respira", "subtasks": ["Más gente y tráfico en horas punta", "Menos gente de noche", "Comercios abiertos/cerrados según la hora", "Ambiente nocturno distinto"] },
+          { "id": "autobuses", "title": "Autobuses urbanos circulando y parando", "detail": "Con sus paradas.", "idea": "vehiculos-realistas", "subtasks": ["Modelo de autobús urbano", "Rutas por las avenidas", "Que paren en las marquesinas", "NPC que suben y bajan"] }
+        ]
+      },
+      {
+        "title": "Fase 3 · Conducir y moverte bien",
+        "goal": "Que conducir y andar se sientan de verdad.",
+        "tasks": [
+          { "id": "fisica-conduccion", "title": "Físicas de conducción con peso", "detail": "Agarre, peso y derrape.", "idea": "conducir-real", "subtasks": ["Peso e inercia del coche", "Aceleración y frenada progresivas", "Agarre y derrape en curvas", "Suspensión visible en baches", "Comportamiento distinto por superficie"] },
+          { "id": "danos-visuales", "title": "Daños visuales al chocar", "detail": "Que se note golpeado.", "idea": "danos-avanzados", "subtasks": ["Abolladuras al chocar", "Cristales y faros que se rompen", "Piezas que se sueltan o cuelgan", "Pintura rayada"] },
+          { "id": "mov-jugador", "title": "Movimiento del jugador con peso", "detail": "Sin flotar.", "idea": "animaciones", "subtasks": ["Andar y correr con inercia", "Giro con peso (no instantáneo)", "Salto con caída realista", "Agacharse", "Transiciones suaves entre estados"] },
+          { "id": "entrar-coche", "title": "Entrar y salir del coche con animación", "detail": "Sin teletransporte.", "idea": "animaciones", "subtasks": ["Abrir la puerta", "Sentarse en el asiento", "Salir del coche", "Cambiar de asiento (pasajero)"] },
+          { "id": "camaras-juego", "title": "Cámaras de juego", "detail": "Vistas cómodas.", "idea": "camara-avanzada", "subtasks": ["Tercera persona (cerca y lejos)", "Primera persona", "Cámaras de conducción (capó/parachoques/interior)", "Cambiar de cámara con una tecla"] }
+        ]
+      },
+      {
+        "title": "Fase 4 · Empezar una vida",
+        "goal": "El arranque del jugador y su economía.",
+        "tasks": [
+          { "id": "intro-dia1", "title": "Intro Día 1: llegas a Marbella sin nada", "detail": "El comienzo del jugador.", "idea": "inicio-juego", "subtasks": ["Escena de llegada en autobús", "Empezar con poco dinero, sin casa ni trabajo", "Diálogo de bienvenida", "Primera libertad: explorar sin flechas"] },
+          { "id": "movil-mapa", "title": "Móvil como menú: mapa y GPS", "detail": "Tu centro de control.", "idea": "gps-movil", "subtasks": ["Abrir/cerrar el móvil con animación", "Mapa de la ciudad", "Marcar destino y ruta (GPS)", "Mensajes y avisos básicos"] },
+          { "id": "economia-basica", "title": "Economía simple: ganar y gastar", "detail": "Dinero que cuesta.", "idea": "economia", "subtasks": ["Contador de dinero en pantalla (HUD)", "Ganar dinero con trabajos", "Gastar en compras", "Gasolina opcional"] },
+          { "id": "primer-trabajo", "title": "Primer trabajo: repartidor (pizzería)", "detail": "Trabajo inicial que enseña a moverte.", "idea": "trabajos-dinamicos", "subtasks": ["NPC de la pizzería que ofrece trabajo", "Recoger el pedido", "Entregar en 2–3 puntos con el GPS", "Cobrar la recompensa"] },
+          { "id": "vivienda", "title": "Vivienda: alquilar + respawn", "detail": "Un sitio propio.", "idea": "apartamentos", "subtasks": ["Anuncio de habitación en el móvil", "Alquilar/entrar en la vivienda", "Punto de reaparición al morir", "Cambiar de ropa en casa"] },
+          { "id": "guardado", "title": "Guardado y mundo persistente básico", "detail": "Que siga como lo dejaste.", "idea": "mundo-persistente", "subtasks": ["Guardar la partida", "Cargar y continuar", "Que el coche y los cambios sigan ahí", "Guardado automático"] }
+        ]
+      },
+      {
+        "title": "Fase 5 · Mundo que reacciona",
+        "goal": "La ciudad responde a lo que haces.",
+        "tasks": [
+          { "id": "ia-rutinas", "title": "IA de NPC: rutinas diarias", "detail": "Que tengan agenda.", "idea": "ia-profunda", "subtasks": ["Horario (casa → trabajo → ocio → casa)", "Que vayan a sitios reales", "Dormir de noche / activos de día", "Que las rutinas se rompan por eventos"] },
+          { "id": "ia-emociones", "title": "IA de NPC: emociones y reacción", "detail": "Que reaccionen a ti.", "idea": "ia-profunda", "subtasks": ["Estados (tranquilo, nervioso, asustado, enfadado)", "Cambian según lo que pasa cerca", "Reacción al jugador (mirar, apartarse, huir)", "Memoria corta (recordar un peligro)"] },
+          { "id": "policia", "title": "Policía y nivel de búsqueda", "detail": "Que te persigan.", "idea": "crimen-control", "subtasks": ["Nivel de búsqueda (0–5)", "Policía que patrulla", "Que te detecten al delinquir", "Persecución básica", "Perder el nivel escondiéndote"] },
+          { "id": "emergencias", "title": "Emergencias que responden", "detail": "Policía, ambulancia, bomberos.", "idea": "emergencias-mundo", "subtasks": ["Patrulla que acude a incidentes", "Ambulancia para heridos", "Bomberos para incendios", "Que el tráfico se aparte con sirenas"] },
+          { "id": "eventos-ciudad", "title": "Eventos espontáneos", "detail": "Sucesos que pasan solos.", "idea": "eventos", "subtasks": ["Accidentes de tráfico", "Obras temporales", "Discusiones o peleas", "Coches averiados", "Que aparezcan y se resuelvan solos"] },
+          { "id": "oportunidades", "title": "Trabajos/oportunidades según tu vida", "detail": "Que el mundo te ofrezca cosas.", "idea": "oportunidades-emergentes", "subtasks": ["Trabajos según tu perfil", "Avisos por el móvil", "NPC que piden ayuda en la calle", "Una opción segura y otra mejor pagada"] },
+          { "id": "reputacion-base", "title": "Reputación: el mundo te recuerda", "detail": "Tus actos importan.", "idea": "reputacion", "subtasks": ["Reputación general (buena/mala)", "Que los NPC reaccionen a tu fama", "Que la policía te recuerde", "Que cambien los trabajos disponibles"] }
+        ]
+      },
+      {
+        "title": "Fase 6 · Profundidad y caos",
+        "goal": "Sistemas más ricos y emergentes.",
+        "tasks": [
+          { "id": "trafico-avanzado", "title": "Tráfico avanzado", "detail": "Tráfico como sistema.", "idea": "trafico-emergente", "subtasks": ["Semáforos coordinados", "Carriles con sentido y cambios de carril", "Atascos y frenadas en cadena", "Incorporaciones y adelantamientos", "Rotondas funcionales"] },
+          { "id": "caos-fisico", "title": "Físicas de caos: choques en cadena", "detail": "Accidentes que escalan.", "idea": "fisicas-caos", "subtasks": ["Choques con física real (masa, ángulo)", "Reacción en cadena entre coches", "Físicas de peatones controladas", "Que el entorno reaccione (vallas, contenedores)"] },
+          { "id": "danos-funcionales", "title": "Daños funcionales", "detail": "Afectan a la conducción.", "idea": "danos-avanzados", "subtasks": ["Motor dañado → menos velocidad", "Ruedas pinchadas → tira a un lado", "Dirección/frenos afectados", "Humo y riesgo de incendio"] },
+          { "id": "interaccion-objetos", "title": "Interacción total con objetos", "detail": "Tocar, mover, usar.", "idea": "interaccion-mundo", "subtasks": ["Acciones contextuales (usar/abrir/coger)", "Sentarse en bancos", "Empujar/romper objetos ligeros", "Trabajos manuales (cargar, barrer...)"] },
+          { "id": "motos-especiales", "title": "Motos y vehículos especiales", "detail": "Variedad real.", "idea": "vehiculos-realistas", "subtasks": ["Motos y scooters que se cuelan", "Furgonetas de reparto", "Taxis", "Vehículos de emergencia"] },
+          { "id": "narrativa", "title": "Narrativa dinámica", "detail": "Misiones que emergen.", "idea": "narrativa-dinamica", "subtasks": ["Eventos que se vuelven misión", "Estructura inicio → problema → final", "Roles según lo que hagas", "Consecuencias que el mundo recuerda"] }
+        ]
+      },
+      {
+        "title": "Fase 7 · Pulido y contenido",
+        "goal": "Rematar lo que hace el mundo más rico.",
+        "tasks": [
+          { "id": "interiores", "title": "Interiores básicos", "detail": "Entrar en algunos edificios.", "idea": "interiores", "subtasks": ["Entrar en una tienda", "Entrar en un portal o garaje", "Entrar en una cafetería", "Sin pantalla de carga larga"] },
+          { "id": "editor", "title": "Editor de personaje", "detail": "Ropa y aspecto.", "idea": "editor-personaje", "subtasks": ["Cambiar cuerpo y cara", "Elegir ropa y calzado", "Peinado y complementos", "Comprar ropa en tiendas"] },
+          { "id": "clima-completo", "title": "Clima completo", "detail": "Lluvia, niebla, estaciones.", "idea": "clima", "subtasks": ["Lluvia (ligera e intensa)", "Niebla", "Viento", "Estaciones del año", "Que el clima afecte a tráfico y NPC"] },
+          { "id": "camara-cine", "title": "Cámara de cine y repeticiones", "detail": "Revivir momentos.", "idea": "camara-avanzada", "subtasks": ["Ángulos automáticos de cine", "Cámara lenta en momentos clave", "Repeticiones (replays)", "Cámara libre para fotos"] },
+          { "id": "vida-persistente", "title": "Economía y vida persistente avanzada", "detail": "Propiedades y negocios.", "idea": "economia-vida", "subtasks": ["Comprar propiedades y garajes", "Vehículos propios guardados", "Negocios que dan ingresos", "Progresión de habilidades"] },
+          { "id": "simulacion-densidad", "title": "Simulación global: densidad y límites", "detail": "Que no se sature.", "idea": "simulacion-global", "subtasks": ["Más vida en zonas activas", "Menos simulación lejos del jugador", "Límites de eventos/caos a la vez", "Que el mundo se normalice tras el caos"] }
+        ]
+      },
+      {
+        "title": "Fase 8 · Lanzamiento",
+        "goal": "Sacarlo al público.",
+        "tasks": [
+          { "id": "demo", "title": "Demo jugable de una zona", "detail": "Un primer corte.", "idea": "demo", "subtasks": ["Elegir una zona pequeña para la demo", "Pulir lo esencial (andar, conducir, 1–2 trabajos)", "Quitar bugs críticos", "Preparar la descarga"] },
+          { "id": "alpha", "title": "Alpha pública + comunidad", "detail": "Jugadores reales.", "idea": "alpha-publica", "subtasks": ["Publicar la alpha (web/itch.io)", "Crear Discord y canales de feedback", "Telemetría básica (FPS, crashes)", "Actualizaciones frecuentes"] },
+          { "id": "v1", "title": "Versión 1.0 completa y pulida", "detail": "El producto terminado.", "idea": "lanzamiento-completo", "subtasks": ["Contenido final completo", "Pulido y rendimiento", "Identidad propia (nombre, estilo)", "Lanzamiento público 1.0"] }
+        ]
+      }
+    ]
+  }
 }

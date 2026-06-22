@@ -65,6 +65,13 @@
         background: var(--surface); border: 1px solid var(--line);
         padding: 7px 12px; border-radius: 999px; box-shadow: var(--shadow-sm);
       }
+      .ideas-link {
+        text-decoration: none; color: var(--accent-2-ink); font-weight: 650; font-size: 12.5px;
+        background: rgba(211, 135, 10, 0.12); border: 1px solid rgba(211, 135, 10, 0.3);
+        padding: 7px 14px; border-radius: 999px; white-space: nowrap;
+        transition: transform 120ms ease, box-shadow 120ms ease;
+      }
+      .ideas-link:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(211, 135, 10, 0.22); }
       .pulse {
         width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
         animation: pulse 2s infinite;
@@ -223,7 +230,11 @@
             <div class="sub" id="subtitle">GTA Marbella · progreso en segundo plano</div>
           </div>
         </div>
-        <div class="clock"><span class="pulse"></span><span id="clock">conectando…</span></div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <a class="ideas-link" href="/plan">📋 Plan de trabajo</a>
+          <a class="ideas-link" href="/ideas">💡 Banco de ideas</a>
+          <div class="clock"><span class="pulse"></span><span id="clock">conectando…</span></div>
+        </div>
       </header>
 
       <div class="section-label">El juego</div>

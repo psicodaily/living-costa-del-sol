@@ -1,4 +1,4 @@
-# 🎮 Cómo jugar — GTA Marbella
+# 🎮 Cómo jugar — Living Costa del Sol
 
 ## Arrancar el juego (fácil) ✅
 
@@ -23,9 +23,10 @@ Si prefieres, abre una terminal en la carpeta y escribe `npm run dev`.
 | Tecla | Acción |
 |-------|--------|
 | **Flechas** o **WASD** | Mover al personaje / conducir |
-| **E** | Entrar / salir del coche (acércate primero) |
+| **E** | Vehículo más cercano / tienda (acércate primero) |
+| **R** | Cambiar emisora de radio |
 | **Shift** | Correr |
-| **P** | Menú de pausa (ajustes, reiniciar) |
+| **P** | Menú de pausa (ajustes, guardar, hora, efectos) |
 | **Ratón** (sin clic) | Girar la cámara (también mirar arriba/abajo) |
 | **Clic** o **M** | Abrir / cerrar el mapa grande |
 | **Rueda del ratón** | Acercar / alejar la cámara |

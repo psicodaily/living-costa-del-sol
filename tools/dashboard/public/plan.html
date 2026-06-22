@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plan de trabajo — GTA Marbella</title>
+    <style>
+      :root {
+        --bg: #f4f1ea;
+        --bg-soft: #efe9df;
+        --surface: #ffffff;
+        --surface-2: #faf7f1;
+        --line: #e6dfd2;
+        --line-strong: #d7cebd;
+        --text: #232a32;
+        --muted: #6a7480;
+        --faint: #9aa2ad;
+        --accent: #0e9c82;
+        --accent-ink: #0a5d4e;
+        --accent-2: #d3870a;
+        --accent-2-ink: #8a5600;
+        --blue: #2f7fd1;
+        --radius: 14px;
+        --shadow-sm: 0 1px 2px rgba(40, 50, 60, 0.05);
+        --shadow: 0 8px 24px rgba(60, 70, 80, 0.07), 0 1px 3px rgba(60, 70, 80, 0.05);
+        --mono: "SF Mono", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+        --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; min-height: 100vh; font-family: var(--sans); color: var(--text);
+        background:
+          radial-gradient(900px 480px at 88% -8%, rgba(14, 156, 130, 0.10), transparent 60%),
+          radial-gradient(720px 420px at -5% 0%, rgba(211, 135, 10, 0.09), transparent 58%),
+          var(--bg);
+        background-attachment: fixed;
+      }
+      .wrap { max-width: 1000px; margin: 0 auto; padding: 34px 24px 90px; }
+      header.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+      .brand { display: flex; align-items: center; gap: 14px; }
+      .brand .mark {
+        width: 44px; height: 44px; border-radius: 12px;
+        background: linear-gradient(135deg, var(--accent), #0c7a64);
+        display: grid; place-items: center; font-size: 22px;
+        box-shadow: 0 8px 22px rgba(14, 156, 130, 0.28);
+      }
+      h1 { font-size: 21px; margin: 0; letter-spacing: -0.02em; font-weight: 680; }
+      .brand .sub { color: var(--muted); font-size: 12.5px; margin-top: 3px; }
+      .nav { display: flex; gap: 10px; flex-wrap: wrap; }
+      .navlink {
+        text-decoration: none; color: var(--accent-ink); font-weight: 650; font-size: 13px;
+        background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+        padding: 9px 15px; border-radius: 999px; white-space: nowrap;
+        transition: transform 120ms ease, box-shadow 120ms ease;
+      }
+      .navlink:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+
+      .intro {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 16px 20px; box-shadow: var(--shadow); margin-bottom: 14px;
+      }
+      .intro .lead { color: var(--muted); font-size: 13px; line-height: 1.55; }
+      .overall { margin-top: 14px; }
+      .overall .row { display: flex; justify-content: space-between; align-items: baseline; font-size: 12.5px; }
+      .overall .row b { color: var(--text); }
+      .overall .pct { font-family: var(--mono); color: var(--accent-ink); font-weight: 700; }
+      .bar { height: 9px; border-radius: 999px; background: var(--bg-soft); margin-top: 7px; overflow: hidden; border: 1px solid var(--line); }
+      .bar > span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width 400ms ease; }
+
+      .phase { margin-top: 26px; }
+      .phase-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 0 2px 10px; }
+      .phase-title { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+      .phase-goal { color: var(--muted); font-size: 12.5px; }
+      .phase-count { margin-left: auto; font-family: var(--mono); font-size: 11.5px; color: var(--faint); }
+
+      .task {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+        padding: 13px 15px; margin-bottom: 11px; box-shadow: var(--shadow-sm);
+        transition: border-color 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+      }
+      .task.next { border-color: rgba(211, 135, 10, 0.55); box-shadow: 0 8px 22px rgba(211, 135, 10, 0.14); background: linear-gradient(180deg, rgba(211,135,10,0.05), var(--surface)); }
+      .task.done { opacity: 0.6; }
+      .task-head { display: flex; align-items: baseline; gap: 10px; }
+      .num { flex: none; font-family: var(--mono); font-size: 12px; color: var(--faint); width: 22px; text-align: right; }
+      .task-main { flex: 1; min-width: 0; }
+      .task-title { font-weight: 700; font-size: 14.5px; line-height: 1.3; }
+      .task.done .task-title { text-decoration: line-through; }
+      .task-mini { flex: none; font-family: var(--mono); font-size: 11.5px; color: var(--accent-ink); font-weight: 700; }
+      .task-detail { color: var(--muted); font-size: 12.5px; line-height: 1.45; margin-top: 3px; }
+      .task-bar { height: 6px; border-radius: 999px; background: var(--bg-soft); margin-top: 9px; overflow: hidden; border: 1px solid var(--line); }
+      .task-bar > span { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width 400ms ease; }
+      ul.subs { list-style: none; margin: 11px 0 0; padding: 0; }
+      .sub { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; font-size: 13px; border-top: 1px solid var(--line); }
+      .sub:first-child { border-top: none; }
+      .sub .box {
+        flex: none; width: 19px; height: 19px; margin-top: 1px; border-radius: 6px;
+        border: 2px solid var(--line-strong); background: var(--surface-2); cursor: pointer;
+        display: grid; place-items: center; font-size: 12px; color: #fff; user-select: none;
+        transition: background 120ms ease, border-color 120ms ease;
+      }
+      .sub .box:hover { border-color: var(--accent); }
+      .sub.done .box { background: var(--accent); border-color: var(--accent); }
+      .sub .txt { color: var(--text); line-height: 1.4; }
+      .sub.done .txt { color: var(--muted); text-decoration: line-through; }
+      .sub.current .txt { font-weight: 650; }
+      .sub.current .box { border-color: var(--accent-2); box-shadow: 0 0 0 3px rgba(211, 135, 10, 0.16); }
+      .task-foot { display: flex; align-items: center; gap: 10px; margin-top: 9px; flex-wrap: wrap; }
+      .now-badge { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #fff; background: var(--accent-2); padding: 3px 9px; border-radius: 999px; }
+      .idea-link { text-decoration: none; font-size: 11.5px; color: var(--accent-ink); background: rgba(14,156,130,0.08); border: 1px solid rgba(14,156,130,0.25); padding: 3px 9px; border-radius: 999px; }
+      .idea-link:hover { background: rgba(14,156,130,0.16); }
+
+      .empty { color: var(--faint); font-size: 13px; text-align: center; padding: 24px; border: 1px dashed var(--line-strong); border-radius: 12px; background: var(--surface-2); }
+      .foot { color: var(--faint); font-size: 11.5px; margin-top: 38px; text-align: center; line-height: 1.6; }
+      code { font-family: var(--mono); color: var(--accent-ink); background: rgba(14, 156, 130, 0.1); padding: 1px 6px; border-radius: 5px; }
+      .reset { background: none; border: none; color: var(--faint); font-size: 11.5px; cursor: pointer; text-decoration: underline; padding: 0; }
+      .reset:hover { color: var(--muted); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <div class="brand">
+          <div class="mark">📋</div>
+          <div>
+            <h1>Plan de trabajo</h1>
+            <div class="sub">GTA Marbella · por dónde empezar y qué sigue</div>
+          </div>
+        </div>
+        <div class="nav">
+          <a class="navlink" href="/ideas">💡 Banco de ideas</a>
+          <a class="navlink" href="/">← Panel</a>
+        </div>
+      </header>
+
+      <div class="intro">
+        <div class="lead" id="intro-text">
+          Tareas ordenadas de lo <b>primero/más importante</b> a lo último. La que está
+          resaltada es por la que <b>empezar</b>; debajo van las siguientes. Marca cada
+          casilla al terminar (se guarda en este navegador).
+        </div>
+        <div class="overall">
+          <div class="row"><span><b id="done-count">0</b> de <b id="total-count">0</b> pasos completados</span><span class="pct" id="overall-pct">0%</span></div>
+          <div class="bar"><span id="overall-bar" style="width:0%"></span></div>
+        </div>
+      </div>
+
+      <div id="plan"></div>
+
+      <div class="foot">
+        El orden es una propuesta; se puede cambiar. Tu progreso se guarda solo en este
+        navegador. <button class="reset" id="reset">reiniciar marcas</button><br />
+        La lista vive en <code>tools/dashboard/state.json</code>.
+      </div>
+    </div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const STORE = "marbella-plan-done";
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      }
+      function loadDone() {
+        try { return new Set(JSON.parse(localStorage.getItem(STORE) || "[]")); } catch { return new Set(); }
+      }
+      function saveDone(set) {
+        localStorage.setItem(STORE, JSON.stringify([...set]));
+      }
+
+      let CHECKLIST = null;
+
+      // Cada subtarea tiene una clave estable: idTarea#índice.
+      function subsOf(t) {
+        return (Array.isArray(t.subtasks) && t.subtasks.length) ? t.subtasks : [t.title];
+      }
+      function subKeysOf(t) {
+        return subsOf(t).map((s, i) => t.id + "#" + i);
+      }
+      function allSubKeys() {
+        const out = [];
+        for (const ph of (CHECKLIST && CHECKLIST.phases) || []) for (const t of ph.tasks || []) out.push(...subKeysOf(t));
+        return out;
+      }
+
+      function render() {
+        if (!CHECKLIST || !Array.isArray(CHECKLIST.phases) || !CHECKLIST.phases.length) {
+          $("plan").innerHTML = `<div class="empty">Todavía no hay plan cargado.</div>`;
+          return;
+        }
+        const done = loadDone();
+        const keys = allSubKeys();
+        const total = keys.length;
+        const doneN = keys.filter((k) => done.has(k)).length;
+        const firstPending = keys.find((k) => !done.has(k)) || null;
+
+        $("done-count").textContent = doneN;
+        $("total-count").textContent = total;
+        const pct = total ? Math.round((doneN / total) * 100) : 0;
+        $("overall-pct").textContent = pct + "%";
+        $("overall-bar").style.width = pct + "%";
+
+        let n = 0;
+        const html = CHECKLIST.phases
+          .map((ph) => {
+            const phTasks = ph.tasks || [];
+            let phTotal = 0, phDone = 0;
+            for (const t of phTasks) { const ks = subKeysOf(t); phTotal += ks.length; phDone += ks.filter((k) => done.has(k)).length; }
+            const tasksHtml = phTasks
+              .map((t) => {
+                n++;
+                const subs = subsOf(t);
+                const ks = subKeysOf(t);
+                const tDone = ks.filter((k) => done.has(k)).length;
+                const tTotal = ks.length;
+                const taskDone = tDone === tTotal;
+                const taskNext = ks.includes(firstPending);
+                const tpct = tTotal ? Math.round((tDone / tTotal) * 100) : 0;
+                const badge = taskNext ? `<span class="now-badge">👉 Empieza por aquí</span>` : "";
+                const ideaLink = t.idea
+                  ? `<a class="idea-link" href="/ideas#idea-card-${escapeHtml(t.idea)}">ver idea →</a>`
+                  : "";
+                const subRows = subs
+                  .map((s, i) => {
+                    const key = t.id + "#" + i;
+                    const sd = done.has(key);
+                    const cur = key === firstPending;
+                    return `<li class="sub ${sd ? "done" : ""} ${cur ? "current" : ""}">
+                        <span class="box" data-key="${escapeHtml(key)}">${sd ? "✓" : ""}</span>
+                        <span class="txt">${escapeHtml(s)}</span>
+                      </li>`;
+                  })
+                  .join("");
+                return `
+                  <div class="task ${taskDone ? "done" : ""} ${taskNext ? "next" : ""}">
+                    <div class="task-head">
+                      <span class="num">${n}</span>
+                      <div class="task-main">
+                        <div class="task-title">${escapeHtml(t.title || "Tarea")}</div>
+                        ${t.detail ? `<div class="task-detail">${escapeHtml(t.detail)}</div>` : ""}
+                      </div>
+                      <span class="task-mini">${tDone}/${tTotal}</span>
+                    </div>
+                    <div class="task-bar"><span style="width:${tpct}%"></span></div>
+                    <ul class="subs">${subRows}</ul>
+                    ${badge || ideaLink ? `<div class="task-foot">${badge}${ideaLink}</div>` : ""}
+                  </div>`;
+              })
+              .join("");
+            return `
+              <div class="phase">
+                <div class="phase-head">
+                  <span class="phase-title">${escapeHtml(ph.title || "")}</span>
+                  ${ph.goal ? `<span class="phase-goal">${escapeHtml(ph.goal)}</span>` : ""}
+                  <span class="phase-count">${phDone}/${phTotal}</span>
+                </div>
+                ${tasksHtml}
+              </div>`;
+          })
+          .join("");
+        $("plan").innerHTML = html;
+      }
+
+      // Marcar / desmarcar subtareas (clic en la casilla).
+      $("plan").addEventListener("click", (e) => {
+        const box = e.target.closest(".sub .box");
+        if (!box) return;
+        const key = box.dataset.key;
+        const done = loadDone();
+        if (done.has(key)) done.delete(key); else done.add(key);
+        saveDone(done);
+        render();
+      });
+
+      $("reset").addEventListener("click", () => {
+        localStorage.removeItem(STORE);
+        render();
+      });
+
+      async function tick() {
+        try {
+          const r = await fetch("/api/state", { cache: "no-store" });
+          const d = await r.json();
+          const sig = JSON.stringify(d.checklist);
+          if (sig === tick._last) return;
+          tick._last = sig;
+          CHECKLIST = d.checklist;
+          if (CHECKLIST && CHECKLIST.note) {
+            $("intro-text").innerHTML = escapeHtml(CHECKLIST.note);
+          }
+          render();
+        } catch (e) {
+          /* sin conexión: mantenemos lo último */
+        }
+      }
+
+      tick();
+      setInterval(tick, 4000);
+    </script>
+  </body>
+</html>

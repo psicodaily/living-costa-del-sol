@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" /><title>Marbella real — visor 2D</title>
+<style>
+  html,body{margin:0;background:#0f1216;color:#cbd5e1;font-family:system-ui}
+  #info{position:fixed;top:10px;left:10px;font-size:13px;background:#1b2330;padding:8px 12px;border-radius:8px}
+  canvas{display:block}
+</style>
+</head>
+<body>
+<div id="info">Cargando marbella.json…</div>
+<canvas id="c"></canvas>
+<script type="module">
+const cv = document.getElementById("c");
+const ctx = cv.getContext("2d");
+const info = document.getElementById("info");
+
+const data = await fetch("/marbella.json").then((r) => r.json());
+
+// Calcular límites del mundo
+let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+const scan = (pts) => pts.forEach(([x, z]) => {
+  if (x < minX) minX = x; if (x > maxX) maxX = x;
+  if (z < minZ) minZ = z; if (z > maxZ) maxZ = z;
+});
+data.roads.forEach((r) => scan(r.path));
+data.buildings.forEach((b) => scan(b.footprint));
+data.coastline.forEach((c) => scan(c.path));
+
+function resize() {
+  cv.width = innerWidth; cv.height = innerHeight;
+  draw();
+}
+function world2screen(x, z) {
+  const pad = 20;
+  const sx = (cv.width - pad * 2) / (maxX - minX);
+  const sz = (cv.height - pad * 2) / (maxZ - minZ);
+  const s = Math.min(sx, sz);
+  return [pad + (x - minX) * s, pad + (z - minZ) * s];
+}
+function poly(pts, { stroke, fill, close }) {
+  ctx.beginPath();
+  pts.forEach(([x, z], i) => {
+    const [sx, sy] = world2screen(x, z);
+    i ? ctx.lineTo(sx, sy) : ctx.moveTo(sx, sy);
+  });
+  if (close) ctx.closePath();
+  if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+  if (stroke) { ctx.strokeStyle = stroke; ctx.stroke(); }
+}
+function draw() {
+  ctx.fillStyle = "#0f1216";
+  ctx.fillRect(0, 0, cv.width, cv.height);
+  data.areas.forEach((a) => poly(a.polygon, { fill: a.kind === "beach" ? "#3b3320" : "#16241c", close: true }));
+  data.coastline.forEach((c) => poly(c.path, { stroke: "#2f6fb0" }));
+  ctx.lineWidth = 1;
+  data.roads.forEach((r) => poly(r.path, { stroke: "#5b6678" }));
+  data.buildings.forEach((b) => poly(b.footprint, { fill: "#9aa6b8", close: true }));
+  info.textContent = `Marbella real · ${data.buildings.length} edificios · ${data.roads.length} calles · ${data.coastline.length} tramos de costa`;
+}
+addEventListener("resize", resize);
+resize();
+</script>
+</body>
+</html>

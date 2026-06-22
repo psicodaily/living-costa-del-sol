@@ -1,4 +1,4 @@
-# 🌴 GTA Marbella — Documento de Visión y Hoja de Ruta
+# 🌴 Living Costa del Sol — Documento de Visión y Hoja de Ruta
 
 > Documento maestro del proyecto. Define **qué** queremos hacer, **hacia dónde** vamos y
 > **cuál es el objetivo final**. Se irá actualizando versión a versión.
@@ -144,7 +144,7 @@ Estas son las ideas grandes que guían el proyecto. NO se hacen ahora, pero marc
 ## 📁 Estructura del proyecto
 
 ```
-GTA Marbella/
+Living Costa del Sol/
 ├─ CLAUDE.md              # Instrucciones (idioma español, contexto)
 ├─ docs/
 │  └─ GAME_VISION.md      # Este documento
@@ -170,8 +170,51 @@ GTA Marbella/
 ---
 
 ## 📌 Estado actual
-- **Versión en desarrollo:** v1.8 — "Día y noche".
-- Versiones congeladas disponibles: v1.0 … v1.8 (carpeta `versions/`).
+- **Versión en desarrollo:** v2.17 — "Techo de realismo (agua + barcos CC0)".
+- Versiones congeladas: v1.0 … v1.13, **v2.0 … v2.17** (carpeta `versions/`).
+- **v2.17:** agua con olas y reflejos (Three.js Water) + veleros CC0 + (de v2.16)
+  luz HDRI y texturas PBR. Demo para evaluar el techo de realismo del navegador.
+- **v2.16:** prueba de realismo en Puerto Banús — **iluminación HDRI** (reflejos +
+  luz natural), **texturas PBR CC0** (asfalto, adoquín, plaster) y **agua
+  reflectante**. A verificar en PC; si convence, se aplica a todo el juego.
+- Aviso de alcance: el navegador (Three.js) **no llega al foto-realismo exacto de
+  GTA V** (motor nativo + equipo + años), pero sí a un **semi-realista estilizado**
+  muy superior a los colores planos. Estrategia: texturas + luz + modelos CC0.
+- **v2.15:** sistema de modelos 3D montado — palmeras reales **CC0 (Quaternius)**
+  instanciadas en Puerto Banús. Estrategia elegida: **procedural + packs CC0**
+  (un estilo low-poly coherente, estilo GTA). Próximo: barcos/coches/mobiliario CC0.
+- **v2.14:** distrito de Puerto Banús con edificios "ricos" (planta comercial con
+  escaparate + toldo + cornisa, alturas variadas, tejado de teja), paseo con
+  palmeras/farolas/papeleras y faro. Construido estudiando Google Maps.
+- **v2.13:** yates con forma de barco (no coches), dársena excavada por erosión
+  (sin coches/edificios/calles en el agua), barrera para no andar sobre el mar.
+  Además ya puedo capturar **Google Maps (satélite + Street View)** con Playwright
+  para recrear Puerto Banús fiel (v2.14+).
+- **v2.12:** Puerto Banús con **yates** (dársena excavada a nivel del mar para que
+  se vea agua) y **más tráfico/peatones**; el jugador aparece en tierra junto a
+  la marina.
+- **v2.11:** el mapa muestra **zonas/distritos** con perímetro de color y nombre
+  (Puerto Banús, Nueva Andalucía, Golden Mile, Sierra Blanca, Centro, Casco
+  Antiguo, Playa / Paseo Marítimo).
+- **v2.10:** ya se ve el **mar**; arregladas **carreteras/aceras/playa/zonas verdes**
+  (se descartaban por tener la cara hacia abajo); **líneas de carril**; el jugador
+  **empieza en Puerto Banús** con **coches aparcados** para coger (tecla E).
+- El mapa real incluye **nombres de calle reales** (cartel estilo GTA).
+- **v2.8:** cuestas REALES; cimiento que cubre la pendiente (ni flotan ni se
+  entierran); tejados terracota; mapa grande a pantalla completa con **iconos de
+  sitios** reales (hospital, ayuntamiento, policía, bomberos, etc.).
+- **v2.9:** el mapa tiene **relieve** (sombreado de cuestas), **leyenda/índice**
+  de iconos con filtro, **nombres de calle sobre la carretera** (girados y
+  ajustados al tramo) y **rutas tipo GPS** (clic en el mapa → camino por las
+  calles dibujado en el mapa y en el radar).
+- Pendiente: **v2.10** rellenar zonas vacías con **satélite**; **v2.11** más
+  **vida** (tráfico/gente) y **Puerto Banús con yates**.
+- La **v1.13** es la versión "arcade" (cuadrícula) con TODA la IA; la **v2.0** es el
+  mapa REAL con mi estilo visual (la IA se irá llevando al mapa real en v2.x).
+- Próximo: **v2.1+** = tráfico, peatones y policía sobre las calles reales.
+- Nota: la "identidad de Marbella" (paseo marítimo, Puerto Banús, barrios) se hará
+  más adelante copiando **Google Maps** (satélite + Street View) como referencia
+  visual; OpenStreetMap solo como apoyo de geometría.
 
 ### Sistema de versiones
 - Cada versión se **congela** en `versions/vX.Y` y nunca se sobrescribe.

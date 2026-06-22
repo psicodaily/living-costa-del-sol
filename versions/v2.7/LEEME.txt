@@ -1,0 +1,6 @@
+Copia congelada de GTA Marbella v2.7.
+
+Para jugar a esta versión desde la carpeta raíz del proyecto:
+   npm run play -- versions/v2.7
+
+(Usa las dependencias ya instaladas en la carpeta raíz, no hace falta instalar nada.)
